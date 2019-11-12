@@ -24,8 +24,7 @@ public class Paciente {
 	
 	public Paciente(String idPaciente, String nombre, String cedula, String seguro, int edad, String estadoCivil,
 			char sexo, String tipoSangre, float estatura, String direccion, String sector, String telefono,
-			String celular, String email, ArrayList<Enfermedad> enfermedades, String estado,
-			ArrayList<Consulta> historiaClinica) {
+			String celular, String email,  String estado) {
 		super();
 		this.idPaciente = idPaciente;
 		this.nombre = nombre;

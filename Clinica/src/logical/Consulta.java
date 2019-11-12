@@ -12,15 +12,14 @@ public class Consulta {
 	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
 	
-	public Consulta(String idConsulta, String idDoctor, float costo, Date fecha, ArrayList<Enfermedad> enfermedades,
-			ArrayList<Vacuna> vacunas) {
+	public Consulta(String idConsulta, String idDoctor, float costo, Date fecha) {
 		super();
 		this.idConsulta = idConsulta;
 		this.idDoctor = idDoctor;
 		this.costo = costo;
 		this.fecha = fecha;
-		this.enfermedades = enfermedades;
-		this.vacunas = vacunas;
+		enfermedades = new ArrayList<>();;
+		vacunas = new ArrayList<>();
 	}
 
 	public String getIdConsulta() {
