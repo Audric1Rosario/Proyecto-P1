@@ -7,7 +7,8 @@ public class Clinica {
 	/*
 	 * Programado por: 
 	 * Audric Rosario
-	 * */
+	 *
+	 **/
 	
 	private static Clinica instancia = null;
 	private ArrayList<Paciente> pacientes;
