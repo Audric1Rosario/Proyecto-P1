@@ -40,7 +40,7 @@ public class BuscarConsulta extends JDialog {
 	 * Create the dialog.
 	 */
 	public BuscarConsulta() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarConsulta.class.getResource("/image/caduceusA.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarConsulta.class.getResource("/image/caduceusBlue.png")));
 		setTitle("Buscar Consulta");
 		setBounds(100, 100, 720, 480);
 		getContentPane().setLayout(new BorderLayout());

@@ -45,7 +45,7 @@ public class BuscarPaciente extends JDialog {
 	 * Create the dialog.
 	 */
 	public BuscarPaciente() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarPaciente.class.getResource("/image/caduceusA.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarPaciente.class.getResource("/image/caduceusBlue.png")));
 		setTitle("Buscar Paciente");
 		setBounds(100, 100, 720, 480);
 		getContentPane().setLayout(new BorderLayout());

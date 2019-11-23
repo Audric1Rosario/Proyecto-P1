@@ -41,7 +41,7 @@ public class Consulta extends JDialog {
 	 */
 	public Consulta() {
 		setTitle("Consulta");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Consulta.class.getResource("/image/caduceusA.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Consulta.class.getResource("/image/caduceusBlue.png")));
 		setBounds(100, 100, 720, 460);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
