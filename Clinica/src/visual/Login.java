@@ -7,9 +7,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import logical.Administrador;
 import logical.Clinica;
+import logical.Empleado;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -22,19 +25,76 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
 import javax.swing.JPasswordField;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
-
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtUsuario;
 	private String screenPath;
-	private JPasswordField passwordField;
+	private JPasswordField passPass;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				FileInputStream clinica;
+				FileOutputStream clinica2;
+				ObjectInputStream clinicaRead;
+				ObjectOutputStream clinicaWrite;
+				
+				// Crear directorio
+				String path = System.getProperty("user.dir");
+				File directorio = new File(path + "/data");
+				
+				if (!directorio.exists()) {
+					if (directorio.mkdirs()) {
+						
+					} else {
+						JOptionPane.showMessageDialog(null, "Error al cargar datos.", "Data.", JOptionPane.WARNING_MESSAGE);
+					}
+				}
+				
+				// Cargar la clase controladora
+				try {
+					clinica = new FileInputStream ("data/clinica.dat");
+					clinicaRead = new ObjectInputStream(clinica);
+					Clinica temp = (Clinica)clinicaRead.readObject();
+					Clinica.setInstance(temp);
+					clinica.close();
+					clinicaRead.close();
+				} catch (FileNotFoundException e) {
+					try {
+						clinica2 = new  FileOutputStream("data/clinica.dat");
+						clinicaWrite = new ObjectOutputStream(clinica2);
+						Empleado aux = new Administrador("Administrador", "Admin", "Admin", 1);
+						Clinica.getInstance().addEmpleado(aux);;
+						clinicaWrite.writeObject(Clinica.getInstance());
+						clinica2.close();
+						clinicaWrite.close();
+					} catch (FileNotFoundException e1) {
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+					}
+				} catch (IOException e) {
+
+
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				
+				// Abrir el frame
 				try {
 					Login frame = new Login();
 					frame.setVisible(true);
@@ -87,6 +147,32 @@ public class Login extends JFrame {
 		txtUsuario.setColumns(10);
 		
 		JButton btnEnter = new JButton("Entrar");
+		btnEnter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String username = txtUsuario.getText();
+				String password = String.valueOf(passPass.getPassword());
+				boolean ok = false;
+				
+				Empleado actual = Clinica.getInstance().buscarEmpleadoByUsername(username);
+				
+				if (actual != null)
+				{
+					if (actual.getPassword().equals(password)) {
+						ok = true;
+					}
+				}
+				
+				if (ok) {
+					Dashboard ventana = new Dashboard();
+					ventana.setVisible(true);
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de inicio.", JOptionPane.WARNING_MESSAGE);
+				}
+				
+				
+			}
+		});
 		btnEnter.setBounds(285, 395, 173, 27);
 		panel.add(btnEnter);
 		
@@ -106,10 +192,10 @@ public class Login extends JFrame {
 		lblNewLabel.setBounds(75, 23, 154, 36);
 		panel.add(lblNewLabel);
 		
-		passwordField = new JPasswordField();
-		passwordField.setHorizontalAlignment(SwingConstants.CENTER);
-		passwordField.setBounds(255, 348, 233, 27);
-		panel.add(passwordField);
+		passPass = new JPasswordField();
+		passPass.setHorizontalAlignment(SwingConstants.CENTER);
+		passPass.setBounds(255, 348, 233, 27);
+		panel.add(passPass);
 	}
 
 	private void setInit() {

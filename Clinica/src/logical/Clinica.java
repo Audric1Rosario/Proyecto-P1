@@ -18,7 +18,7 @@ import java.io.Serializable;
 
 
 public class Clinica implements Serializable {
-	private static final long serialVersionUID = -3838796611895709467L;
+	private static final long serialVersionUID = 1L;
 	/*
 	 * Programado por: 
 	 * Audric Rosario
@@ -43,6 +43,15 @@ public class Clinica implements Serializable {
 		usuarioActual = null;
 	}
 	
+	// Getters and setters (para tener en cuenta quien lo esta usando.
+	public Empleado getUsuarioActual() {
+		return usuarioActual;
+	}
+
+	public void setUsuarioActual(Empleado usuarioActual) {
+		this.usuarioActual = usuarioActual;
+	}
+
 	// 0. Crear una sola clase controladora
 	// Patrón singleton
 	private synchronized static void createInstance() {
@@ -55,6 +64,11 @@ public class Clinica implements Serializable {
 		if (instancia == null) 
 			createInstance();
 		return instancia;
+	}
+	
+	public static void setInstance(Clinica data) {
+		if (data != null)
+			instancia = data;
 	}
 	
 	// 1. Buscar.

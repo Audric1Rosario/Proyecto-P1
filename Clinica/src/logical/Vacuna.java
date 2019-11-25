@@ -1,8 +1,10 @@
 package logical;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Vacuna {
+public class Vacuna implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String nombre;
 	private String tipo;
 	private Date dia;

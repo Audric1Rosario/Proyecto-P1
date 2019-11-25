@@ -1,7 +1,9 @@
 package logical;
 
-public class Administrador extends Empleado {
-	
+import java.io.Serializable;
+
+public class Administrador extends Empleado implements Serializable {
+	private static final long serialVersionUID = 1L;
 	/*
 	 * La variable autoridad, define el alcance del administrador, desde poder crear vacunas,
 	 * enfermedades, pacientes, hasta poder manipular los usuarios y crear nuevos usuarios.
@@ -17,9 +19,8 @@ public class Administrador extends Empleado {
 	
 	private int autoridad;
 
-	public Administrador(String idEmpleado, String nombre, String username, String password, String consultorio,
-			int autoridad) {
-		super(idEmpleado, nombre, username, password, consultorio);
+	public Administrador(String nombre, String username, String password, int autoridad) {
+		super(nombre, username, password);
 		this.autoridad = autoridad;
 	}
 

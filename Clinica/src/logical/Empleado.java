@@ -1,19 +1,27 @@
 package logical;
 
-public abstract class Empleado {
+import java.io.Serializable;
+import java.util.Date;
+
+public abstract class Empleado implements Serializable {
+	private static final long serialVersionUID = 1L;
 	protected String idEmpleado;
 	protected String nombre;
 	protected String username;
 	protected String password;
-	protected String consultorio;
+	protected Date lastConnection;
+	protected String imagePath;	// Esto es para salvar donde esta ubicada la imagen.
+	private static long idUser = 0;
 	
-	public Empleado(String idEmpleado, String nombre, String username, String password, String consultorio) {
+	public Empleado(String nombre, String username, String password) {
 		super();
-		this.idEmpleado = idEmpleado;
+		this.idEmpleado = "E-" + idUser;
+		Empleado.idUser++;
 		this.nombre = nombre;
 		this.username = username;
 		this.password = password;
-		this.consultorio = consultorio;
+		this.imagePath = "";
+		this.lastConnection = new Date();
 	}
 
 	public String getIdEmpleado() {
@@ -48,13 +56,19 @@ public abstract class Empleado {
 		this.password = password;
 	}
 
-	public String getConsultorio() {
-		return consultorio;
+	public String getImagePath() {
+		return imagePath;
 	}
 
-	public void setConsultorio(String consultorio) {
-		this.consultorio = consultorio;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
-	
-	
+
+	public Date getLastConnection() {
+		return lastConnection;
+	}
+
+	public void setLastConnection(Date lastConnection) {
+		this.lastConnection = lastConnection;
+	}
 }

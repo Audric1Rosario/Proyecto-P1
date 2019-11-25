@@ -35,7 +35,7 @@ public class Dashboard extends JFrame {
 
 	/**
 	 * Launch the application.
-	 */
+	 *//*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -47,7 +47,7 @@ public class Dashboard extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
@@ -61,7 +61,7 @@ public class Dashboard extends JFrame {
 				ObjectOutputStream clinicaWrite;
 				
 				try {
-					clinicaGuardar = new FileOutputStream("/datos/clinica.dat");
+					clinicaGuardar = new FileOutputStream("data/clinica.dat");
 					clinicaWrite = new ObjectOutputStream(clinicaGuardar);
 					clinicaWrite.writeObject(Clinica.getInstance());
 				} catch (FileNotFoundException e1) {
