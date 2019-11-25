@@ -18,8 +18,6 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
 import java.awt.Image;
-import java.security.Principal;
-import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
@@ -164,6 +162,7 @@ public class Login extends JFrame {
 				
 				if (ok) {
 					Dashboard ventana = new Dashboard();
+					Clinica.getInstance().setUsuarioActual(actual);
 					ventana.setVisible(true);
 					dispose();
 				} else {

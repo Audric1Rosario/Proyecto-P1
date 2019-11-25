@@ -50,7 +50,7 @@ public class Usuarios extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Usuarios() {
+	public Usuarios(boolean esAdmin) {
 		setTitle("Usuarios");
 		setResizable(false);
 		setBounds(100, 100, 720, 480);
