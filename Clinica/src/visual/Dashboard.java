@@ -9,6 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
 import javax.swing.border.TitledBorder;
+
+import logical.Clinica;
+
 import javax.swing.UIManager;
 import java.awt.Color;
 import javax.swing.JMenuBar;
@@ -17,6 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class Dashboard extends JFrame {
 
@@ -42,6 +53,24 @@ public class Dashboard extends JFrame {
 	 * Create the frame.
 	 */
 	public Dashboard() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Guardar datos.
+				FileOutputStream clinicaGuardar;
+				ObjectOutputStream clinicaWrite;
+				
+				try {
+					clinicaGuardar = new FileOutputStream("/datos/clinica.dat");
+					clinicaWrite = new ObjectOutputStream(clinicaGuardar);
+					clinicaWrite.writeObject(Clinica.getInstance());
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		setTitle("Dashboard");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Dashboard.class.getResource("/image/caduceusBlue.png")));
 		setResizable(false);
@@ -95,7 +124,24 @@ public class Dashboard extends JFrame {
 		menuBar.add(mnAdministracin);
 		
 		JMenuItem mntmUsuarios = new JMenuItem("Usuarios");
+		mntmUsuarios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Usuarios ventana = new Usuarios();
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
 		mnAdministracin.add(mntmUsuarios);
+		
+		JMenuItem mntmAdministradores = new JMenuItem("Administradores");
+		mntmAdministradores.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Administradores ventana = new Administradores();
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
+		mnAdministracin.add(mntmAdministradores);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));

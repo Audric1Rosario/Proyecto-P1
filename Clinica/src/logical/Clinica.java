@@ -3,14 +3,29 @@ package logical;
 import java.sql.Date;
 import java.util.ArrayList;
 
-public class Clinica {
+// Para manejo de ficheros:
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+
+public class Clinica implements Serializable {
+	private static final long serialVersionUID = -3838796611895709467L;
 	/*
 	 * Programado por: 
 	 * Audric Rosario
 	 *
 	 **/
-	
 	private static Clinica instancia = null;
+	private Empleado usuarioActual;
 	private ArrayList<Paciente> pacientes;
 	private ArrayList<Cita> citas;
 	private ArrayList<Consulta> consultas;
@@ -25,6 +40,7 @@ public class Clinica {
 		consultas = new ArrayList<Consulta>();
 		empleados = new ArrayList<Empleado>();
 		vacunas = new ArrayList<Vacuna>();
+		usuarioActual = null;
 	}
 	
 	// 0. Crear una sola clase controladora

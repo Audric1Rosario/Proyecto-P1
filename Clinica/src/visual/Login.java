@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import logical.Clinica;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -18,13 +21,14 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
+import javax.swing.JPasswordField;
 
 public class Login extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField txtUsuario;
 	private String screenPath;
+	private JPasswordField passwordField;
 	/**
 	 * Launch the application.
 	 */
@@ -45,6 +49,9 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		setInit();
+		
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Login.class.getResource("/image/caduceus.png")));
 		setResizable(false);
 		setTitle("Login");
@@ -73,21 +80,17 @@ public class Login extends JFrame {
 				lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_SMOOTH)));
 		panel.add(lblLogo);
 		
-		textField = new JTextField();
-		textField.setBounds(255, 285, 233, 27);
-		panel.add(textField);
-		textField.setColumns(10);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(255, 348, 233, 27);
-		panel.add(textField_1);
-		textField_1.setColumns(10);
+		txtUsuario = new JTextField();
+		txtUsuario.setHorizontalAlignment(SwingConstants.CENTER);
+		txtUsuario.setBounds(255, 285, 233, 27);
+		panel.add(txtUsuario);
+		txtUsuario.setColumns(10);
 		
 		JButton btnEnter = new JButton("Entrar");
 		btnEnter.setBounds(285, 395, 173, 27);
 		panel.add(btnEnter);
 		
-		JLabel lblUsername = new JLabel("Username");
+		JLabel lblUsername = new JLabel("Usuario");
 		lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
 		lblUsername.setBounds(334, 261, 74, 14);
 		panel.add(lblUsername);
@@ -102,5 +105,16 @@ public class Login extends JFrame {
 		lblNewLabel.setForeground(new Color(70, 130, 180));
 		lblNewLabel.setBounds(75, 23, 154, 36);
 		panel.add(lblNewLabel);
+		
+		passwordField = new JPasswordField();
+		passwordField.setHorizontalAlignment(SwingConstants.CENTER);
+		passwordField.setBounds(255, 348, 233, 27);
+		panel.add(passwordField);
+	}
+
+	private void setInit() {
+		// TODO Auto-generated method stub
+		Clinica.getInstance(); // Crear la clase controladora
+		
 	}
 }
