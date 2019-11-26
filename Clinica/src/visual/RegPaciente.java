@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -19,11 +20,14 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.border.TitledBorder;
 
 public class RegPaciente extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField name;
+	private JTextField txtName;
 	private JTextField lastname;
 	private JTextField phone;
 	private JTextField cellphone;
@@ -35,6 +39,8 @@ public class RegPaciente extends JDialog {
 	
 	ButtonGroup Generos = new ButtonGroup();
 	ButtonGroup Relationship = new ButtonGroup();
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -47,6 +53,7 @@ public class RegPaciente extends JDialog {
 			e.printStackTrace();
 		}
 	}
+	
 
 	/**
 	 * Create the dialog.
@@ -61,7 +68,8 @@ public class RegPaciente extends JDialog {
 		contentPanel.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 521, 387);
+		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(10, 11, 514, 387);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 		{
@@ -70,10 +78,10 @@ public class RegPaciente extends JDialog {
 			panel.add(lblNombre);
 		}
 		
-		name = new JTextField();
-		name.setBounds(60, 29, 186, 20);
-		panel.add(name);
-		name.setColumns(10);
+		txtName = new JTextField();
+		txtName.setBounds(60, 29, 186, 20);
+		panel.add(txtName);
+		txtName.setColumns(10);
 		{
 			JLabel lblApellidos = new JLabel("Apellidos:");
 			lblApellidos.setBounds(256, 32, 77, 14);
@@ -214,9 +222,19 @@ public class RegPaciente extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						if(txtName.getText().equalsIgnoreCase("")||lastname.getText().equalsIgnoreCase("")||phone.getText().equalsIgnoreCase("")||
+						   cellphone.getText().equalsIgnoreCase("")||save.getText().equalsIgnoreCase("")||ID.getText().equalsIgnoreCase("")||
+					       address.getText().equalsIgnoreCase("")||email.getText().equalsIgnoreCase("")
+						    )
+					        JOptionPane.showMessageDialog(null, "Campos del paciente vacios", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
+				
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
@@ -230,10 +248,19 @@ public class RegPaciente extends JDialog {
 		Relationship.add(rdbtnCasado);
 		Relationship.add(rdbtnSoltero);
 		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBounds(529, 11, 165, 156);
+		contentPanel.add(panel_1);
+		panel_1.setLayout(null);
+		
 		JLabel ImagenUsuario = new JLabel("Usuario");
-		ImagenUsuario.setBounds(532, 71, 120, 127);
-		contentPanel.add(ImagenUsuario);
+		ImagenUsuario.setBounds(10, 11, 145, 127);
+		panel_1.add(ImagenUsuario);
 		ImagenUsuario.setIcon(new ImageIcon(((new ImageIcon(Login.class.getResource(screenPath))).getImage()).getScaledInstance(
 				ImagenUsuario.getWidth(), ImagenUsuario.getHeight(), Image.SCALE_SMOOTH)));
+		
+		
 	}
+	
 }

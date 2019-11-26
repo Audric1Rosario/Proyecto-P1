@@ -16,6 +16,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 public class DatosPaciente extends JDialog {
 
@@ -49,8 +53,10 @@ public class DatosPaciente extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		
 		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -81,6 +87,12 @@ public class DatosPaciente extends JDialog {
 		panel_1.setLayout(null);
 		
 		JButton btnNewButton = new JButton("Registrar");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			RegPaciente auxRegPaciente = new RegPaciente();
+			auxRegPaciente.setVisible(true);
+			}
+		});
 		btnNewButton.setBounds(47, 203, 113, 23);
 		panel_1.add(btnNewButton);
 		panel.setLayout(null);
