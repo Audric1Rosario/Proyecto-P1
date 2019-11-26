@@ -15,7 +15,7 @@ public abstract class Empleado implements Serializable {
 	
 	public Empleado(String nombre, String username, String password) {
 		super();
-		this.idEmpleado = "E-" + idUser;
+		this.idEmpleado = idUser + "E";
 		Empleado.idUser++;
 		this.nombre = nombre;
 		this.username = username;

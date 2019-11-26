@@ -31,6 +31,27 @@ public class Clinica implements Serializable {
 		vacunas = new ArrayList<Vacuna>();
 	}
 
+	// Getters
+	public ArrayList<Paciente> getPacientes() {
+		return pacientes;
+	}
+
+	public ArrayList<Cita> getCitas() {
+		return citas;
+	}
+
+	public ArrayList<Consulta> getConsultas() {
+		return consultas;
+	}
+
+	public ArrayList<Empleado> getEmpleados() {
+		return empleados;
+	}
+
+	public ArrayList<Vacuna> getVacunas() {
+		return vacunas;
+	}
+
 	// 0. Crear una sola clase controladora
 	// Patrón singleton
 	private synchronized static void createInstance() {
@@ -120,6 +141,19 @@ public class Clinica implements Serializable {
 		boolean encontrado = false; int aux = 0;
 		while (!encontrado && aux < empleados.size()) {
 			if (empleados.get(aux).getIdEmpleado().equalsIgnoreCase(idEmpleado)) {
+				buscado = empleados.get(aux);
+				encontrado = true;
+			}
+			aux++;
+		}
+		return buscado;
+	}
+	
+	public Empleado buscarEmpleadoByNombre(String nombreEmpleado) {
+		Empleado buscado = null;
+		boolean encontrado = false; int aux = 0;
+		while (!encontrado && aux < empleados.size()) {
+			if (empleados.get(aux).getNombre().equalsIgnoreCase(nombreEmpleado)) {
 				buscado = empleados.get(aux);
 				encontrado = true;
 			}

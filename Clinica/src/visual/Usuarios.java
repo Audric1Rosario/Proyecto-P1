@@ -39,44 +39,47 @@ import java.beans.PropertyChangeEvent;
 import java.awt.event.InputMethodListener;
 import java.awt.event.InputMethodEvent;
 import javax.swing.SpinnerNumberModel;
+import java.awt.Toolkit;
 
 public class Usuarios extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	
+
 	private JTextField txtName;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
-	private JTextField txtCantDoctores;
-	
-	
+	private static JTextField txtCantDoctores;
+
+
 	// Variables de creación
 	private boolean esAdmin;	// Para saber si se presentaran los administradores o usuarios normales.
 	private ArrayList<String> doctorId;
-	
+
 	// Paneles
 	private JPanel panelDoctor;
 	private JPanel panelSecretaria;
 	private JPanel panelAdmin;
-	
+
 	// Combo
 	private JComboBox cbxTipoUsuario;
-	
+
 	// Spinner
 	private JSpinner spnAutoridad;
 	private JSpinner spnCitas;
-	
+
 	// Botones
 	private JButton btnCrear;
 	private JButton btnCerrar;
 	private JButton btnModificar;
-	
+	private static JButton btnDoctores;
+
+
 	// Table 
 	private JTable userTable;
 	private DefaultTableModel model;
 	private Object row[];
 
-	
+
 	/**
 	 * Launch the application.
 	 *//*
@@ -94,6 +97,7 @@ public class Usuarios extends JDialog {
 	 * Create the dialog.
 	 */
 	public Usuarios(boolean esAdmin) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Usuarios.class.getResource("/image/caduceus.png")));
 		this.doctorId = new ArrayList<String>();
 		this.esAdmin = esAdmin;
 		setTitle("Usuarios");
@@ -115,17 +119,17 @@ public class Usuarios extends JDialog {
 				panel_1.setBounds(10, 21, 446, 359);
 				panel.add(panel_1);
 				panel_1.setLayout(new BorderLayout(0, 0));
-				
+
 				JScrollPane scrollPane = new JScrollPane();
 				scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 				panel_1.add(scrollPane, BorderLayout.CENTER);
-				
+
 				userTable = new JTable();
 				model = new DefaultTableModel();
-				
+
 				String[] headers = {"ID-Usuario", "Nombre", "Username", "Última conexión."};
 				String[] headersM = {"ID-Usuario", "Nombre", "Username", "Autoridad"};
-				
+
 				if (!esAdmin)
 					model.setColumnIdentifiers(headers);
 				else
@@ -140,44 +144,44 @@ public class Usuarios extends JDialog {
 			panel.setBounds(486, 11, 218, 391);
 			contentPanel.add(panel);
 			panel.setLayout(null);
-			
+
 			JLabel lblUserImage = new JLabel("");
 			lblUserImage.setBounds(53, 23, 107, 98);
 			lblUserImage.setIcon(new ImageIcon(((new ImageIcon(Usuarios.class.getResource("/image/userA.png"))).getImage()).getScaledInstance(lblUserImage.getWidth(),
 					lblUserImage.getHeight(), Image.SCALE_SMOOTH)));
 			panel.add(lblUserImage);
-			
+
 			txtName = new JTextField();
 			txtName.setBounds(10, 150, 198, 20);
 			panel.add(txtName);
 			txtName.setColumns(10);
-			
+
 			txtUsername = new JTextField();
 			txtUsername.setBounds(10, 199, 198, 20);
 			panel.add(txtUsername);
 			txtUsername.setColumns(10);
-			
+
 			JLabel lblNombre = new JLabel("Nombre");
 			lblNombre.setBounds(10, 132, 198, 14);
 			panel.add(lblNombre);
-			
+
 			JLabel lblrea = new JLabel("Nombre de usuario: ");
 			lblrea.setBounds(10, 181, 198, 14);
 			panel.add(lblrea);
-			
+
 			txtPassword = new JTextField();
 			txtPassword.setBounds(10, 247, 198, 20);
 			panel.add(txtPassword);
 			txtPassword.setColumns(10);
-			
+
 			JLabel lblContrasea = new JLabel("Contrase\u00F1a:");
 			lblContrasea.setBounds(10, 230, 198, 14);
 			panel.add(lblContrasea);
-			
+
 			JLabel lblTipoDeUsuario = new JLabel("Tipo de usuario: ");
 			lblTipoDeUsuario.setBounds(10, 278, 198, 14);
 			panel.add(lblTipoDeUsuario);
-			
+
 			cbxTipoUsuario = new JComboBox();
 			cbxTipoUsuario.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
@@ -207,27 +211,28 @@ public class Usuarios extends JDialog {
 				cbxTipoUsuario.setModel(new DefaultComboBoxModel(new String[] {"<Seleccione>", "Doctor", "Secretario/a"}));
 			else
 				cbxTipoUsuario.setModel(new DefaultComboBoxModel(new String[] {"Administrador"}));
-			
+
 			if (esAdmin)
 				cbxTipoUsuario.setEnabled(false);
 			cbxTipoUsuario.setBounds(10, 296, 198, 20);
 			panel.add(cbxTipoUsuario);
-			
+
 			panelSecretaria = new JPanel();
 			panelSecretaria.setBounds(10, 327, 198, 53);
 			panel.add(panelSecretaria);
 			panelSecretaria.setLayout(null);
-			
+
 			txtCantDoctores = new JTextField();
 			txtCantDoctores.setEditable(false);
 			txtCantDoctores.setBounds(10, 16, 54, 20);
 			panelSecretaria.add(txtCantDoctores);
 			txtCantDoctores.setColumns(10);
-			
-			JButton btnDoctores = new JButton("Seleccione");
+
+			btnDoctores = new JButton("Seleccione");
 			btnDoctores.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					SeleccionarDoctores ventana = new SeleccionarDoctores(doctorId);
+					doctorId = new ArrayList<String>();
+					SeleccionarDoctores ventana = new SeleccionarDoctores(doctorId, false);
 					ventana.setModal(true);
 					ventana.setVisible(true);
 				}
@@ -235,39 +240,39 @@ public class Usuarios extends JDialog {
 			btnDoctores.setToolTipText("Pulse para seleccionar los doctores para los que esta trabaja.");
 			btnDoctores.setBounds(74, 15, 114, 23);
 			panelSecretaria.add(btnDoctores);
-			
+
 			panelDoctor = new JPanel();
 			panelDoctor.setBounds(10, 327, 198, 53);
 			panel.add(panelDoctor);
 			panelDoctor.setLayout(null);
-			
+
 			spnCitas = new JSpinner();
 			spnCitas.setModel(new SpinnerNumberModel(1, 1, 20, 1));
 			spnCitas.setBounds(10, 22, 178, 20);
 			panelDoctor.add(spnCitas);
-			
+
 			JLabel lblCitasPorDa = new JLabel("Citas por d\u00EDa:");
 			lblCitasPorDa.setBounds(10, 0, 188, 14);
 			panelDoctor.add(lblCitasPorDa);
-			
+
 			panelAdmin = new JPanel();
 			panelAdmin.setBounds(10, 327, 198, 53);
 			panel.add(panelAdmin);
 			panelAdmin.setLayout(null);
-			
+
 			spnAutoridad = new JSpinner();
 			spnAutoridad.setModel(new SpinnerNumberModel(1, 1, 4, 1));
 			spnAutoridad.setBounds(10, 22, 178, 20);
 			panelAdmin.add(spnAutoridad);
-			
+
 			JLabel lblAutoridad = new JLabel("Autoridad");
 			lblAutoridad.setBounds(10, 5, 178, 14);
 			panelAdmin.add(lblAutoridad);
-			
+
 			panelDoctor.setEnabled(false);
 			panelDoctor.setVisible(false);
 			panelSecretaria.setEnabled(false);
-			
+
 			JLabel lblDoctoresParaLos = new JLabel("Doctores para los que trabaja.");
 			lblDoctoresParaLos.setBounds(10, 0, 178, 14);
 			panelSecretaria.add(lblDoctoresParaLos);
@@ -293,7 +298,7 @@ public class Usuarios extends JDialog {
 						dispose();
 					}
 				});
-				
+
 				btnCrear = new JButton("Crear");
 				btnCrear.setEnabled(false);
 				btnCrear.addActionListener(new ActionListener() {
@@ -303,17 +308,17 @@ public class Usuarios extends JDialog {
 							JOptionPane.showMessageDialog(null, "Por favor ingrese un nombre", "Advertencia", JOptionPane.WARNING_MESSAGE);
 							return;
 						}
-						
+
 						if (txtPassword.getText().equals("")) {
 							JOptionPane.showMessageDialog(null, "Por favor ingrese una contraseña", "Advertencia", JOptionPane.WARNING_MESSAGE);
 							return;
 						}
-						
+
 						if (txtUsername.getText().equals("")) {
 							JOptionPane.showMessageDialog(null, "Por favor ingrese un nombre de usuario", "Advertencia", JOptionPane.WARNING_MESSAGE);
 							return;
 						}
-						
+
 						// Crear la clase
 						Empleado nuevo = null;
 						switch (String.valueOf(cbxTipoUsuario.getSelectedItem())) {
@@ -328,18 +333,50 @@ public class Usuarios extends JDialog {
 							break;
 						}
 						Clinica.getInstance().addEmpleado(nuevo);
+						clear();
 					}
 				});
 				buttonPane.add(btnCrear);
-				
+
 				if (esAdmin)
 					btnCrear.setEnabled(true);
-				
+
 				btnModificar = new JButton("Modificar");
 				buttonPane.add(btnModificar);
 				btnCerrar.setActionCommand("Cancel");
 				buttonPane.add(btnCerrar);
 			}
+		}
+	}
+
+	public static JTextField getTxtCantDoctores() {
+		return txtCantDoctores;
+	}
+
+	public static JButton getBtnDoctores() {
+		return btnDoctores;
+	}
+	
+	private void clear() {
+		txtName.setText("");
+		txtUsername.setText("");
+		txtPassword.setText("");
+		txtCantDoctores.setText("");
+		btnDoctores.setEnabled(true);
+		
+		if (esAdmin)
+		{
+			spnAutoridad.setValue(Integer.valueOf("1"));
+		} else {
+			// Desactivar
+			panelDoctor.setEnabled(false);
+			panelDoctor.setVisible(false);
+			panelSecretaria.setEnabled(false);
+			panelSecretaria.setVisible(false);
+			btnCrear.setEnabled(false);
+
+			// 
+			spnCitas.setValue(Integer.valueOf("1"));
 		}
 	}
 }
