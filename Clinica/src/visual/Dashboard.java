@@ -13,6 +13,7 @@ import javax.swing.border.TitledBorder;
 import logical.Administrador;
 import logical.Clinica;
 import logical.Doctor;
+import logical.Empleado;
 import logical.Secretaria;
 
 import javax.swing.UIManager;
@@ -35,7 +36,8 @@ import java.io.ObjectOutputStream;
 public class Dashboard extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	private Empleado actual;
+	
 	/**
 	 * Launch the application.
 	 *//*
@@ -55,15 +57,14 @@ public class Dashboard extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Dashboard() {
-		boolean visibility = true;
+	public Dashboard(Empleado actual) {
+		this.actual = actual;
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// Guardar datos.
 				FileOutputStream clinicaGuardar;
 				ObjectOutputStream clinicaWrite;
-				Clinica.getInstance().setUsuarioActual(null); // Sección cerrada.
 				
 				try {
 					clinicaGuardar = new FileOutputStream("data/clinica.dat");
@@ -132,18 +133,8 @@ public class Dashboard extends JFrame {
 
 
 		// Menú para los administradores.
-		// Ocultar a usuarios no permitidos.
-		if (Clinica.getInstance().getUsuarioActual() instanceof Doctor || 					// Si es un doctor
-				Clinica.getInstance().getUsuarioActual() instanceof Secretaria ||				// Si es una secretaria
-				(Clinica.getInstance().getUsuarioActual() instanceof Administrador && 			// Si es un admin de nivel inferior 3.
-						((Administrador)Clinica.getInstance().getUsuarioActual()).getAutoridad() > 2)) {
-			visibility = false;
-		} 
-
 		JMenu mnAdministracin = new JMenu("Administraci\u00F3n");
 		menuBar.add(mnAdministracin);
-
-
 
 		JMenuItem mntmUsuarios = new JMenuItem("Usuarios");
 		mntmUsuarios.addActionListener(new ActionListener() {
@@ -173,10 +164,17 @@ public class Dashboard extends JFrame {
 		mnConsultorio.add(mntmCitas);
 
 		JMenuItem mntmConsultas = new JMenuItem("Consultas");
+		mntmConsultas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Consulta ventana = new Consulta(actual);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
 		mnConsultorio.add(mntmConsultas);
 
 		// Ocultar opciones según los permisos del usuario
-		if (Clinica.getInstance().getUsuarioActual() instanceof Secretaria) {
+		if (actual instanceof Secretaria) {
 			mnRegistro.setVisible(false);
 			mnEnfermedades.setVisible(false);
 			mnHistorial.setVisible(false);
@@ -185,7 +183,7 @@ public class Dashboard extends JFrame {
 			mntmConsultas.setVisible(false);
 		}
 
-		if (Clinica.getInstance().getUsuarioActual() instanceof Doctor) {
+		if (actual instanceof Doctor) {
 			mntmRegPaciente.setVisible(false);
 			mntmAgregarEnfermedad.setVisible(false);
 			mntmControlEnfermedades.setVisible(false);
@@ -193,19 +191,16 @@ public class Dashboard extends JFrame {
 			mnAdministracin.setVisible(false);
 		}
 
-		if (Clinica.getInstance().getUsuarioActual() instanceof Administrador) {
-			switch (((Administrador)Clinica.getInstance().getUsuarioActual()).getAutoridad()) {
+		if (actual instanceof Administrador) {
+			switch (((Administrador)actual).getAutoridad()) {
 			case 4:
 				mntmAgregarEnfermedad.setVisible(false);
 				mntmControlEnfermedades.setVisible(false);
 				mntmCrearVacuna.setVisible(false);
-
 			case 3:
 				mnAdministracin.setVisible(false);
-
 			case 2:
 				mntmAdministradores.setVisible(false);
-
 			case 1:
 				mnConsultorio.setVisible(false);
 			}
@@ -252,6 +247,7 @@ public class Dashboard extends JFrame {
 		panel.add(lblUserImage);
 
 		JLabel lblNombreUsuario = new JLabel("Nombre del usuario");
+		lblNombreUsuario.setText(actual.getNombre());
 		lblNombreUsuario.setBounds(910, 15, 144, 16);
 		panel.add(lblNombreUsuario);
 

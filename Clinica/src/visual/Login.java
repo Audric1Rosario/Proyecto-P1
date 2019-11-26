@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
@@ -161,9 +162,10 @@ public class Login extends JFrame {
 				}
 				
 				if (ok) {
-					Dashboard ventana = new Dashboard();
-					Clinica.getInstance().setUsuarioActual(actual);
+					Dashboard ventana = new Dashboard(actual);				
+					actual.setLastConnection(new Date());
 					ventana.setVisible(true);
+					
 					dispose();
 				} else {
 					JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Error de inicio.", JOptionPane.WARNING_MESSAGE);

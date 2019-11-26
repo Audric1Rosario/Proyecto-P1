@@ -15,7 +15,6 @@ public class Clinica implements Serializable {
 	 *
 	 **/
 	private static Clinica instancia = null;
-	private Empleado usuarioActual;
 	private ArrayList<Paciente> pacientes;
 	private ArrayList<Cita> citas;
 	private ArrayList<Consulta> consultas;
@@ -30,16 +29,6 @@ public class Clinica implements Serializable {
 		consultas = new ArrayList<Consulta>();
 		empleados = new ArrayList<Empleado>();
 		vacunas = new ArrayList<Vacuna>();
-		usuarioActual = null;
-	}
-	
-	// Getters and setters (para tener en cuenta quien lo esta usando.
-	public Empleado getUsuarioActual() {
-		return usuarioActual;
-	}
-
-	public void setUsuarioActual(Empleado usuarioActual) {
-		this.usuarioActual = usuarioActual;
 	}
 
 	// 0. Crear una sola clase controladora

@@ -7,6 +7,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import logical.Empleado;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
@@ -16,16 +19,18 @@ import java.awt.Toolkit;
 
 public class Consulta extends JDialog {
 
+	// Doctor actual
+	private Empleado doctor;
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldIdentificacion;
 	private JTextField textFieldDoctor;
 	private JTextField textFieldPaciente;
 	private JTextField textFieldFecha;
-	private JTextField textFieldCosto;
 
 	/**
 	 * Launch the application.
-	 */
+	 *//*
 	public static void main(String[] args) {
 		try {
 			Consulta dialog = new Consulta();
@@ -34,12 +39,13 @@ public class Consulta extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Create the dialog.
 	 */
-	public Consulta() {
+	public Consulta(Empleado actual) {
+		this.doctor = actual;
 		setTitle("Consulta");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Consulta.class.getResource("/image/caduceusBlue.png")));
 		setBounds(100, 100, 720, 460);
@@ -114,18 +120,6 @@ public class Consulta extends JDialog {
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBounds(356, 155, 315, 191);
 			contentPanel.add(scrollPane);
-		}
-		{
-			JLabel lblCosto = new JLabel("Costo:");
-			lblCosto.setBounds(356, 363, 48, 14);
-			contentPanel.add(lblCosto);
-		}
-		{
-			textFieldCosto = new JTextField();
-			textFieldCosto.setEditable(false);
-			textFieldCosto.setBounds(414, 357, 257, 20);
-			contentPanel.add(textFieldCosto);
-			textFieldCosto.setColumns(10);
 		}
 		{
 			JButton btnNewButton = new JButton("Vacunas");

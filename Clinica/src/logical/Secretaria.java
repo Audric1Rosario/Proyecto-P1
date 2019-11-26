@@ -7,9 +7,9 @@ public class Secretaria extends Empleado implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ArrayList<String> idDoctores;
 
-	public Secretaria(String idEmpleado, String nombre, String username, String password) {
+	public Secretaria(String nombre, String username, String password, ArrayList<String> idDoctores) {
 		super(nombre, username, password);
-		this.idDoctores = new ArrayList<String>();
+		this.idDoctores = idDoctores;
 	}
 
 	public ArrayList<String> getIdDoctores() {
