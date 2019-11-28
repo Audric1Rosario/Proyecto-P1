@@ -18,6 +18,7 @@ import javax.swing.border.TitledBorder;
 import logical.Clinica;
 import logical.Doctor;
 import logical.Empleado;
+import logical.Secretaria;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -38,7 +39,7 @@ public class SeleccionarDoctores extends JDialog {
 	private ArrayList<String> refDoctores;	// Para que se guarde en secretaria luego de todo el proceso.
 	private ArrayList<String> doctoresArr;  
 	private ArrayList<String> doctoresSelec;
-	private boolean modificar;
+	private Empleado modificar;
 	private int cantMaxDoc;
 	// Lista.
 	private JList lstDoctores;
@@ -65,12 +66,12 @@ public class SeleccionarDoctores extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SeleccionarDoctores(ArrayList<String> refDoctores, boolean mod) {
+	public SeleccionarDoctores(Empleado secretaria, ArrayList<String> refDoctores) {
 		this.refDoctores = refDoctores;			// Referencia a la lista pasada.
-		this.modificar = mod;
 		this.cantMaxDoc = 5;
 		this.doctoresArr = new ArrayList<String>();
 		this.doctoresSelec = new ArrayList<String>();
+		this.modificar = secretaria;
 		setTitle("Seleccionar doctores");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SeleccionarDoctores.class.getResource("/image/caduceus.png")));
 		setBounds(100, 100, 480, 380);
@@ -112,6 +113,7 @@ public class SeleccionarDoctores extends JDialog {
 				panel_1.setLayout(new BorderLayout(0, 0));
 
 				JScrollPane scrollPane = new JScrollPane();
+				scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 				panel_1.add(scrollPane, BorderLayout.CENTER);
 
 				lstSelec = new JList();
@@ -162,11 +164,28 @@ public class SeleccionarDoctores extends JDialog {
 				btnAceptar = new JButton("Aceptar");
 				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						Empleado doctorE;
 						if (doctoresSelec.size() == 0) {
 							switch (JOptionPane.showConfirmDialog(null, "Esta secretaria no trabaja para ningún doctor, ¿Desea eliminarla?", 
 									"Advertencia.", JOptionPane.WARNING_MESSAGE)) {
 							case JOptionPane.YES_OPTION:
-								
+								if (modificar != null) {
+									Clinica.getInstance().getEmpleados().remove(Clinica.getInstance().buscarIndexEmpleado(modificar.getIdEmpleado()));
+									Usuarios.rellenarTabla();
+									
+									// Luego a todos los doctores en el arreglo que tenía esa secretaria, no tienen secretaria para la cual trabajar.
+									
+									for (String doctor : refDoctores) {
+										doctorE = Clinica.getInstance().buscarEmpleadoById(doctor);
+										if (doctorE instanceof Doctor) {
+											((Doctor)doctorE).setHasSecretaria(false);
+										}
+									}
+									refDoctores.clear();
+									dispose();
+								} else {
+									JOptionPane.showMessageDialog(null, "Error al modificar datos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+								}
 								break;
 							case JOptionPane.NO_OPTION:
 								JOptionPane.showMessageDialog(null, "No es posible tener una secretaria en el sistema si no trabaja para ningún doctor." + 
@@ -174,25 +193,36 @@ public class SeleccionarDoctores extends JDialog {
 								break;
 							}
 						} else {
-							// Primero adaptar la referencia de los doctores a los id de los mismos.
+							// Primero adaptar la referencia de los doctores a los id de los mismos. (Arreglar)
 							refDoctores.clear();
 							for (String doctor : doctoresSelec) {
-								refDoctores.add(Clinica.getInstance().buscarEmpleadoByNombre(doctor).getNombre());
+								//refDoctores.add(Clinica.getInstance().buscarEmpleadoByNombre(doctor).getNombre());
+								refDoctores.add(doctor.substring(doctor.length() - 4, doctor.length() - 1));
+								// Ajustar los que se le agrega secretaria
+								doctorE = Clinica.getInstance().buscarEmpleadoById(doctor.substring(doctor.length() - 4, doctor.length() - 1));
+								if (doctorE instanceof Doctor) 
+									((Doctor)doctorE).setHasSecretaria(true);
 							}
 							// Ajustar todos los doctores que no tienen secretaria.
 							for (String doctor : doctoresArr) {
-								((Doctor)Clinica.getInstance().buscarEmpleadoByNombre(doctor)).setHasSecretaria(false);;
+								// Ajustar los que se le agrega secretaria
+								doctorE = Clinica.getInstance().buscarEmpleadoById(doctor.substring(doctor.length() - 4, doctor.length() - 1));
+								if (doctorE instanceof Doctor) 
+									((Doctor)doctorE).setHasSecretaria(false);
 							}
-							Usuarios.getBtnDoctores().setEnabled(false);
 							Usuarios.getTxtCantDoctores().setText(String.valueOf(doctoresSelec.size()));
-							
+							dispose();
 						}
 						
 					}
 				});
 
-				if (!modificar)
-					btnAceptar.setEnabled(false);
+				// Con esto se sabe si se esta modificando o no.
+				if (modificar instanceof Secretaria) {
+					if (modificar != null)
+						btnAceptar.setEnabled(false);
+				}
+					
 
 				btnAceptar.setActionCommand("OK");
 				buttonPane.add(btnAceptar);
@@ -225,7 +255,7 @@ public class SeleccionarDoctores extends JDialog {
 		for (Empleado empleado : Clinica.getInstance().getEmpleados()) {
 			if (empleado instanceof Doctor)
 				if (!((Doctor)empleado).isHasSecretaria())	// Sólo agregar a la lista si no tiene secretaria.
-					doctoresArr.add(empleado.getNombre());
+					doctoresArr.add(empleado.getNombre() + " (" + empleado.getIdEmpleado() + ")");
 		}
 		// Organizar los nombres en orden alfabético
 		Collections.sort(doctoresArr);
@@ -244,7 +274,7 @@ public class SeleccionarDoctores extends JDialog {
 		model = (DefaultListModel<String>) lstSelec.getModel();
 		aux = 0;
 		for (String IdDoctor : refDoctores) {
-			doctoresSelec.add(Clinica.getInstance().buscarEmpleadoById(IdDoctor).getNombre());
+			doctoresSelec.add(Clinica.getInstance().buscarEmpleadoById(IdDoctor).getNombre() + " (" + IdDoctor + ")");
 			model.addElement(doctoresSelec.get(aux)); 
 			aux++;
 		}
@@ -297,9 +327,10 @@ public class SeleccionarDoctores extends JDialog {
 			btnAgregar.setToolTipText("");
 		btnEliminar.setEnabled(doctoresSelec.size() > 0);
 
-		if (!modificar) {
+		if (modificar == null) {
 			btnAceptar.setEnabled(doctoresSelec.size() > 0);
-		}
+		} else 
+			btnAceptar.setEnabled(true);
 		reiniciarLista();
 	}
 }

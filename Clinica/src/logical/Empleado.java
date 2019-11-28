@@ -11,12 +11,10 @@ public abstract class Empleado implements Serializable {
 	protected String password;
 	protected Date lastConnection;
 	protected String imagePath;	// Esto es para salvar donde esta ubicada la imagen.
-	private static long idUser = 0;
 	
 	public Empleado(String nombre, String username, String password) {
 		super();
-		this.idEmpleado = idUser + "E";
-		Empleado.idUser++;
+		this.idEmpleado = Clinica.getInstance().getEmpleados().size() + "-E";
 		this.nombre = nombre;
 		this.username = username;
 		this.password = password;

@@ -148,19 +148,29 @@ public class Clinica implements Serializable {
 		}
 		return buscado;
 	}
-	
-	public Empleado buscarEmpleadoByNombre(String nombreEmpleado) {
-		Empleado buscado = null;
+	/*
+	public ArrayList<Empleado> buscarEmpleadoByNombreTipo(String aBuscar, String tipo) {
+		ArrayList<Empleado> buscados = new ArrayList<Empleado>();
 		boolean encontrado = false; int aux = 0;
-		while (!encontrado && aux < empleados.size()) {
-			if (empleados.get(aux).getNombre().equalsIgnoreCase(nombreEmpleado)) {
-				buscado = empleados.get(aux);
-				encontrado = true;
+		for (Empleado empleado : empleados) {
+			if (empleado.getNombre().contains(aBuscar)) {
+				switch (tipo) {
+				case "doctor" :
+					if (empleado instanceof Doctor)
+						buscados.add(empleado);
+					break;
+				case "secretaria" :
+					if (empleado instanceof Secretaria)
+						buscados.add(empleado);
+					break;
+				case "administrador" :
+					if (empleado instanceof Administrador)
+						buscados.add(empleado);
+				}
 			}
-			aux++;
 		}
-		return buscado;
-	}
+		return buscados;
+	}*/
 	
 	public Empleado buscarEmpleadoByUsername(String userEmpleado) {
 		Empleado buscado = null;
@@ -173,6 +183,33 @@ public class Clinica implements Serializable {
 			aux++;
 		}
 		return buscado;
+	}
+	
+	public int buscarIndexEmpleado(String idEmpleado) {
+		
+		int index = 0; boolean encontrado = false; 
+		
+		while (!encontrado && index < empleados.size()) {
+			if (empleados.get(index).getIdEmpleado().equalsIgnoreCase(idEmpleado)) {
+				encontrado = true;
+			}
+			index++;
+		}
+		// Retornar -1 si el indice se salió de rango
+		return encontrado ? index - 1 : -1;
+	}
+	
+	// Verificar nombre de usuario
+	public boolean verificarUsuario(String nombreUsuario) {
+		int aux = 0;
+		boolean existe = false;
+		while (!existe && aux < empleados.size()) {
+			if (empleados.get(aux).getUsername().equalsIgnoreCase(nombreUsuario)) {
+				existe = true;
+			}
+			aux++;
+		}
+		return !existe;
 	}
 	
 	// Buscar las vacunas
