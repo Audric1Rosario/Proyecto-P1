@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class CrearEnfermedad extends JDialog {
 
@@ -55,6 +56,7 @@ public class CrearEnfermedad extends JDialog {
 	 * Create the dialog.
 	 */
 	public CrearEnfermedad(Enfermedad modificar) {
+		setResizable(false);
 		this.modificar = modificar;
 		
 		if (modificar == null)
@@ -76,12 +78,17 @@ public class CrearEnfermedad extends JDialog {
 		panel.setLayout(null);
 		
 		txtNombreEnfermedad = new JTextField();
-		txtNombreEnfermedad.setBounds(173, 11, 261, 20);
+		txtNombreEnfermedad.setBounds(168, 11, 266, 20);
 		panel.add(txtNombreEnfermedad);
 		txtNombreEnfermedad.setColumns(10);
+		if (modificar != null)
+			txtNombreEnfermedad.setEditable(false);
+		else 
+			txtNombreEnfermedad.setEditable(true);
 		
-		JLabel lblNombreDeLa = new JLabel("Nombre de la enfermedad");
-		lblNombreDeLa.setBounds(10, 14, 142, 14);
+		JLabel lblNombreDeLa = new JLabel("Nombre de la enfermedad: ");
+		lblNombreDeLa.setHorizontalAlignment(SwingConstants.TRAILING);
+		lblNombreDeLa.setBounds(10, 14, 148, 14);
 		panel.add(lblNombreDeLa);
 		
 		JPanel pnlSintomas = new JPanel();
@@ -123,6 +130,7 @@ public class CrearEnfermedad extends JDialog {
 				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
+						// Verificación de que hay datos.
 						if (txtNombreEnfermedad.getText().equals("")) {
 							JOptionPane.showMessageDialog(null, "Por favor, escriba el nombre de la enfermedad.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 							return;
@@ -133,12 +141,19 @@ public class CrearEnfermedad extends JDialog {
 							return;
 						}
 						
+						// Verificación de que no se repite el nombre de la enfermedad.
+						if (Clinica.getInstance().verificarEnfermedad(txtNombreEnfermedad.getText()) == false) {
+							JOptionPane.showMessageDialog(null, "El nombre de la enfermedad ya existe, favor coloque uno nuevo", "Advertencia.", JOptionPane.WARNING_MESSAGE);
+							return;
+						}
+						
 						if (modificar != null) {
 							modificar.setNombre(txtNombreEnfermedad.getText());
 							modificar.setSintomas(txtSintomas.getText());
 							modificar.setDiagnostico(txtDiagnostico.getText());
+							dispose();
 						} else {
-							Enfermedad nueva = new Enfermedad(txtNombreEnfermedad.getName(), txtSintomas.getText(), txtDiagnostico.getText());
+							Enfermedad nueva = new Enfermedad(txtNombreEnfermedad.getText(), txtSintomas.getText(), txtDiagnostico.getText());
 							Clinica.getInstance().addEnfermedad(nueva);
 							clear();
 						}										

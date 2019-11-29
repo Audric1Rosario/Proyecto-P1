@@ -161,7 +161,7 @@ public class Usuarios extends JDialog {
 
 				model = new DefaultTableModel();
 
-				String[] headers = {"ID-Usuario", "Nombre", "Username", "Última conexión."};
+				String[] headers = {"ID-Usuario", "Nombre", "Ocupación", "Última conexión."};
 				String[] headersM = {"ID-Usuario", "Nombre", "Username", "Autoridad"};
 
 				if (!esAdmin)
@@ -565,7 +565,18 @@ public class Usuarios extends JDialog {
 		for (Empleado empleado : Clinica.getInstance().getEmpleados()) {
 			row[0] = empleado.getIdEmpleado();
 			row[1] = empleado.getNombre();
-			row[2] = empleado.getUsername();
+			
+			if (esAdmin)
+				row[2] = empleado.getUsername();
+			else {
+				if (empleado instanceof Doctor)
+					row[2] = "Doctor";
+				else if (empleado instanceof Secretaria)
+					row[2] = "Secretario/a";
+				else
+					row[2] = "Error";
+			}
+			
 			if (esAdmin) {
 				if (empleado instanceof Administrador)
 					row[3] = String.valueOf(((Administrador)empleado).getAutoridad());

@@ -2,7 +2,6 @@ package logical;
 
 import java.sql.Date;
 import java.util.ArrayList;
-
 // Para manejo de ficheros:
 import java.io.Serializable;
 
@@ -21,16 +20,16 @@ public class Clinica implements Serializable {
 	private ArrayList<Empleado> empleados;
 	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
-	
+
 	private Clinica() {
 		super();
 		// Inicializar 
-		pacientes = new ArrayList<Paciente>();
-		citas = new ArrayList<Cita>();
-		consultas = new ArrayList<Consulta>();
-		empleados = new ArrayList<Empleado>();
-		enfermedades = new ArrayList<Enfermedad>();
-		vacunas = new ArrayList<Vacuna>();
+		this.pacientes = new ArrayList<Paciente>();
+		this.citas = new ArrayList<Cita>();
+		this.consultas = new ArrayList<Consulta>();
+		this.empleados = new ArrayList<Empleado>();
+		this.enfermedades = new ArrayList<Enfermedad>();
+		this.vacunas = new ArrayList<Vacuna>();
 	}
 
 	// Getters
@@ -69,18 +68,18 @@ public class Clinica implements Serializable {
 			instancia = new Clinica();
 		}
 	}
-	
+
 	public static Clinica getInstance() {
 		if (instancia == null) 
 			createInstance();
 		return instancia;
 	}
-	
+
 	public static void setInstance(Clinica data) {
 		if (data != null)
 			instancia = data;
 	}
-	
+
 	// 1. Buscar.
 
 	// Buscar pacientes
@@ -96,17 +95,17 @@ public class Clinica implements Serializable {
 		}
 		return buscado;
 	}
-	
+
 	public ArrayList<Paciente> buscarPacienteByNombre(String nombrePaciente) {
 		ArrayList<Paciente> listaPacientes = new ArrayList<Paciente>();
 		for (Paciente paciente : listaPacientes) {
 			if (paciente.getNombre().contains(nombrePaciente)) 
 				listaPacientes.add(paciente);
 		}
-		
+
 		return listaPacientes;
 	}
-	
+
 	// Buscar las citas
 	public ArrayList<Cita> buscarCitaByDoctor(String idDoctor) {
 		ArrayList<Cita> citasBuscadas = new ArrayList<Cita>();
@@ -117,7 +116,7 @@ public class Clinica implements Serializable {
 		}	
 		return citasBuscadas;
 	}
-	
+
 	public ArrayList<Cita> buscarCitasByDate(Date inicio, Date fin) {
 		ArrayList<Cita> citasBuscadas = new ArrayList<Cita>();
 		for (Cita cita : citas) {
@@ -127,14 +126,14 @@ public class Clinica implements Serializable {
 		}
 		return citasBuscadas;
 	}
-	
+
 	// Buscar las consultas
 	public Consulta buscarConsultaById(String idConsulta) {
 		Consulta buscada = null;
-		
+
 		return buscada;
 	}
-	
+
 	public ArrayList<Consulta> buscarConsultasByDate(Date inicio, Date fin) {
 		ArrayList<Consulta> consultasBuscadas = new ArrayList<Consulta>();	
 		for (Consulta consulta : consultas) {
@@ -144,7 +143,7 @@ public class Clinica implements Serializable {
 		}
 		return consultasBuscadas;
 	}
-	
+
 	// Buscar los empleados
 	public Empleado buscarEmpleadoById(String idEmpleado) {
 		Empleado buscado = null;
@@ -181,7 +180,7 @@ public class Clinica implements Serializable {
 		}
 		return buscados;
 	}*/
-	
+
 	public Empleado buscarEmpleadoByUsername(String userEmpleado) {
 		Empleado buscado = null;
 		boolean encontrado = false; int aux = 0;
@@ -194,11 +193,11 @@ public class Clinica implements Serializable {
 		}
 		return buscado;
 	}
-	
+
 	public int buscarIndexEmpleado(String idEmpleado) {
-		
+
 		int index = 0; boolean encontrado = false; 
-		
+
 		while (!encontrado && index < empleados.size()) {
 			if (empleados.get(index).getIdEmpleado().equalsIgnoreCase(idEmpleado)) {
 				encontrado = true;
@@ -208,8 +207,84 @@ public class Clinica implements Serializable {
 		// Retornar -1 si el indice se salió de rango
 		return encontrado ? index - 1 : -1;
 	}
+
+	// Buscar las vacunas
+	public ArrayList<Vacuna> buscarVacunaByTipo(String tipoVacuna) {
+		ArrayList<Vacuna> vacunasBuscadas = new ArrayList<Vacuna>();
+		for (Vacuna vacuna : vacunas) {
+			if (vacuna.getTipo().equalsIgnoreCase(tipoVacuna)) {
+				vacunasBuscadas.add(vacuna);
+			}
+		}
+
+		return vacunasBuscadas;
+	}
+
+	public Vacuna buscarVacunaByNombre(String nombreVacuna) {
+		Vacuna buscado = null;
+		boolean encontrado = false; int aux = 0;
+		while (!encontrado && aux < vacunas.size()) {
+			if (vacunas.get(aux).getNombre().equalsIgnoreCase(nombreVacuna)) {
+				buscado = vacunas.get(aux);
+				encontrado = true;
+			}
+			aux++;
+		}
+		return buscado;
+	}
 	
-	// Verificar nombre de usuario
+	// 2. Crear.
+	public void addEmpleado(Empleado empleado) {
+		empleados.add(empleado);
+	}
+
+	public void addPaciente(Paciente paciente) {
+		pacientes.add(paciente);
+	}
+
+	public void addConsulta(Consulta consulta) {
+		consultas.add(consulta);
+	}
+
+	public void addCita(Cita cita) {
+		citas.add(cita);
+	}
+
+	public void addEnfermedad(Enfermedad enfermedad) {
+		enfermedades.add(enfermedad);
+	}
+	
+	public void addVacuna(Vacuna vacuna) {
+		vacunas.add(vacuna);		
+	}
+	// 3. Eliminar.
+	public boolean delEmpleado(String idEmpleado) {
+		Empleado buscado = buscarEmpleadoById(idEmpleado);
+
+		if (buscado != null) {
+			empleados.remove(buscado);
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean delPaciente(String idPaciente) {
+		Paciente buscado = buscarPacienteById(idPaciente);
+		if (buscado != null) {
+			pacientes.remove(buscado);
+			return true;
+		}
+
+		return false;
+	}
+
+	// Esto solo usar cuando se busque la cita especifica en el programa.
+	public void delCita(Cita cita) {
+		citas.remove(cita);
+	}
+
+	// 4. Verificaciones.
 	public boolean verificarUsuario(String nombreUsuario) {
 		int aux = 0;
 		boolean existe = false;
@@ -221,66 +296,28 @@ public class Clinica implements Serializable {
 		}
 		return !existe;
 	}
-	
-	// Buscar las vacunas
-	public ArrayList<Vacuna> buscarVacunaByTipo(String tipoVacuna) {
-		ArrayList<Vacuna> vacunasBuscadas = new ArrayList<Vacuna>();
-		for (Vacuna vacuna : vacunas) {
-			if (vacuna.getTipo().equalsIgnoreCase(tipoVacuna)) {
-				vacunasBuscadas.add(vacuna);
+
+	public boolean verificarEnfermedad(String nombreEnfermedad) {
+		int aux = 0;
+		boolean existe = false;
+		while (!existe && aux < enfermedades.size()) {
+			if (enfermedades.get(aux).getNombre().equalsIgnoreCase(nombreEnfermedad)) {
+				existe = true;
 			}
+			aux++;
 		}
-		
-		return vacunasBuscadas;
-	}
-	
-	// 2. Crear.
-	public void addEmpleado(Empleado empleado) {
-		empleados.add(empleado);
-	}
-	
-	public void addPaciente(Paciente paciente) {
-		pacientes.add(paciente);
-	}
-	
-	public void addConsulta(Consulta consulta) {
-		consultas.add(consulta);
-	}
-	
-	public void addCita(Cita cita) {
-		citas.add(cita);
-	}
-	
-	public void addEnfermedad(Enfermedad enfermedad) {
-		enfermedades.add(enfermedad);
-		
-	}
-	// 3. Eliminar.
-	public boolean delEmpleado(String idEmpleado) {
-		Empleado buscado = buscarEmpleadoById(idEmpleado);
-		
-		if (buscado != null) {
-			empleados.remove(buscado);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public boolean delPaciente(String idPaciente) {
-		Paciente buscado = buscarPacienteById(idPaciente);
-		if (buscado != null) {
-			pacientes.remove(buscado);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	// Esto solo usar cuando se busque la cita especifica en el programa.
-	public void delCita(Cita cita) {
-		citas.remove(cita);
+		return !existe;
 	}
 
-	
+	public boolean verificarVacuna(String nombreVacuna) {
+		int aux = 0;
+		boolean existe = false;
+		while (!existe && aux < vacunas.size()) {
+			if (vacunas.get(aux).getNombre().equalsIgnoreCase(nombreVacuna)) {
+				existe = true;
+			}
+			aux++;
+		}
+		return !existe;
+	}
 }

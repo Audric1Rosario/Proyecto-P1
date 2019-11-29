@@ -133,9 +133,23 @@ public class Dashboard extends JFrame {
 		menuBar.add(mnVacunacin);
 
 		JMenuItem mntmCrearVacuna = new JMenuItem("Crear Vacuna");
+		mntmCrearVacuna.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CrearVacuna ventana = new CrearVacuna(null);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
 		mnVacunacin.add(mntmCrearVacuna);
 
 		JMenuItem mntmListaDeVacunas = new JMenuItem("Lista de vacunas");
+		mntmListaDeVacunas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ListaVacunas ventana = new ListaVacunas(actual);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
 		mnVacunacin.add(mntmListaDeVacunas);
 
 

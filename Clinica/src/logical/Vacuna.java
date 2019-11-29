@@ -8,12 +8,14 @@ public class Vacuna implements Serializable {
 	private String nombre;
 	private String tipo;
 	private String enfermedadNombre;
+	private String efectos;
 	
-	public Vacuna(String nombre, String tipo, String enfermedadNombre) {
+	public Vacuna(String nombre, String tipo, String enfermedadNombre, String efectos) {
 		super();
 		this.nombre = nombre;
 		this.tipo = tipo;
 		this.enfermedadNombre = enfermedadNombre;
+		this.efectos = efectos;
 	}
 
 	public String getNombre() {
@@ -38,6 +40,14 @@ public class Vacuna implements Serializable {
 
 	public void setEnfermedadNombre(String enfermedadNombre) {
 		this.enfermedadNombre = enfermedadNombre;
+	}
+
+	public String getEfectos() {
+		return efectos;
+	}
+
+	public void setEfectos(String efectos) {
+		this.efectos = efectos;
 	}
 	
 }
