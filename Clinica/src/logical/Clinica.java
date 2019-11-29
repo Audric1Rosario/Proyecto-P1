@@ -19,6 +19,7 @@ public class Clinica implements Serializable {
 	private ArrayList<Cita> citas;
 	private ArrayList<Consulta> consultas;
 	private ArrayList<Empleado> empleados;
+	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
 	
 	private Clinica() {
@@ -28,6 +29,7 @@ public class Clinica implements Serializable {
 		citas = new ArrayList<Cita>();
 		consultas = new ArrayList<Consulta>();
 		empleados = new ArrayList<Empleado>();
+		enfermedades = new ArrayList<Enfermedad>();
 		vacunas = new ArrayList<Vacuna>();
 	}
 
@@ -241,6 +243,10 @@ public class Clinica implements Serializable {
 		citas.add(cita);
 	}
 	
+	public void addEnfermedad(Enfermedad enfermedad) {
+		enfermedades.add(enfermedad);
+		
+	}
 	// 3. Eliminar.
 	public boolean delEmpleado(String idEmpleado) {
 		Empleado buscado = buscarEmpleadoById(idEmpleado);
@@ -267,4 +273,6 @@ public class Clinica implements Serializable {
 	public void delCita(Cita cita) {
 		citas.remove(cita);
 	}
+
+	
 }

@@ -103,6 +103,13 @@ public class Dashboard extends JFrame {
 		menuBar.add(mnEnfermedades);
 
 		JMenuItem mntmAgregarEnfermedad = new JMenuItem("Agregar Enfermedad");
+		mntmAgregarEnfermedad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CrearEnfermedad ventana = new CrearEnfermedad(null);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
 		mnEnfermedades.add(mntmAgregarEnfermedad);
 
 		JMenuItem mntmListaDeEnfermedades = new JMenuItem("Lista de Enfermedades");
