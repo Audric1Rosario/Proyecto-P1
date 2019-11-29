@@ -14,7 +14,12 @@ public abstract class Empleado implements Serializable {
 	
 	public Empleado(String nombre, String username, String password) {
 		super();
-		this.idEmpleado = Clinica.getInstance().getEmpleados().size() + "-E";
+		int cantEmpleados = Clinica.getInstance().getEmpleados().size();
+		if (cantEmpleados == 0)
+			this.idEmpleado = "E-0"; 
+		else {
+			this.idEmpleado = "E-" + (Integer.valueOf(Clinica.getInstance().getEmpleados().get(cantEmpleados - 1).getIdEmpleado().substring(2)) + 1);
+		}
 		this.nombre = nombre;
 		this.username = username;
 		this.password = password;

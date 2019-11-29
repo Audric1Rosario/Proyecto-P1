@@ -23,11 +23,17 @@ public class Paciente implements Serializable {
 	private String estado;
 	private ArrayList<Consulta> historiaClinica;
 	
-	public Paciente(String idPaciente, String nombre, String cedula, String seguro, int edad, String estadoCivil,
+	public Paciente(String nombre, String cedula, String seguro, int edad, String estadoCivil,
 			char sexo, String tipoSangre, float estatura, String direccion, String sector, String telefono,
 			String celular, String email,  String estado) {
 		super();
-		this.idPaciente = idPaciente;
+		int cantPacientes = Clinica.getInstance().getPacientes().size();
+		if (cantPacientes == 0)
+			this.idPaciente = "P-0";   // Si no hay pacientes registrados empezar desde 0
+		else {
+			this.idPaciente = "P-" + (Integer.valueOf(Clinica.getInstance().getPacientes().get(cantPacientes-1).getIdPaciente().substring(2)) + 1);
+		}
+		
 		this.nombre = nombre;
 		this.cedula = cedula;
 		this.seguro = seguro;

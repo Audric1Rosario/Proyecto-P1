@@ -7,13 +7,13 @@ public class Vacuna implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String nombre;
 	private String tipo;
-	private Date dia;
+	private String enfermedadNombre;
 	
-	public Vacuna(String nombre, String tipo, Date dia) {
+	public Vacuna(String nombre, String tipo, String enfermedadNombre) {
 		super();
 		this.nombre = nombre;
 		this.tipo = tipo;
-		this.dia = dia;
+		this.enfermedadNombre = enfermedadNombre;
 	}
 
 	public String getNombre() {
@@ -24,8 +24,8 @@ public class Vacuna implements Serializable {
 		return tipo;
 	}
 
-	public Date getDia() {
-		return dia;
+	public String getEnfermedadNombre() {
+		return enfermedadNombre;
 	}
 
 	public void setNombre(String nombre) {
@@ -36,8 +36,8 @@ public class Vacuna implements Serializable {
 		this.tipo = tipo;
 	}
 
-	public void setDia(Date dia) {
-		this.dia = dia;
+	public void setEnfermedadNombre(String enfermedadNombre) {
+		this.enfermedadNombre = enfermedadNombre;
 	}
 	
 }

@@ -196,17 +196,17 @@ public class SeleccionarDoctores extends JDialog {
 							// Primero adaptar la referencia de los doctores a los id de los mismos. (Arreglar)
 							refDoctores.clear();
 							for (String doctor : doctoresSelec) {
-								//refDoctores.add(Clinica.getInstance().buscarEmpleadoByNombre(doctor).getNombre());
-								refDoctores.add(doctor.substring(doctor.length() - 4, doctor.length() - 1));
+								// Ejemplo: Doctor de la clinica (E-0) substring irá desde length -4 hasta length - 1 intervalo: [length -4, length - 1)
+								refDoctores.add(doctor.substring(doctor.lastIndexOf("(") + 1, doctor.length() - 1));
 								// Ajustar los que se le agrega secretaria
-								doctorE = Clinica.getInstance().buscarEmpleadoById(doctor.substring(doctor.length() - 4, doctor.length() - 1));
+								doctorE = Clinica.getInstance().buscarEmpleadoById(doctor.substring(doctor.lastIndexOf("(") + 1, doctor.length() - 1));
 								if (doctorE instanceof Doctor) 
 									((Doctor)doctorE).setHasSecretaria(true);
 							}
 							// Ajustar todos los doctores que no tienen secretaria.
 							for (String doctor : doctoresArr) {
 								// Ajustar los que se le agrega secretaria
-								doctorE = Clinica.getInstance().buscarEmpleadoById(doctor.substring(doctor.length() - 4, doctor.length() - 1));
+								doctorE = Clinica.getInstance().buscarEmpleadoById(doctor.substring(doctor.lastIndexOf("(") + 1, doctor.length() - 1));
 								if (doctorE instanceof Doctor) 
 									((Doctor)doctorE).setHasSecretaria(false);
 							}

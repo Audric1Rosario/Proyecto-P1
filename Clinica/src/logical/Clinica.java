@@ -54,6 +54,14 @@ public class Clinica implements Serializable {
 		return vacunas;
 	}
 
+	public ArrayList<Enfermedad> getEnfermedades() {
+		return enfermedades;
+	}
+
+	public void setEnfermedades(ArrayList<Enfermedad> enfermedades) {
+		this.enfermedades = enfermedades;
+	}
+
 	// 0. Crear una sola clase controladora
 	// Patrón singleton
 	private synchronized static void createInstance() {
