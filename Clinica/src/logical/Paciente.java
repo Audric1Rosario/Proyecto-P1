@@ -11,7 +11,7 @@ public class Paciente implements Serializable {
 	private String seguro;
 	private int edad;
 	private String estadoCivil;
-	private char sexo;
+	private String sexo;
 	private String tipoSangre;
 	private float estatura;
 	private String direccion;
@@ -19,13 +19,12 @@ public class Paciente implements Serializable {
 	private String telefono;
 	private String celular;
 	private String email;
-	private ArrayList<Enfermedad> enfermedades;
-	private String estado;
+	private ArrayList<String> enfermedades;
 	private ArrayList<Consulta> historiaClinica;
 	
 	public Paciente(String nombre, String cedula, String seguro, int edad, String estadoCivil,
-			char sexo, String tipoSangre, float estatura, String direccion, String sector, String telefono,
-			String celular, String email,  String estado) {
+			String sexo, String tipoSangre, float estatura, String direccion, String sector, String telefono,
+			String celular, String email, ArrayList<String> enfermedades) {
 		super();
 		int cantPacientes = Clinica.getInstance().getPacientes().size();
 		if (cantPacientes == 0)
@@ -47,8 +46,7 @@ public class Paciente implements Serializable {
 		this.telefono = telefono;
 		this.celular = celular;
 		this.email = email;
-		enfermedades = new ArrayList<>();
-		this.estado = estado;
+		this.enfermedades = enfermedades;
 		historiaClinica = new ArrayList<>();
 	}
 
@@ -100,11 +98,11 @@ public class Paciente implements Serializable {
 		this.estadoCivil = estadoCivil;
 	}
 
-	public char getSexo() {
+	public String getSexo() {
 		return sexo;
 	}
 
-	public void setSexo(char sexo) {
+	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
 
@@ -164,20 +162,12 @@ public class Paciente implements Serializable {
 		this.email = email;
 	}
 
-	public ArrayList<Enfermedad> getEnfermedades() {
+	public ArrayList<String> getEnfermedades() {
 		return enfermedades;
 	}
 
-	public void setEnfermedades(ArrayList<Enfermedad> enfermedades) {
+	public void setEnfermedades(ArrayList<String> enfermedades) {
 		this.enfermedades = enfermedades;
-	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
 	}
 
 	public ArrayList<Consulta> getHistoriaClinica() {
