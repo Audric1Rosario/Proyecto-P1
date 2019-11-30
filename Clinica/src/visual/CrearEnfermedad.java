@@ -29,13 +29,13 @@ import javax.swing.SwingConstants;
 public class CrearEnfermedad extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	
+
 	// Textbox
 	private JTextField txtNombreEnfermedad;
 	// Text areas
 	private JTextArea txtDiagnostico;
 	private JTextArea txtSintomas;
-	
+
 	// variables logicas.
 	private Enfermedad modificar;
 
@@ -58,7 +58,7 @@ public class CrearEnfermedad extends JDialog {
 	public CrearEnfermedad(Enfermedad modificar) {
 		setResizable(false);
 		this.modificar = modificar;
-		
+
 		if (modificar == null)
 			setTitle("Crear enfermedad");
 		else 
@@ -70,55 +70,65 @@ public class CrearEnfermedad extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
-		
+
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.setBounds(10, 11, 444, 286);
 		contentPanel.add(panel);
 		panel.setLayout(null);
-		
+
 		txtNombreEnfermedad = new JTextField();
 		txtNombreEnfermedad.setBounds(168, 11, 266, 20);
+		if (modificar != null) {
+			txtNombreEnfermedad.setText(modificar.getNombre());
+			txtNombreEnfermedad.setEnabled(false);
+		}
 		panel.add(txtNombreEnfermedad);
 		txtNombreEnfermedad.setColumns(10);
 		if (modificar != null)
 			txtNombreEnfermedad.setEditable(false);
 		else 
 			txtNombreEnfermedad.setEditable(true);
-		
+
 		JLabel lblNombreDeLa = new JLabel("Nombre de la enfermedad: ");
 		lblNombreDeLa.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblNombreDeLa.setBounds(10, 14, 148, 14);
 		panel.add(lblNombreDeLa);
-		
+
 		JPanel pnlSintomas = new JPanel();
 		pnlSintomas.setBorder(new TitledBorder(null, "S\u00EDntomas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlSintomas.setBounds(10, 42, 424, 111);
 		panel.add(pnlSintomas);
 		pnlSintomas.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		pnlSintomas.add(scrollPane, BorderLayout.CENTER);
-		
-		txtSintomas = new JTextArea();
+
+		txtSintomas = new JTextArea();		
 		txtSintomas.setLineWrap(true);
 		txtSintomas.setWrapStyleWord(true);
+		if (modificar != null) {
+			txtSintomas.setText(modificar.getSintomas());
+		}
 		scrollPane.setViewportView(txtSintomas);
-		
+
 		JPanel pnlDiagnostico = new JPanel();
 		pnlDiagnostico.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Diagn\u00F3stico", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlDiagnostico.setBounds(10, 164, 424, 111);
 		panel.add(pnlDiagnostico);
 		pnlDiagnostico.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		pnlDiagnostico.add(scrollPane_1, BorderLayout.CENTER);
-		
+
 		txtDiagnostico = new JTextArea();
 		txtDiagnostico.setLineWrap(true);
 		txtDiagnostico.setWrapStyleWord(true);
+		if (modificar != null) {
+			txtDiagnostico.setText(modificar.getDiagnostico());
+		}
 		scrollPane_1.setViewportView(txtDiagnostico);
 		{
 			JPanel buttonPane = new JPanel();
@@ -129,28 +139,32 @@ public class CrearEnfermedad extends JDialog {
 				JButton btnAceptar = new JButton("Aceptar");
 				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
+
 						// Verificación de que hay datos.
 						if (txtNombreEnfermedad.getText().equals("")) {
 							JOptionPane.showMessageDialog(null, "Por favor, escriba el nombre de la enfermedad.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 							return;
 						}
-						
+
 						if (txtSintomas.getText().equals("")) {
 							JOptionPane.showMessageDialog(null, "Por favor, escriba los síntomas que presenta esta enfermedad.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 							return;
 						}
-						
+
 						// Verificación de que no se repite el nombre de la enfermedad.
-						if (Clinica.getInstance().verificarEnfermedad(txtNombreEnfermedad.getText()) == false) {
-							JOptionPane.showMessageDialog(null, "El nombre de la enfermedad ya existe, favor coloque uno nuevo", "Advertencia.", JOptionPane.WARNING_MESSAGE);
-							return;
+						// Revisar que no se repita
+						if (modificar == null) {
+							if (Clinica.getInstance().verificarEnfermedad(txtNombreEnfermedad.getText()) == false) {
+								JOptionPane.showMessageDialog(null, "El nombre de la enfermedad ya existe, favor coloque uno nuevo", "Advertencia.", JOptionPane.WARNING_MESSAGE);
+								return;
+							} 
 						}
-						
-						if (modificar != null) {
-							modificar.setNombre(txtNombreEnfermedad.getText());
+
+						if (modificar != null) {							
 							modificar.setSintomas(txtSintomas.getText());
 							modificar.setDiagnostico(txtDiagnostico.getText());
+							ListaEnfermedades.rellenarTabla(txtNombreEnfermedad.getText());
+							ListaEnfermedades.sclear();
 							dispose();
 						} else {
 							Enfermedad nueva = new Enfermedad(txtNombreEnfermedad.getText(), txtSintomas.getText(), txtDiagnostico.getText());
@@ -175,7 +189,7 @@ public class CrearEnfermedad extends JDialog {
 			}
 		}
 	}
-	
+
 	private void rellenarDatos() {
 		if (modificar != null) {
 			txtNombreEnfermedad.setText(modificar.getNombre());
@@ -185,7 +199,7 @@ public class CrearEnfermedad extends JDialog {
 			JOptionPane.showMessageDialog(null, "Error de modificación de datos.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 		}
 	}
-	
+
 	private void clear() {
 		txtNombreEnfermedad.setText("");
 		txtSintomas.setText("");

@@ -35,6 +35,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.ListSelectionModel;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import javax.swing.UIManager;
+import java.awt.Color;
 
 public class ListaVacunas extends JDialog {
 
@@ -47,22 +49,23 @@ public class ListaVacunas extends JDialog {
 	private static JTable table;
 
 	// Text Field
-	private JTextField txtNombre;
-	private JTextField txtTipo;
-	private JTextField txtEnfermedad;
+	private static JTextField txtNombre;
+	private static JTextField txtTipo;
+	private static JTextField txtEnfermedad;
 
 	// Text Area
-	private JTextArea txtEfectos;
+	private static JTextArea txtEfectos;
 	
 	// Combo box
-	private JComboBox cbxTipo;
+	private static JComboBox cbxTipo;
 
 	// Botones
-	private JButton btnModificar;
+	private static JButton btnModificar;
+	private static JButton btnEliminar;
 	
 	// Variables lógicas
 	private Empleado usuarioActual;
-	private Vacuna vacunaModificar;
+	private static Vacuna vacunaModificar;
 
 	/**
 	 * Launch the application.
@@ -117,6 +120,7 @@ public class ListaVacunas extends JDialog {
 								if (usuarioActual instanceof Administrador) {
 									if (((Administrador)usuarioActual).getAutoridad() <= 3) {
 										btnModificar.setEnabled(true);
+										btnEliminar.setEnabled(true);
 									}
 								}
 							}
@@ -193,7 +197,7 @@ public class ListaVacunas extends JDialog {
 		}
 		{
 			JPanel panel = new JPanel();
-			panel.setBorder(new TitledBorder(null, "Filtro de b\u00FAsqueda por tipo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "B\u00FAsqueda por tipo", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			panel.setBounds(10, 11, 432, 57);
 			contentPanel.add(panel);
 			panel.setLayout(null);
@@ -210,6 +214,7 @@ public class ListaVacunas extends JDialog {
 			}
 			{
 				JButton btnBuscar = new JButton("");
+				btnBuscar.setToolTipText("Buscar");
 				btnBuscar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						vacunasTable.clearSelection();
@@ -231,7 +236,7 @@ public class ListaVacunas extends JDialog {
 				btnModificar = new JButton("Modificar");
 				btnModificar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if (usuarioActual instanceof Administrador) {
+						if (vacunaModificar != null && usuarioActual instanceof Administrador) {
 							CrearVacuna ventana = new CrearVacuna(vacunaModificar);
 							ventana.setModal(true);
 							ventana.setVisible(true);
@@ -245,6 +250,8 @@ public class ListaVacunas extends JDialog {
 				if (usuarioActual instanceof Doctor || usuarioActual instanceof Secretaria) {
 					btnModificar.setEnabled(false);
 					btnModificar.setVisible(false);
+					btnEliminar.setEnabled(false);
+					btnEliminar.setVisible(false);
 				}
 				
 				if (usuarioActual instanceof Administrador) {
@@ -261,6 +268,23 @@ public class ListaVacunas extends JDialog {
 						dispose();
 					}
 				});
+				{
+					btnEliminar = new JButton("Eliminar");
+					btnEliminar.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if (vacunaModificar != null && usuarioActual instanceof Administrador) {
+								Clinica.getInstance().getVacunas().remove(vacunaModificar);
+								vacunaModificar = null;
+								clear();
+								rellenarTabla(cbxTipo.getSelectedIndex());
+							} else {
+								JOptionPane.showMessageDialog(null, "Error al eliminar.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
+							}
+						}
+					});
+					btnEliminar.setEnabled(false);
+					buttonPane.add(btnEliminar);
+				}
 				btnCerrar.setActionCommand("Cancel");
 				buttonPane.add(btnCerrar);
 			}
@@ -321,6 +345,16 @@ public class ListaVacunas extends JDialog {
 		txtEnfermedad.setText("");
 		txtEfectos.setText("");
 		btnModificar.setEnabled(false);
+		btnEliminar.setEnabled(false);
 		
+	}
+
+	public static void sclear(int data) {
+		// TODO Auto-generated method stub
+		txtNombre.setText(vacunaModificar.getNombre());
+		txtTipo.setText(vacunaModificar.getTipo());
+		txtEnfermedad.setText(vacunaModificar.getEnfermedadNombre());
+		txtEfectos.setText(vacunaModificar.getEfectos());
+		cbxTipo.setSelectedIndex(data);
 	}
 }

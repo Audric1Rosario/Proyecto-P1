@@ -2,6 +2,7 @@ package logical;
 
 import java.sql.Date;
 import java.util.ArrayList;
+
 // Para manejo de ficheros:
 import java.io.Serializable;
 
@@ -209,23 +210,36 @@ public class Clinica implements Serializable {
 	}
 
 	// Buscar las vacunas
-	public ArrayList<Vacuna> buscarVacunaByTipo(String tipoVacuna) {
-		ArrayList<Vacuna> vacunasBuscadas = new ArrayList<Vacuna>();
-		for (Vacuna vacuna : vacunas) {
-			if (vacuna.getTipo().equalsIgnoreCase(tipoVacuna)) {
-				vacunasBuscadas.add(vacuna);
-			}
-		}
-
-		return vacunasBuscadas;
-	}
-
 	public Vacuna buscarVacunaByNombre(String nombreVacuna) {
 		Vacuna buscado = null;
 		boolean encontrado = false; int aux = 0;
 		while (!encontrado && aux < vacunas.size()) {
 			if (vacunas.get(aux).getNombre().equalsIgnoreCase(nombreVacuna)) {
 				buscado = vacunas.get(aux);
+				encontrado = true;
+			}
+			aux++;
+		}
+		return buscado;
+	}
+	
+	// Buscar las enfermedades:
+	public ArrayList<Enfermedad> buscarEnfermedadByFilter(String nombreEnfermedad) {	// Filtro de nombre
+		ArrayList<Enfermedad> enfermedadesBuscadas = new ArrayList<Enfermedad>();
+		for (Enfermedad enfermedad : enfermedades) {
+			if (enfermedad.getNombre().toLowerCase().contains(nombreEnfermedad.toLowerCase())) {
+				enfermedadesBuscadas.add(enfermedad);
+			}
+		}
+		return enfermedadesBuscadas;
+	}
+	
+	public Enfermedad buscarEnfermedadByNombre(String nombreEnfermedad) {			// Nombre exacto
+		Enfermedad buscado = null;
+		boolean encontrado = false; int aux = 0;
+		while (!encontrado && aux < enfermedades.size()) {
+			if (enfermedades.get(aux).getNombre().equalsIgnoreCase(nombreEnfermedad)) {
+				buscado = enfermedades.get(aux);
 				encontrado = true;
 			}
 			aux++;
@@ -258,17 +272,6 @@ public class Clinica implements Serializable {
 		vacunas.add(vacuna);		
 	}
 	// 3. Eliminar.
-	public boolean delEmpleado(String idEmpleado) {
-		Empleado buscado = buscarEmpleadoById(idEmpleado);
-
-		if (buscado != null) {
-			empleados.remove(buscado);
-			return true;
-		}
-
-		return false;
-	}
-
 	public boolean delPaciente(String idPaciente) {
 		Paciente buscado = buscarPacienteById(idPaciente);
 		if (buscado != null) {
@@ -279,6 +282,15 @@ public class Clinica implements Serializable {
 		return false;
 	}
 
+	public boolean delVacuna(String nombreVacuna) {
+		Vacuna buscada = buscarVacunaByNombre(nombreVacuna);
+		if (buscada != null) {
+			vacunas.remove(buscada);
+			return true;
+		}
+		return false;
+	}
+	
 	// Esto solo usar cuando se busque la cita especifica en el programa.
 	public void delCita(Cita cita) {
 		citas.remove(cita);

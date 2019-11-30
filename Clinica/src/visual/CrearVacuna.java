@@ -179,7 +179,8 @@ public class CrearVacuna extends JDialog {
 						if (modificar != null) { 	//	si esta modificando
 							modificar.setEfectos(txtEfectos.getText());
 							modificar.setTipo(cbxTipo.getSelectedItem().toString());
-							ListaVacunas.rellenarTabla(0);
+							ListaVacunas.sclear(cbxTipo.getSelectedIndex());
+							ListaVacunas.rellenarTabla(cbxTipo.getSelectedIndex());
 							dispose();
 						} else { // Si no lo esta
 							Vacuna nueva = new Vacuna(txtNombreVacuna.getText(), cbxTipo.getSelectedItem().toString(), cbxEnfermedad.getSelectedItem().toString(),
