@@ -166,7 +166,8 @@ public class DatosPaciente extends JDialog {
 		}
 	}
 
-		private static void tabla() {
+	//tabla para ingresar datos	
+	private static void tabla() {
 			model.setRowCount(0);
 			informacion = new Object[model.getColumnCount()];{
 				

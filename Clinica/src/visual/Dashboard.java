@@ -92,6 +92,14 @@ public class Dashboard extends JFrame {
 		menuBar.add(mnRegistro);
 
 		JMenuItem mntmRegPaciente = new JMenuItem("Registrar Paciente");
+		mntmRegPaciente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegPaciente ventana = new RegPaciente();
+				ventana.setModal(true);
+				ventana.setVisible(true);
+				
+			}
+		});
 		mnRegistro.add(mntmRegPaciente);
 
 		JMenuItem mntmRegistroDeVivienda = new JMenuItem("Registro de vivienda");

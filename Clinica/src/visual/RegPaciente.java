@@ -297,6 +297,7 @@ public class RegPaciente extends JDialog {
 								civil, sexo, cbxBlood.getSelectedItem().toString(), Integer.valueOf(spnHeight.getValue().toString()), txtAddress.getText(),
 								cbxSector.getSelectedItem().toString(),txtPhone.getText(), txtCellphone.getText(), txtEmail.getText(),enfermedadesSelec);
 						Clinica.getInstance().addPaciente(aux);
+						//arreglo para enfermedades
 					
 
 					}}});
