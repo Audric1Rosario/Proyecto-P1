@@ -50,7 +50,7 @@ public class BuscarPaciente extends JDialog {
 
 	/**
 	 * Launch the application.
-	 */
+	 */ 
 	public static void main(String[] args) {
 		try {
 			BuscarPaciente dialog = new BuscarPaciente();
