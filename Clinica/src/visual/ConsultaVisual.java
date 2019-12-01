@@ -7,17 +7,28 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import logical.Empleado;
+import logical.Enfermedad;
+import logical.Paciente;
+import logical.Clinica;
+import logical.Consulta;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 
-public class Consulta extends JDialog {
+public class ConsultaVisual extends JDialog {
 
 	// Doctor actual
 	private Empleado doctor;
@@ -27,27 +38,32 @@ public class Consulta extends JDialog {
 	private JTextField textFieldDoctor;
 	private JTextField textFieldPaciente;
 	private JTextField textFieldFecha;
+	private static JTable tabla;
+	private static DefaultTableModel model;
+	private static Object[] fila;
+	private String pattern = "MM/dd/yyyy HH:mm:ss";
+	private DateFormat df = new SimpleDateFormat(pattern);
+
 
 	/**
 	 * Launch the application.
-	 *//*
+	 */
 	public static void main(String[] args) {
 		try {
-			Consulta dialog = new Consulta();
+			ConsultaVisual dialog = new ConsultaVisual(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public Consulta(Empleado actual) {
-		this.doctor = actual;
+	public ConsultaVisual(Consulta consulta) {
 		setTitle("Consulta");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Consulta.class.getResource("/image/caduceusBlue.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Consulta.class.getResource("/image/caduceus.png")));
 		setBounds(100, 100, 720, 460);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -69,6 +85,7 @@ public class Consulta extends JDialog {
 			textFieldIdentificacion.setBounds(10, 36, 315, 20);
 			contentPanel.add(textFieldIdentificacion);
 			textFieldIdentificacion.setColumns(10);
+			textFieldIdentificacion.setText(consulta.getIdConsulta());
 		}
 		{
 			textFieldDoctor = new JTextField();
@@ -76,6 +93,7 @@ public class Consulta extends JDialog {
 			textFieldDoctor.setBounds(356, 36, 315, 20);
 			contentPanel.add(textFieldDoctor);
 			textFieldDoctor.setColumns(10);
+			textFieldDoctor.setText(Clinica.getInstance().buscarEmpleadoById(consulta.getIdDoctor()).getNombre());
 		}
 		{
 			JLabel lblPaciente = new JLabel("Paciente: ");
@@ -88,6 +106,7 @@ public class Consulta extends JDialog {
 			textFieldPaciente.setBounds(10, 92, 315, 20);
 			contentPanel.add(textFieldPaciente);
 			textFieldPaciente.setColumns(10);
+			textFieldPaciente.setText(Clinica.getInstance().buscarPacienteById(consulta.getIdPaciente()).getNombre());
 		}
 		{
 			JLabel lblFecha = new JLabel("Fecha:");
@@ -100,6 +119,7 @@ public class Consulta extends JDialog {
 			textFieldFecha.setBounds(356, 92, 315, 20);
 			contentPanel.add(textFieldFecha);
 			textFieldFecha.setColumns(10);
+			textFieldFecha.setText(df.format(consulta.getFecha()));
 		}
 		{
 			JLabel lblEnfermedades = new JLabel("Enfermedades:");
@@ -110,6 +130,13 @@ public class Consulta extends JDialog {
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBounds(10, 155, 315, 191);
 			contentPanel.add(scrollPane);
+			tabla = new JTable();
+			
+			String columns [] = {"Nombre", "Identificación", "Seguro", "Sexo"};
+			model = new DefaultTableModel();
+			model.setColumnIdentifiers(columns);
+			tabla.setModel(model);
+			scrollPane.setViewportView(tabla);
 		}
 		{
 			JLabel lblTratamiento = new JLabel("Tratamiento:");
@@ -120,6 +147,7 @@ public class Consulta extends JDialog {
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBounds(356, 155, 315, 191);
 			contentPanel.add(scrollPane);
+			
 		}
 		{
 			JButton btnNewButton = new JButton("Vacunas");
@@ -135,17 +163,26 @@ public class Consulta extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton("Aceptar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
 	}
-
+	public static void loadTable(Consulta consulta) {
+		model.setRowCount(0);
+			fila = new Object[model.getColumnCount()];
+	
+			for (Enfermedad enfermedad  : consulta.getEnfermedades()) {
+					fila[0] = enfermedad.getNombre();
+					fila[1] = enfermedad.getSintomas();
+				
+					model.addRow(fila);
+			}
+	}
 }

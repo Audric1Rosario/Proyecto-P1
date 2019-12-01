@@ -138,6 +138,13 @@ public class Dashboard extends JFrame {
 		menuBar.add(mnHistorial);
 
 		JMenuItem mntmHistorialClnico = new JMenuItem("Historial Cl\u00EDnico");
+		mntmHistorialClnico.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BuscarPaciente ventana = new BuscarPaciente();
+				ventana.setModal(true);
+				ventana.setVisible(true);	
+			}
+		});
 		mnHistorial.add(mntmHistorialClnico);
 
 		JMenuItem mntmReportes = new JMenuItem("Reportes");
@@ -202,9 +209,6 @@ public class Dashboard extends JFrame {
 		JMenuItem mntmConsultas = new JMenuItem("Consultas");
 		mntmConsultas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Consulta ventana = new Consulta(actual);
-				ventana.setModal(true);
-				ventana.setVisible(true);
 			}
 		});
 		mnConsultorio.add(mntmConsultas);

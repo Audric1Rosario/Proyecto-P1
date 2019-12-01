@@ -7,10 +7,25 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import logical.Paciente;
+import logical.Clinica;
+import logical.Consulta;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class BuscarConsulta extends JDialog {
 
@@ -22,13 +37,17 @@ public class BuscarConsulta extends JDialog {
 	private JTextField textFieldTelefono;
 	private JTextField textFieldSangre;
 	private JTextField textFieldSeguro;
+	private static JTable tabla;
+	private static DefaultTableModel model;
+	private static Object[] fila;
+	private Consulta consulta = null;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			BuscarConsulta dialog = new BuscarConsulta();
+			BuscarConsulta dialog = new BuscarConsulta(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -39,8 +58,8 @@ public class BuscarConsulta extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public BuscarConsulta() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarConsulta.class.getResource("/image/caduceusBlue.png")));
+	public BuscarConsulta(Paciente paciente) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarConsulta.class.getResource("/image/caduceus.png")));
 		setTitle("Buscar Consulta");
 		setBounds(100, 100, 720, 480);
 		getContentPane().setLayout(new BorderLayout());
@@ -51,6 +70,27 @@ public class BuscarConsulta extends JDialog {
 			JPanel panel = new JPanel();
 			panel.setBounds(10, 11, 175, 157);
 			contentPanel.add(panel);
+			panel.setLayout(null);
+
+				JLabel labelhombre = new JLabel("");
+				labelhombre.setEnabled(false);
+				labelhombre.setIcon(new ImageIcon(BuscarConsulta.class.getResource("/image/employee .png")));
+				labelhombre.setBounds(39, 11, 80, 119);
+				panel.add(labelhombre);
+				labelhombre.setVisible(false);
+
+				JLabel labelMujer = new JLabel("");
+				labelMujer.setEnabled(false);
+				labelMujer.setIcon(new ImageIcon(BuscarConsulta.class.getResource("/image/girl2.png")));
+				labelMujer.setBounds(39, 11, 80, 119);
+				panel.add(labelMujer);
+				labelMujer.setVisible(false);
+			
+			if(paciente.getSexo().equalsIgnoreCase("Femenino")) {
+				labelMujer.setVisible(true);
+			}else if(paciente.getSexo().equalsIgnoreCase("Masculino")) {
+				labelhombre.setVisible(true);
+			}
 		}
 		{
 			JLabel lblNombre = new JLabel("Nombre:");
@@ -63,6 +103,7 @@ public class BuscarConsulta extends JDialog {
 			textFieldNombre.setBounds(213, 36, 267, 20);
 			contentPanel.add(textFieldNombre);
 			textFieldNombre.setColumns(10);
+			textFieldNombre.setText(paciente.getNombre());
 		}
 		{
 			JLabel lblIdentificacin = new JLabel("Identificaci\u00F3n:");
@@ -75,6 +116,7 @@ public class BuscarConsulta extends JDialog {
 			textFieldIdentificacion.setBounds(500, 36, 194, 20);
 			contentPanel.add(textFieldIdentificacion);
 			textFieldIdentificacion.setColumns(10);
+			textFieldIdentificacion.setText(paciente.getCedula());
 		}
 		{
 			JLabel lblDireccin = new JLabel("Direcci\u00F3n:");
@@ -87,6 +129,7 @@ public class BuscarConsulta extends JDialog {
 			textFieldDireccion.setBounds(213, 92, 481, 20);
 			contentPanel.add(textFieldDireccion);
 			textFieldDireccion.setColumns(10);
+			textFieldDireccion.setText(paciente.getDireccion() + " " + paciente.getSector());
 		}
 		{
 			JLabel lblSexo = new JLabel("Sexo:");
@@ -99,6 +142,7 @@ public class BuscarConsulta extends JDialog {
 			textFieldSexo.setBounds(213, 148, 96, 20);
 			contentPanel.add(textFieldSexo);
 			textFieldSexo.setColumns(10);
+			textFieldSexo.setText(paciente.getSexo());
 		}
 		{
 			JLabel lblTelfono = new JLabel("Tel\u00E9fono:");
@@ -111,6 +155,7 @@ public class BuscarConsulta extends JDialog {
 			textFieldTelefono.setBounds(340, 148, 96, 20);
 			contentPanel.add(textFieldTelefono);
 			textFieldTelefono.setColumns(10);
+			textFieldTelefono.setText(paciente.getTelefono());
 		}
 		{
 			textFieldSangre = new JTextField();
@@ -118,6 +163,7 @@ public class BuscarConsulta extends JDialog {
 			textFieldSangre.setBounds(477, 148, 96, 20);
 			contentPanel.add(textFieldSangre);
 			textFieldSangre.setColumns(10);
+			textFieldSangre.setText(paciente.getTipoSangre());
 		}
 		{
 			JLabel lblTipoDeSangre = new JLabel("Tipo de Sangre:");
@@ -130,6 +176,7 @@ public class BuscarConsulta extends JDialog {
 			textFieldSeguro.setBounds(598, 148, 96, 20);
 			contentPanel.add(textFieldSeguro);
 			textFieldSeguro.setColumns(10);
+			textFieldSeguro.setText(paciente.getSeguro());
 		}
 		{
 			JLabel lblSeguro = new JLabel("Seguro:");
@@ -140,6 +187,20 @@ public class BuscarConsulta extends JDialog {
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBounds(10, 179, 684, 218);
 			contentPanel.add(scrollPane);
+			
+			tabla = new JTable();
+			String columns [] = {"ID de Consulta", "Paciente", "Doctor", "Fecha"};
+			model = new DefaultTableModel();
+			model.setColumnIdentifiers(columns);
+			tabla.setModel(model);
+			scrollPane.setViewportView(tabla);
+			loadTable(paciente.getHistoriaClinica());
+			scrollPane.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					consulta = paciente.getHistoriaClinica().get(tabla.getSelectedRow());
+				}
+			});
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -147,16 +208,47 @@ public class BuscarConsulta extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("Buscar");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(consulta == null) {
+							JOptionPane.showMessageDialog(null, "Seleccione una consulta", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+						} else if(consulta != null) {
+							ConsultaVisual cons = new ConsultaVisual(consulta);
+							cons.setModal(true);
+							cons.setVisible(true);
+						}
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancelar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
 	}
-
+	
+	public static void loadTable(ArrayList<Consulta> consultas) {
+		model.setRowCount(0);
+			fila = new Object[model.getColumnCount()];
+	
+			for (Consulta consulta : consultas) {
+					fila[0] = consulta.getIdConsulta();
+					fila[1] = Clinica.getInstance().buscarPacienteById(consulta.getIdPaciente()).getNombre();
+					fila[2] = Clinica.getInstance().buscarEmpleadoById((consulta.getIdDoctor())).getNombre();
+					fila[3] = consulta.getFecha();
+	
+					model.addRow(fila);
+	
+			tabla.setModel(model);
+		}
+	}
 }
