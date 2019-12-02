@@ -94,7 +94,7 @@ public class Dashboard extends JFrame {
 		JMenuItem mntmRegPaciente = new JMenuItem("Registrar Paciente");
 		mntmRegPaciente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegPaciente ventana = new RegPaciente();
+				RegPaciente ventana = new RegPaciente(null);
 				ventana.setModal(true);
 				ventana.setVisible(true);
 				
@@ -103,6 +103,13 @@ public class Dashboard extends JFrame {
 		mnRegistro.add(mntmRegPaciente);
 
 		JMenuItem mntmRegistroDeVivienda = new JMenuItem("Registro de vivienda");
+		mntmRegistroDeVivienda.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BuscarPaciente ventana = new BuscarPaciente(actual);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
 		mnRegistro.add(mntmRegistroDeVivienda);
 
 
@@ -128,9 +135,17 @@ public class Dashboard extends JFrame {
 				ventana.setVisible(true);
 			}
 		});
+		
 		mnEnfermedades.add(mntmListaDeEnfermedades);
 
 		JMenuItem mntmControlEnfermedades = new JMenuItem("Control Enfermedades");
+		mntmControlEnfermedades.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ControlEnfermedades ventana = new ControlEnfermedades(actual);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
 		mnEnfermedades.add(mntmControlEnfermedades);
 
 		// Menú del historial clínico.
@@ -140,7 +155,7 @@ public class Dashboard extends JFrame {
 		JMenuItem mntmHistorialClnico = new JMenuItem("Historial Cl\u00EDnico");
 		mntmHistorialClnico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BuscarPaciente ventana = new BuscarPaciente();
+				BuscarPaciente ventana = new BuscarPaciente(actual);
 				ventana.setModal(true);
 				ventana.setVisible(true);	
 			}
@@ -212,6 +227,12 @@ public class Dashboard extends JFrame {
 			}
 		});
 		mnConsultorio.add(mntmConsultas);
+		
+		JMenu mnConfiguracin = new JMenu("Configuraci\u00F3n");
+		menuBar.add(mnConfiguracin);
+		
+		JMenuItem mntmOpciones = new JMenuItem("Opciones");
+		mnConfiguracin.add(mntmOpciones);
 
 		// Ocultar opciones según los permisos del usuario
 		if (actual instanceof Secretaria) {
@@ -226,7 +247,7 @@ public class Dashboard extends JFrame {
 		if (actual instanceof Doctor) {
 			mntmRegPaciente.setVisible(false);
 			mntmAgregarEnfermedad.setVisible(false);
-			mntmControlEnfermedades.setVisible(false);
+			//mntmControlEnfermedades.setVisible(false);
 			mntmCrearVacuna.setVisible(false);
 			mnAdministracin.setVisible(false);
 		}
@@ -235,7 +256,7 @@ public class Dashboard extends JFrame {
 			switch (((Administrador)actual).getAutoridad()) {
 			case 4:
 				mntmAgregarEnfermedad.setVisible(false);
-				mntmControlEnfermedades.setVisible(false);
+				//mntmControlEnfermedades.setVisible(false);
 				mntmCrearVacuna.setVisible(false);
 			case 3:
 				mnAdministracin.setVisible(false);

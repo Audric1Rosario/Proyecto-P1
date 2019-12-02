@@ -78,21 +78,17 @@ public class CrearEnfermedad extends JDialog {
 		panel.setLayout(null);
 
 		txtNombreEnfermedad = new JTextField();
-		txtNombreEnfermedad.setBounds(168, 11, 266, 20);
+		txtNombreEnfermedad.setBounds(196, 11, 238, 20);
 		if (modificar != null) {
 			txtNombreEnfermedad.setText(modificar.getNombre());
-			txtNombreEnfermedad.setEnabled(false);
+			txtNombreEnfermedad.setEditable(false);
 		}
 		panel.add(txtNombreEnfermedad);
 		txtNombreEnfermedad.setColumns(10);
-		if (modificar != null)
-			txtNombreEnfermedad.setEditable(false);
-		else 
-			txtNombreEnfermedad.setEditable(true);
 
 		JLabel lblNombreDeLa = new JLabel("Nombre de la enfermedad: ");
 		lblNombreDeLa.setHorizontalAlignment(SwingConstants.TRAILING);
-		lblNombreDeLa.setBounds(10, 14, 148, 14);
+		lblNombreDeLa.setBounds(10, 14, 176, 14);
 		panel.add(lblNombreDeLa);
 
 		JPanel pnlSintomas = new JPanel();

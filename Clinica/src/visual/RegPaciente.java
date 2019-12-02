@@ -16,11 +16,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JComboBox;
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -37,12 +35,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.UIManager;
 import java.awt.Color;
-import java.awt.Component;
 
 public class RegPaciente extends JDialog {
 
-	private ArrayList<String> enfermedadesArr;  
-	private ArrayList<String> enfermedadesSelec;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
 	private JTextField txtLastname;
@@ -52,28 +51,44 @@ public class RegPaciente extends JDialog {
 	private JTextField txtCedula;
 	private JTextField txtAddress;
 	private JTextField txtEmail;
-	private DefaultListModel modelo,model_2;
-	JList lstPaciente;
-	
-	// radio buttons
-	JRadioButton rdbtnCasado;
-	JRadioButton rdbtnSoltero;
-	JRadioButton rdbtnMasculino;
-	JRadioButton rdbtnFemenino;
-	
-	
+
+	// Lista
+	private JList<String> lstPaciente;
+	private JList<String> lstSistema;
+
+	// Radio buttons
+	private JRadioButton rdbtnCasado;
+	private JRadioButton rdbtnSoltero;
+	private JRadioButton rdbtnMasculino;
+	private JRadioButton rdbtnFemenino;
+
+	// Combo box
+	private JComboBox<String> cbxBlood;
+	private JComboBox<String> cbxSector;
+
+	// Botones:
+	private JButton btnAceptar;
+	private JButton cancelButton;
+	private JButton btnAgregar;
+	private JButton btnRemover;
+
+	// Spinner
+	private JSpinner spnHeight;
+	private JSpinner spnAge;
+
 	// variables logicas
 	private String screenPath;
 	private String sexo;
 	private String civil;
-	private ArrayList<String> enfermedad;
-	JList lstSistema;
+	private Paciente pacienteModificar;
+	private ArrayList<String> enfermedadesArr;  
+	private ArrayList<String> enfermedadesSelec;
 
 
 	/**
 	 * Launch the application.
-	 */
-	
+	 *//*
+
 	public static void main(String[] args) {
 		try {
 			RegPaciente dialog = new RegPaciente();
@@ -82,14 +97,23 @@ public class RegPaciente extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
-    
+
 	/**
 	 * Create the dialog.
 	 */
-	public RegPaciente() {
-		setTitle("Paciente");
+	public RegPaciente(Paciente paciente) {
+		this.pacienteModificar = paciente;
+
+		if (pacienteModificar != null) {
+			this.civil = pacienteModificar.getEstadoCivil();
+			this.sexo = pacienteModificar.getSexo();
+		}		
+		if (pacienteModificar != null)
+			setTitle("Modificar paciente.");
+		else 
+			setTitle("Registrar paciente.");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegPaciente.class.getResource("/image/caduceus.png")));
 		setBounds(100, 100, 720, 563);
 		setLocationRelativeTo(null);
@@ -111,7 +135,10 @@ public class RegPaciente extends JDialog {
 			panel.add(lblNombre);
 		}
 
+		/* Ejemplo de como llenar los campos para modificar los datos de un paciente */
 		txtName = new JTextField();
+		if (pacienteModificar != null)
+			txtName.setText(pacienteModificar.getNombre());
 		txtName.setBounds(60, 29, 188, 20);
 		panel.add(txtName);
 		txtName.setColumns(10);
@@ -137,10 +164,10 @@ public class RegPaciente extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnMasculino.setSelected(true);
 				rdbtnFemenino.setSelected(false);
-				
+
 				sexo = "M";
-				
-				
+
+
 			}
 		});
 		rdbtnMasculino.setBounds(54, 60, 96, 23);
@@ -152,9 +179,9 @@ public class RegPaciente extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnMasculino.setSelected(false);
 				rdbtnFemenino.setSelected(true);
-				
+
 				sexo = "F";
-				
+
 			}
 		});
 		rdbtnFemenino.setBounds(146, 60, 83, 23);
@@ -164,7 +191,7 @@ public class RegPaciente extends JDialog {
 		lblEdad.setBounds(235, 61, 72, 20);
 		panel.add(lblEdad);
 
-		JSpinner spnAge = new JSpinner();
+		spnAge = new JSpinner();
 		spnAge.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spnAge.setBounds(278, 61, 36, 20);
 		panel.add(spnAge);
@@ -173,8 +200,21 @@ public class RegPaciente extends JDialog {
 		lblGrupoSanguineo.setBounds(324, 63, 146, 14);
 		panel.add(lblGrupoSanguineo);
 
-		JComboBox cbxBlood = new JComboBox();
-		cbxBlood.setModel(new DefaultComboBoxModel(new String[] {"A", "A+", "A-", "B", "B+", "B-", "AB", "O", "O+", "O-"}));
+		cbxBlood = new JComboBox<String>();
+		cbxBlood.setModel(new DefaultComboBoxModel<String>(new String[] {"A", "A+", "A-", "B", "B+", "B-", "AB", "O", "O+", "O-"}));
+
+		if (pacienteModificar != null) {
+			boolean encontrado = false; 
+			int aux = 0;
+			while (aux < cbxBlood.getModel().getSize() && !encontrado) {
+				if (pacienteModificar.getTipoSangre().equalsIgnoreCase(cbxBlood.getItemAt(aux).toString())) {
+					encontrado = true;
+					cbxBlood.setSelectedIndex(aux);
+				}
+				aux++;
+			}
+		}
+
 		cbxBlood.setBounds(439, 61, 46, 20);
 		panel.add(cbxBlood);
 
@@ -218,8 +258,8 @@ public class RegPaciente extends JDialog {
 		lblSector.setBounds(10, 156, 46, 14);
 		panel.add(lblSector);
 
-		JComboBox cbxSector = new JComboBox();
-		cbxSector.setModel(new DefaultComboBoxModel(new String[] {"Hig\u00FCey", "La Romana", "Monte Cristi", "Puerto Plata", "Santo Domingo", "Santiago de los Caballeros", "San Cristobal", "San Pedro de Macoris"}));
+		cbxSector = new JComboBox<String>();
+		cbxSector.setModel(new DefaultComboBoxModel<String>(new String[] {"Hig\u00FCey", "La Romana", "Monte Cristi", "Puerto Plata", "Santo Domingo", "Santiago de los Caballeros", "San Cristobal", "San Pedro de Macoris"}));
 		cbxSector.setBounds(70, 152, 300, 20);
 		panel.add(cbxSector);
 
@@ -236,8 +276,8 @@ public class RegPaciente extends JDialog {
 		lblEstatura.setBounds(10, 212, 70, 14);
 		panel.add(lblEstatura);
 
-		JSpinner spnHeight = new JSpinner();
-		spnHeight.setModel(new SpinnerNumberModel(new Float(1), new Float(1), null, new Float(1)));
+		spnHeight = new JSpinner();
+		spnHeight.setModel(new SpinnerNumberModel(1, 1, 8, 1));
 		spnHeight.setBounds(60, 209, 46, 20);
 		panel.add(spnHeight);
 
@@ -250,7 +290,7 @@ public class RegPaciente extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnCasado.setSelected(true);
 				rdbtnSoltero.setSelected(false);
-				
+
 				civil = "Casado";
 			}
 		});
@@ -263,7 +303,7 @@ public class RegPaciente extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnCasado.setSelected(false);
 				rdbtnSoltero.setSelected(true);
-				
+
 				civil = "Soltero";
 			}
 		});
@@ -282,13 +322,13 @@ public class RegPaciente extends JDialog {
 
 
 		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			JPanel btnCerrar = new JPanel();
+			btnCerrar.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			btnCerrar.setLayout(new FlowLayout(FlowLayout.RIGHT));
+			getContentPane().add(btnCerrar, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.addActionListener(new ActionListener() {
+				btnAceptar = new JButton("Aceptar");
+				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						if(txtName.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Nombre del Paciente vacio", "Notificación", JOptionPane.INFORMATION_MESSAGE);
@@ -310,32 +350,36 @@ public class RegPaciente extends JDialog {
 							JOptionPane.showMessageDialog(null, "Direccion del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
 							return;
 						}
-							
-					else { 
-						Paciente aux = new Paciente( txtName.getText(), txtCedula.getText(), txtSave.getText(),Integer.valueOf(spnAge.getValue().toString()),
-								civil, sexo, cbxBlood.getSelectedItem().toString(), Integer.valueOf(spnHeight.getValue().toString()), txtAddress.getText(),
-								cbxSector.getSelectedItem().toString(),txtPhone.getText(), txtCellphone.getText(), txtEmail.getText(),enfermedadesSelec);
-						Clinica.getInstance().addPaciente(aux);
-						//arreglo para enfermedades
-					
-					/*	for (String aux.enfermedadesSelec : enfermedad) {
-							lstSistema.add(enfermedad);
-							
-						}
-					*/
 
-					}}});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+						else { 
+
+							/*
+							 * public Paciente(String nombre, String cedula, String seguro, int edad, String estadoCivil,
+								String sexo, String tipoSangre, float estatura, String direccion, String sector, String telefono,
+								String celular, String email, ArrayList<String> enfermedades)
+							 * */
+							Paciente aux = new Paciente( txtName.getText(), txtCedula.getText(), txtSave.getText(),Integer.valueOf(spnAge.getValue().toString()),
+									civil, sexo, cbxBlood.getSelectedItem().toString(), Integer.valueOf(spnHeight.getValue().toString()), txtAddress.getText(),
+									cbxSector.getSelectedItem().toString(),txtPhone.getText(), txtCellphone.getText(), txtEmail.getText(), enfermedadesSelec);
+							Clinica.getInstance().addPaciente(aux);		
+						}
+					}});
+				btnAceptar.setActionCommand("OK");
+				btnCerrar.add(btnAceptar);
+				getRootPane().setDefaultButton(btnAceptar);
 
 			}
 
 
 			{
-				JButton cancelButton = new JButton("Cancel");
+				cancelButton = new JButton("Cerrar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				btnCerrar.add(cancelButton);
 			}
 		}
 
@@ -350,104 +394,134 @@ public class RegPaciente extends JDialog {
 		panel_1.add(ImagenUsuario);
 		ImagenUsuario.setIcon(new ImageIcon(((new ImageIcon(Login.class.getResource(screenPath))).getImage()).getScaledInstance(
 				ImagenUsuario.getWidth(), ImagenUsuario.getHeight(), Image.SCALE_SMOOTH)));
-		
+
 		JButton btnSubirImagen = new JButton("Subir Imagen");
 		btnSubirImagen.setBounds(28, 197, 115, 23);
 		panel_1.add(btnSubirImagen);
-		
+
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_2.setBounds(10, 298, 684, 177);
 		contentPanel.add(panel_2);
 		panel_2.setLayout(null);
-		
+
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del sistema", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_3.setBounds(374, 11, 257, 153);
 		panel_2.add(panel_3);
 		panel_3.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		panel_3.add(scrollPane, BorderLayout.CENTER);
-		
-		lstSistema = new JList();
+
+		lstSistema = new JList<String>();
 		lstSistema.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstSistema.setModel(new DefaultListModel<String>());
 		scrollPane.setViewportView(lstSistema);
-		
-		
-		
+
+
+
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_4.setBounds(10, 11, 257, 153);
 		panel_2.add(panel_4);
 		panel_4.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		panel_4.add(scrollPane_1, BorderLayout.CENTER);
-		
-		JList lstPaciente = new JList();
+
+		lstPaciente = new JList<String>();
+		lstPaciente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_1.setViewportView(lstPaciente);
-		
-		JButton btnAgregar = new JButton("Agregar");
-		btnAgregar.setEnabled(false);
+
+		btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int selection = lstPaciente.getSelectedIndex();
-					actualizar(true, selection);
-				
+			public void actionPerformed(ActionEvent e) {				
+				actualizar(true, lstSistema.getSelectedIndex());
+
 			}
 		});
-		btnAgregar.setBounds(277, 97, 89, 23);
+		btnAgregar.setBounds(277, 52, 89, 23);
 		panel_2.add(btnAgregar);
-		
-		JButton btnRemover = new JButton("Remover");
+
+		btnRemover = new JButton("Remover");
 		btnRemover.setEnabled(false);
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int selection = lstSistema.getSelectedIndex();
-					actualizar(false, selection);
-				
+				actualizar(false, lstPaciente.getSelectedIndex());
 			}
 		});
-		btnRemover.setBounds(277, 131, 89, 23);
+		btnRemover.setBounds(277, 86, 89, 23);
 		panel_2.add(btnRemover);
-		//iniciarLista();
+
+		if (pacienteModificar == null)
+			iniciarLista();
+
+
 	}
-	/*
+
+	// Sólo se usa al crear pacientes.
 	private void iniciarLista() {
 		// Borrar datos
-		int aux = 0;
-		DefaultListModel<String> model = ((DefaultListModel<String>) lstPaciente.getModel());
-		model.clear();
-		model = (DefaultListModel<String>) lstSistema.getModel();
-		model.clear();
+		DefaultListModel<String> model = new DefaultListModel<String>();
+		DefaultListModel<String> modelB = new DefaultListModel<String>();
+		// Igualar a lista vacía para que se reinicie.
+		lstPaciente.setModel(modelB);
+		lstSistema.setModel(model);
+
 		for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
-				enfermedadesArr.add(enfer.getNombre());
+			enfermedadesArr.add(enfer.getNombre());
 		}
+
 		Collections.sort(enfermedadesArr);
 		if (enfermedadesArr.size() == 0) {
 			JOptionPane.showMessageDialog(null, "No hay enfermedades registradas.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-		} else {
-			model = (DefaultListModel<String>) lstPaciente.getModel();
-			for (String nombre : enfermedadesArr) {
-				model.addElement(nombre);
-			}
 		}
 
+		// Llenar enfermedades.
+		//model = (DefaultListModel<String>) lstSistema.getModel();
+		for (String nombre : enfermedadesArr) {
+			model.addElement(nombre);
+		}
+
+		btnAgregar.setEnabled(lstSistema.getModel().getSize() > 0);
+		btnRemover.setEnabled(lstPaciente.getModel().getSize() > 0);
+
 	}
-*/
+
+	private void reiniciarLista() {
+		// Borrar datos
+		DefaultListModel<String> model = new DefaultListModel<String>();
+		DefaultListModel<String> modelB = new DefaultListModel<String>();
+		// Igualar a lista vacía para que se reinicie.
+		lstPaciente.setModel(modelB);
+		lstSistema.setModel(model);
+
+		// Llenar enfermedades.
+		for (String nombre : enfermedadesArr) {
+			model.addElement(nombre);
+		}
+
+		for (String nombre : enfermedadesSelec) {
+			modelB.addElement(nombre);
+		}
+		btnAgregar.setEnabled(lstSistema.getModel().getSize() > 0);
+		btnRemover.setEnabled(lstPaciente.getModel().getSize() > 0);
+		
+	}
+
 	private void actualizar(boolean razon, int index) {
-		if (razon) { 
+		if (razon && index != -1) { 
 			enfermedadesSelec.add(enfermedadesArr.get(index));
 			enfermedadesArr.remove(index);
 			Collections.sort(enfermedadesSelec);
 
-		} else {   
+		} else if (index != -1) {   
 			enfermedadesArr.add(enfermedadesSelec.get(index));
 			enfermedadesSelec.remove(index);
 			Collections.sort(enfermedadesArr);
 		}
+		reiniciarLista();
 	}
-	
+
 }

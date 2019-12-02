@@ -56,9 +56,7 @@ public class Login extends JFrame {
 				File directorio = new File(path + "/data");
 				
 				if (!directorio.exists()) {
-					if (directorio.mkdirs()) {
-						
-					} else {
+					if (!directorio.mkdirs()) {
 						JOptionPane.showMessageDialog(null, "Error al cargar datos.", "Data.", JOptionPane.WARNING_MESSAGE);
 					}
 				}

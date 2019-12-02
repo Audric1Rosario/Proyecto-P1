@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import logical.Clinica;
+import logical.Empleado;
 import logical.Paciente;
 
 import javax.swing.JLabel;
@@ -45,12 +46,14 @@ public class BuscarPaciente extends JDialog {
 	private JTextField txtfieldGenero;
 	private JTextField textFieldEdad;
 	private JTextField textFieldSector;
+	
+	// Variables logicas
 	private Paciente paciente;
-
+	private Empleado empleadoActual;
 
 	/**
 	 * Launch the application.
-	 */ 
+	 */ /*
 	public static void main(String[] args) {
 		try {
 			BuscarPaciente dialog = new BuscarPaciente();
@@ -60,18 +63,20 @@ public class BuscarPaciente extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Create the dialog.
 	 */
-	public BuscarPaciente() {
+	public BuscarPaciente(Empleado empleadoActual) {
+		this.empleadoActual = empleadoActual;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarPaciente.class.getResource("/image/caduceus.png")));
 		setTitle("Buscar Paciente");
 		setBounds(100, 100, 720, 480);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		setLocationRelativeTo(null);
 		contentPanel.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
