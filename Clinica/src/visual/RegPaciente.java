@@ -11,12 +11,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -27,12 +29,15 @@ import java.awt.event.ActionEvent;
 import javax.swing.border.TitledBorder;
 
 import logical.Clinica;
+import logical.Doctor;
+import logical.Empleado;
 import logical.Enfermedad;
 import logical.Paciente;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.UIManager;
 import java.awt.Color;
+import java.awt.Component;
 
 public class RegPaciente extends JDialog {
 
@@ -47,6 +52,8 @@ public class RegPaciente extends JDialog {
 	private JTextField txtCedula;
 	private JTextField txtAddress;
 	private JTextField txtEmail;
+	private DefaultListModel modelo,model_2;
+	JList lstPaciente;
 	
 	// radio buttons
 	JRadioButton rdbtnCasado;
@@ -59,12 +66,14 @@ public class RegPaciente extends JDialog {
 	private String screenPath;
 	private String sexo;
 	private String civil;
-	private ArrayList<Enfermedad> enfermo;
+	private ArrayList<String> enfermedad;
+	JList lstSistema;
 
 
 	/**
 	 * Launch the application.
 	 */
+	
 	public static void main(String[] args) {
 		try {
 			RegPaciente dialog = new RegPaciente();
@@ -75,7 +84,7 @@ public class RegPaciente extends JDialog {
 		}
 	}
 
-
+    
 	/**
 	 * Create the dialog.
 	 */
@@ -281,16 +290,26 @@ public class RegPaciente extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						if(txtName.getText().equalsIgnoreCase(""))
+						if(txtName.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Nombre del Paciente vacio", "Notificación", JOptionPane.INFORMATION_MESSAGE);
-						if(txtLastname.getText().equalsIgnoreCase(""))
+							return;
+						}
+						if(txtLastname.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Apellido del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
-						if(txtPhone.getText().equalsIgnoreCase(""))
+							return;
+						}
+						if(txtPhone.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Telefono del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
-						if(txtCellphone.getText().equalsIgnoreCase(""))
+							return;
+						}
+						if(txtCellphone.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Celular del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
-						if(txtAddress.getText().equalsIgnoreCase(""))
+							return;
+						}
+						if(txtAddress.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Direccion del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
+							return;
+						}
 							
 					else { 
 						Paciente aux = new Paciente( txtName.getText(), txtCedula.getText(), txtSave.getText(),Integer.valueOf(spnAge.getValue().toString()),
@@ -299,6 +318,11 @@ public class RegPaciente extends JDialog {
 						Clinica.getInstance().addPaciente(aux);
 						//arreglo para enfermedades
 					
+					/*	for (String aux.enfermedadesSelec : enfermedad) {
+							lstSistema.add(enfermedad);
+							
+						}
+					*/
 
 					}}});
 				okButton.setActionCommand("OK");
@@ -346,8 +370,12 @@ public class RegPaciente extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		panel_3.add(scrollPane, BorderLayout.CENTER);
 		
-		JList lstSistema = new JList();
+		lstSistema = new JList();
+		lstSistema.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		lstSistema.setModel(new DefaultListModel<String>());
 		scrollPane.setViewportView(lstSistema);
+		
+		
 		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -384,8 +412,31 @@ public class RegPaciente extends JDialog {
 		});
 		btnRemover.setBounds(277, 131, 89, 23);
 		panel_2.add(btnRemover);
+		//iniciarLista();
 	}
+	/*
+	private void iniciarLista() {
+		// Borrar datos
+		int aux = 0;
+		DefaultListModel<String> model = ((DefaultListModel<String>) lstPaciente.getModel());
+		model.clear();
+		model = (DefaultListModel<String>) lstSistema.getModel();
+		model.clear();
+		for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
+				enfermedadesArr.add(enfer.getNombre());
+		}
+		Collections.sort(enfermedadesArr);
+		if (enfermedadesArr.size() == 0) {
+			JOptionPane.showMessageDialog(null, "No hay enfermedades registradas.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		} else {
+			model = (DefaultListModel<String>) lstPaciente.getModel();
+			for (String nombre : enfermedadesArr) {
+				model.addElement(nombre);
+			}
+		}
 
+	}
+*/
 	private void actualizar(boolean razon, int index) {
 		if (razon) { 
 			enfermedadesSelec.add(enfermedadesArr.get(index));
@@ -397,10 +448,6 @@ public class RegPaciente extends JDialog {
 			enfermedadesSelec.remove(index);
 			Collections.sort(enfermedadesArr);
 		}
-
-
-
-
 	}
 	
 }

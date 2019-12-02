@@ -13,7 +13,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import logical.Administrador;
 import logical.Clinica;
+import logical.Enfermedad;
 import logical.Paciente;
 
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -21,7 +23,10 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
@@ -31,10 +36,11 @@ public class DatosPaciente extends JDialog {
 	
 	private final JPanel contentPanel = new JPanel();
 	private JTable table;
-	private JTextField textField;
+	private JTextField txtSearch;
 	private ArrayList<Paciente> pacients; 
 	private static DefaultTableModel model;
 	private static Object[] informacion;
+	private static Paciente auxiliar;
 
 	/**
 	 * Launch the application.
@@ -102,6 +108,16 @@ public class DatosPaciente extends JDialog {
 		panel_1.add(btnNewButton);
 		
 		JButton btnModificar = new JButton("Modificar");
+		btnModificar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (auxiliar != null) {
+					RegPaciente ventana = new RegPaciente();
+				//	ventana.setModal(true);
+					// ventana.setVisible(true);
+				}
+			}
+		});
+		btnModificar.setEnabled(false);
 		btnModificar.setBounds(34, 42, 89, 23);
 		panel_1.add(btnModificar);
 		btnNewButton.addActionListener(new ActionListener() {
@@ -116,17 +132,18 @@ public class DatosPaciente extends JDialog {
 		lblNombre.setBounds(25, 11, 87, 35);
 		panel.add(lblNombre);
 		
-		textField = new JTextField();
-		textField.setBounds(25, 37, 172, 20);
-		panel.add(textField);
-		textField.setColumns(10);
+		txtSearch = new JTextField();
+		txtSearch.setBounds(25, 37, 172, 20);
+		panel.add(txtSearch);
+		txtSearch.setColumns(10);
 		
 		JButton btnBoton = new JButton("");
 		btnBoton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				for (Paciente paciente : Clinica.getInstance().getPacientes()) {
-					if(paciente.getNombre().contains(textField.getText())) {
-						pacients.add(paciente);
+					if(paciente.getNombre().contains(txtSearch.getText())) {
+						table.clearSelection();
+						rellenarTabla(txtSearch.getText());
 					}
 				}
 				
@@ -188,5 +205,35 @@ public class DatosPaciente extends JDialog {
 		
 		
 		}
+
+	public static void rellenarTabla(String nombre) {		
+		model.setRowCount(0);
+		informacion = new Object[model.getColumnCount()];
+
+		if (!nombre.equals("")) { 
+			ArrayList<Paciente> data = Clinica.getInstance().buscarPacienteByNombre(nombre);
+			for (Paciente temporal : data) {
+				informacion[0] = temporal.getIdPaciente(); 
+				informacion[1] = temporal.getNombre();
+				informacion[2] = temporal.getEdad();
+				informacion[3] = temporal.getTipoSangre();
+				informacion[4] = temporal.getTelefono();
+				informacion[5] = temporal.getCelular();
+				informacion[6] = temporal.getSector();
+				informacion[7] = temporal.getDireccion();
+				model.addRow(informacion);
+			}
+		} else {
+			for (int i = 0; i < Clinica.getInstance().getPacientes().size(); i++) {
+				informacion[0] = Clinica.getInstance().getPacientes().get(i).getIdPaciente();
+				informacion[1] = Clinica.getInstance().getPacientes().get(i).getNombre();
+				informacion[2] = Clinica.getInstance().getPacientes().get(i).getEdad();
+				informacion[3] = Clinica.getInstance().getPacientes().get(i).getTipoSangre();
+				model.addRow(informacion);
+			}
+		}
+	}
+
+
 }
 
