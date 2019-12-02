@@ -44,7 +44,6 @@ public class RegPaciente extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
-	private JTextField txtLastname;
 	private JTextField txtPhone;
 	private JTextField txtCellphone;
 	private JTextField txtSave;
@@ -138,21 +137,13 @@ public class RegPaciente extends JDialog {
 		/* Ejemplo de como llenar los campos para modificar los datos de un paciente */
 		txtName = new JTextField();
 		if (pacienteModificar != null)
+		{
 			txtName.setText(pacienteModificar.getNombre());
-		txtName.setBounds(60, 29, 188, 20);
+			txtName.setEditable(false);
+		}
+		txtName.setBounds(60, 29, 405, 20);
 		panel.add(txtName);
 		txtName.setColumns(10);
-		{
-			JLabel lblApellidos = new JLabel("Apellidos:");
-			lblApellidos.setBounds(256, 32, 77, 14);
-			panel.add(lblApellidos);
-		}
-		{
-			txtLastname = new JTextField();
-			txtLastname.setBounds(316, 29, 188, 20);
-			panel.add(txtLastname);
-			txtLastname.setColumns(10);
-		}
 		{
 			JLabel lblGenero = new JLabel("G\u00E9nero:");
 			lblGenero.setBounds(10, 58, 58, 26);
@@ -215,7 +206,7 @@ public class RegPaciente extends JDialog {
 			}
 		}
 
-		cbxBlood.setBounds(439, 61, 46, 20);
+		cbxBlood.setBounds(419, 61, 46, 20);
 		panel.add(cbxBlood);
 
 		JLabel lblTelefono = new JLabel("Tel\u00E9fono");
@@ -224,6 +215,11 @@ public class RegPaciente extends JDialog {
 
 		txtPhone = new JTextField();
 		txtPhone.setBounds(60, 90, 163, 20);
+		if (pacienteModificar != null)
+		{
+			txtPhone.setText(pacienteModificar.getTelefono());
+			txtPhone.setEditable(false);
+		}
 		panel.add(txtPhone);
 		txtPhone.setColumns(10);
 
@@ -232,6 +228,7 @@ public class RegPaciente extends JDialog {
 		panel.add(lblCelular);
 
 		txtCellphone = new JTextField();
+		
 		txtCellphone.setBounds(294, 87, 176, 20);
 		panel.add(txtCellphone);
 		txtCellphone.setColumns(10);
@@ -250,6 +247,11 @@ public class RegPaciente extends JDialog {
 		panel.add(lblCedula);
 
 		txtCedula = new JTextField();
+		if (pacienteModificar != null)
+		{
+			txtCedula.setText(pacienteModificar.getCedula());
+			txtCedula.setEditable(false);
+		}
 		txtCedula.setBounds(294, 121, 176, 20);
 		panel.add(txtCedula);
 		txtCedula.setColumns(10);
@@ -334,10 +336,7 @@ public class RegPaciente extends JDialog {
 							JOptionPane.showMessageDialog(null, "Nombre del Paciente vacio", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 							return;
 						}
-						if(txtLastname.getText().equalsIgnoreCase("")) {
-							JOptionPane.showMessageDialog(null, "Apellido del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
-							return;
-						}
+				
 						if(txtPhone.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Telefono del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
 							return;
@@ -362,7 +361,11 @@ public class RegPaciente extends JDialog {
 									civil, sexo, cbxBlood.getSelectedItem().toString(), Integer.valueOf(spnHeight.getValue().toString()), txtAddress.getText(),
 									cbxSector.getSelectedItem().toString(),txtPhone.getText(), txtCellphone.getText(), txtEmail.getText(), enfermedadesSelec);
 							Clinica.getInstance().addPaciente(aux);		
+							JOptionPane.showMessageDialog(null, "Paciente Agregado","Notificacion", JOptionPane.INFORMATION_MESSAGE);
+							dispose();
 						}
+						
+						
 					}});
 				btnAceptar.setActionCommand("OK");
 				btnCerrar.add(btnAceptar);
