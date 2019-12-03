@@ -118,7 +118,7 @@ public class RegPaciente extends JDialog {
 		else 
 			setTitle("Registrar paciente.");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegPaciente.class.getResource("/image/caduceus.png")));
-		setBounds(100, 100, 720, 563);
+		setBounds(100, 100, 778, 563);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -129,7 +129,7 @@ public class RegPaciente extends JDialog {
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Datos del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(10, 11, 514, 273);
+		panel.setBounds(10, 11, 542, 280);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 		{
@@ -145,7 +145,7 @@ public class RegPaciente extends JDialog {
 			txtName.setText(pacienteModificar.getNombre());
 			txtName.setEditable(false);
 		}
-		txtName.setBounds(60, 29, 405, 20);
+		txtName.setBounds(68, 29, 422, 20);
 		panel.add(txtName);
 		txtName.setColumns(10);
 		{
@@ -153,7 +153,7 @@ public class RegPaciente extends JDialog {
 			lblGenero.setBounds(10, 58, 58, 26);
 			panel.add(lblGenero);
 		}
-
+		sexo = "M";
 		rdbtnMasculino = new JRadioButton("Masculino");
 		rdbtnMasculino.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -192,7 +192,7 @@ public class RegPaciente extends JDialog {
 		panel.add(spnAge);
 
 		JLabel lblGrupoSanguineo = new JLabel("Grupo Sanguineo:");
-		lblGrupoSanguineo.setBounds(324, 63, 146, 14);
+		lblGrupoSanguineo.setBounds(324, 64, 146, 14);
 		panel.add(lblGrupoSanguineo);
 
 		cbxBlood = new JComboBox<String>();
@@ -210,16 +210,16 @@ public class RegPaciente extends JDialog {
 			}
 		}
 
-		cbxBlood.setBounds(419, 61, 46, 20);
+		cbxBlood.setBounds(436, 60, 46, 20);
 		panel.add(cbxBlood);
 
-		JLabel lblTelefono = new JLabel("Tel\u00E9fono");
+		JLabel lblTelefono = new JLabel("Tel\u00E9fono:");
 		lblTelefono.setBounds(10, 95, 90, 14);
 		panel.add(lblTelefono);
 
 		MaskFormatter mask = new MaskFormatter("(###) ###-####");
 		txtPhone = new JFormattedTextField(mask);
-		txtPhone.setBounds(60, 90, 163, 20);
+		txtPhone.setBounds(68, 90, 163, 20);
 		if (pacienteModificar != null)
 		{
 			txtPhone.setText(pacienteModificar.getTelefono());
@@ -229,14 +229,14 @@ public class RegPaciente extends JDialog {
 		txtPhone.setColumns(10);
 
 		JLabel lblCelular = new JLabel("Celular:");
-		lblCelular.setBounds(245, 90, 46, 14);
+		lblCelular.setBounds(261, 92, 46, 14);
 		panel.add(lblCelular);
 
 		MaskFormatter maskara = new MaskFormatter("(###) ###-####");
 		txtCellphone = new JFormattedTextField(maskara);
 		if (pacienteModificar != null)
 			txtCellphone.setText(pacienteModificar.getCelular());
-		txtCellphone.setBounds(294, 87, 176, 20);
+		txtCellphone.setBounds(306, 87, 176, 20);
 		panel.add(txtCellphone);
 		txtCellphone.setColumns(10);
 
@@ -247,12 +247,12 @@ public class RegPaciente extends JDialog {
 		txtSave = new JTextField();
 		if (pacienteModificar != null)
 			txtSave.setText(pacienteModificar.getSeguro());
-		txtSave.setBounds(60, 121, 163, 20);
+		txtSave.setBounds(68, 120, 163, 20);
 		panel.add(txtSave);
 		txtSave.setColumns(10);
 
 		JLabel lblCedula = new JLabel("C\u00E9dula:");
-		lblCedula.setBounds(245, 127, 46, 14);
+		lblCedula.setBounds(261, 124, 46, 14);
 		panel.add(lblCedula);
 
 		txtCedula = new JTextField();
@@ -261,7 +261,7 @@ public class RegPaciente extends JDialog {
 			txtCedula.setText(pacienteModificar.getCedula());
 			txtCedula.setEditable(false);
 		}
-		txtCedula.setBounds(294, 121, 176, 20);
+		txtCedula.setBounds(306, 118, 176, 20);
 		panel.add(txtCedula);
 		txtCedula.setColumns(10);
 
@@ -283,31 +283,32 @@ public class RegPaciente extends JDialog {
 			}
 		}
 
-		cbxSector.setBounds(70, 152, 300, 20);
+		cbxSector.setBounds(68, 151, 310, 20);
 		panel.add(cbxSector);
 
-		JLabel lblDireccion = new JLabel("Direccion");
-		lblDireccion.setBounds(10, 181, 70, 14);
+		JLabel lblDireccion = new JLabel("Direccion:");
+		lblDireccion.setBounds(10, 187, 90, 14);
 		panel.add(lblDireccion);
 
 		txtAddress = new JTextField();
-		txtAddress.setBounds(70, 178, 395, 20);
+		txtAddress.setBounds(68, 184, 407, 20);
 		panel.add(txtAddress);
 		txtAddress.setColumns(10);
 
-		JLabel lblEstatura = new JLabel("Estatura");
-		lblEstatura.setBounds(10, 212, 70, 14);
+		JLabel lblEstatura = new JLabel("Estatura:");
+		lblEstatura.setBounds(10, 215, 70, 14);
 		panel.add(lblEstatura);
 
 		spnHeight = new JSpinner();
 		spnHeight.setModel(new SpinnerNumberModel(1, 1, 8, 1));
-		spnHeight.setBounds(60, 209, 46, 20);
+		spnHeight.setBounds(68, 212, 46, 20);
 		panel.add(spnHeight);
 
 		JLabel lblEstadoCivil = new JLabel("Estado Civil:");
-		lblEstadoCivil.setBounds(138, 212, 71, 14);
+		lblEstadoCivil.setBounds(132, 215, 71, 14);
 		panel.add(lblEstadoCivil);
-
+		
+		civil = "Soltero";
 		rdbtnCasado = new JRadioButton("Casado");
 		rdbtnCasado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -317,11 +318,11 @@ public class RegPaciente extends JDialog {
 				civil = "Casado";
 			}
 		});
-		rdbtnCasado.setBounds(209, 208, 71, 23);
+		rdbtnCasado.setBounds(261, 211, 71, 23);
 		panel.add(rdbtnCasado);
-		rdbtnCasado.setSelected(true);
 
 		rdbtnSoltero = new JRadioButton("Soltero");
+		rdbtnSoltero.setSelected(true);
 		rdbtnSoltero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnCasado.setSelected(false);
@@ -330,7 +331,7 @@ public class RegPaciente extends JDialog {
 				civil = "Soltero";
 			}
 		});
-		rdbtnSoltero.setBounds(282, 208, 109, 23);
+		rdbtnSoltero.setBounds(198, 211, 109, 23);
 		panel.add(rdbtnSoltero);
 
 		JLabel lblEmail = new JLabel("E-mail:");
@@ -340,7 +341,7 @@ public class RegPaciente extends JDialog {
 		txtEmail = new JTextField();
 		if (pacienteModificar != null)
 			txtEmail.setText(pacienteModificar.getEmail());
-		txtEmail.setBounds(70, 247, 263, 20);
+		txtEmail.setBounds(68, 247, 310, 20);
 		panel.add(txtEmail);
 		txtEmail.setColumns(10);
 		screenPath = "/image/User.png";
@@ -409,30 +410,30 @@ public class RegPaciente extends JDialog {
 		}
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(529, 11, 165, 273);
+		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Imagen de Usuario", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_1.setBounds(562, 11, 190, 280);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 
 		JLabel ImagenUsuario = new JLabel("Usuario");
-		ImagenUsuario.setBounds(10, 40, 145, 127);
+		ImagenUsuario.setBounds(22, 39, 145, 127);
 		panel_1.add(ImagenUsuario);
 		ImagenUsuario.setIcon(new ImageIcon(((new ImageIcon(Login.class.getResource(screenPath))).getImage()).getScaledInstance(
 				ImagenUsuario.getWidth(), ImagenUsuario.getHeight(), Image.SCALE_SMOOTH)));
 
 		JButton btnSubirImagen = new JButton("Subir Imagen");
-		btnSubirImagen.setBounds(28, 197, 115, 23);
+		btnSubirImagen.setBounds(41, 197, 115, 23);
 		panel_1.add(btnSubirImagen);
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(10, 298, 684, 177);
+		panel_2.setBounds(10, 298, 742, 177);
 		contentPanel.add(panel_2);
 		panel_2.setLayout(null);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del sistema", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_3.setBounds(374, 11, 257, 153);
+		panel_3.setBounds(463, 11, 257, 153);
 		panel_2.add(panel_3);
 		panel_3.setLayout(new BorderLayout(0, 0));
 
@@ -466,7 +467,7 @@ public class RegPaciente extends JDialog {
 
 			}
 		});
-		btnAgregar.setBounds(277, 52, 89, 23);
+		btnAgregar.setBounds(328, 52, 89, 23);
 		panel_2.add(btnAgregar);
 
 		btnRemover = new JButton("Remover");
@@ -476,7 +477,7 @@ public class RegPaciente extends JDialog {
 				actualizar(false, lstPaciente.getSelectedIndex());
 			}
 		});
-		btnRemover.setBounds(277, 86, 89, 23);
+		btnRemover.setBounds(328, 88, 89, 23);
 		panel_2.add(btnRemover);
 
 		if (pacienteModificar == null)
