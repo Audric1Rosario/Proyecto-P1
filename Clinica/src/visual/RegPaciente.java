@@ -80,10 +80,9 @@ public class RegPaciente extends JDialog {
 
 	// variables logicas
 	private String screenPath;
-	private String sexo;
-	private String civil;
 	private Paciente pacienteModificar;
-	private ArrayList<String> enfermedadesArr;  
+	private ArrayList<String> enfermedadesArr;
+	private ArrayList<String> enfermedadesModi;
 	private ArrayList<String> enfermedadesSelec;
 
 
@@ -108,15 +107,7 @@ public class RegPaciente extends JDialog {
 	 */
 	public RegPaciente(Paciente paciente) throws ParseException {
 		this.pacienteModificar = paciente;
-
-		if (pacienteModificar != null) {
-			this.civil = pacienteModificar.getEstadoCivil();
-			this.sexo = pacienteModificar.getSexo();
-		}		
-		if (pacienteModificar != null)
-			setTitle("Modificar paciente.");
-		else 
-			setTitle("Registrar paciente.");
+		setTitle("Registrar paciente.");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegPaciente.class.getResource("/image/caduceus.png")));
 		setBounds(100, 100, 778, 563);
 		setLocationRelativeTo(null);
@@ -126,199 +117,148 @@ public class RegPaciente extends JDialog {
 		contentPanel.setLayout(null);
 		this.enfermedadesArr = new ArrayList<String>();
 		this.enfermedadesSelec = new ArrayList<String>();
+		this.enfermedadesModi = new ArrayList<String>();
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Datos del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(10, 11, 542, 280);
+		panel.setBounds(10, 11, 521, 280);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 		{
 			JLabel lblNombre = new JLabel("Nombre:");
-			lblNombre.setBounds(10, 26, 115, 26);
+			lblNombre.setBounds(15, 30, 58, 14);
 			panel.add(lblNombre);
 		}
 
-		/* Ejemplo de como llenar los campos para modificar los datos de un paciente */
 		txtName = new JTextField();
-		if (pacienteModificar != null)
-		{
-			txtName.setText(pacienteModificar.getNombre());
-			txtName.setEditable(false);
-		}
-		txtName.setBounds(68, 29, 422, 20);
+		txtName.setBounds(77, 27, 424, 20);
 		panel.add(txtName);
 		txtName.setColumns(10);
 		{
 			JLabel lblGenero = new JLabel("G\u00E9nero:");
-			lblGenero.setBounds(10, 58, 58, 26);
+			lblGenero.setBounds(15, 63, 58, 14);
 			panel.add(lblGenero);
 		}
-		sexo = "M";
-		rdbtnMasculino = new JRadioButton("Masculino");
+		rdbtnMasculino = new JRadioButton("M");
 		rdbtnMasculino.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnMasculino.setSelected(true);
 				rdbtnFemenino.setSelected(false);
-
-				sexo = "M";
-
-
 			}
 		});
-		rdbtnMasculino.setBounds(54, 60, 96, 23);
+		rdbtnMasculino.setBounds(77, 63, 46, 14);
 		panel.add(rdbtnMasculino);
 		rdbtnMasculino.setSelected(true);
 
-		rdbtnFemenino = new JRadioButton("Femenino");
+		rdbtnFemenino = new JRadioButton("F");
 		rdbtnFemenino.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnMasculino.setSelected(false);
 				rdbtnFemenino.setSelected(true);
-
-				sexo = "F";
-
 			}
 		});
-		rdbtnFemenino.setBounds(146, 60, 83, 23);
+		rdbtnFemenino.setBounds(125, 63, 46, 14);
+		
 		panel.add(rdbtnFemenino);
 
 		JLabel lblEdad = new JLabel("Edad:");
-		lblEdad.setBounds(235, 61, 72, 20);
+		lblEdad.setBounds(177, 63, 43, 14);
 		panel.add(lblEdad);
 
 		spnAge = new JSpinner();
 		spnAge.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
-		spnAge.setBounds(278, 61, 36, 20);
+		spnAge.setBounds(230, 60, 69, 20);
 		panel.add(spnAge);
-
-		JLabel lblGrupoSanguineo = new JLabel("Grupo Sanguineo:");
-		lblGrupoSanguineo.setBounds(324, 64, 146, 14);
+		
+		JLabel lblGrupoSanguineo = new JLabel("Grupo sangu\u00EDneo:");
+		lblGrupoSanguineo.setBounds(309, 63, 113, 14);
 		panel.add(lblGrupoSanguineo);
 
 		cbxBlood = new JComboBox<String>();
+		cbxBlood.setToolTipText("Tipo de sangre.");
 		cbxBlood.setModel(new DefaultComboBoxModel<String>(new String[] {"A", "A+", "A-", "B", "B+", "B-", "AB", "O", "O+", "O-"}));
+		
 
-		if (pacienteModificar != null) {
-			boolean encontrado = false; 
-			int aux = 0;
-			while (aux < cbxBlood.getModel().getSize() && !encontrado) {
-				if (pacienteModificar.getTipoSangre().equalsIgnoreCase(cbxBlood.getItemAt(aux).toString())) {
-					encontrado = true;
-					cbxBlood.setSelectedIndex(aux);
-				}
-				aux++;
-			}
-		}
-
-		cbxBlood.setBounds(436, 60, 46, 20);
+		cbxBlood.setBounds(432, 60, 69, 20);
 		panel.add(cbxBlood);
 
 		JLabel lblTelefono = new JLabel("Tel\u00E9fono:");
-		lblTelefono.setBounds(10, 95, 90, 14);
+		lblTelefono.setBounds(15, 95, 58, 14);
 		panel.add(lblTelefono);
 
 		MaskFormatter mask = new MaskFormatter("(###) ###-####");
 		txtPhone = new JFormattedTextField(mask);
-		txtPhone.setBounds(68, 90, 163, 20);
-		if (pacienteModificar != null)
-		{
-			txtPhone.setText(pacienteModificar.getTelefono());
-			txtPhone.setEditable(false);
-		}
+		txtPhone.setBounds(80, 92, 176, 20);
 		panel.add(txtPhone);
 		txtPhone.setColumns(10);
 
 		JLabel lblCelular = new JLabel("Celular:");
-		lblCelular.setBounds(261, 92, 46, 14);
+		lblCelular.setBounds(275, 95, 46, 14);
 		panel.add(lblCelular);
 
-		MaskFormatter maskara = new MaskFormatter("(###) ###-####");
-		txtCellphone = new JFormattedTextField(maskara);
-		if (pacienteModificar != null)
-			txtCellphone.setText(pacienteModificar.getCelular());
-		txtCellphone.setBounds(306, 87, 176, 20);
+		txtCellphone = new JFormattedTextField(mask);
+		txtCellphone.setBounds(325, 92, 176, 20);
 		panel.add(txtCellphone);
 		txtCellphone.setColumns(10);
 
 		JLabel lblSeguro = new JLabel("Seguro:");
-		lblSeguro.setBounds(10, 124, 46, 14);
+		lblSeguro.setBounds(15, 124, 58, 14);
 		panel.add(lblSeguro);
 
 		txtSave = new JTextField();
-		if (pacienteModificar != null)
-			txtSave.setText(pacienteModificar.getSeguro());
-		txtSave.setBounds(68, 120, 163, 20);
+		txtSave.setBounds(80, 121, 176, 20);
 		panel.add(txtSave);
 		txtSave.setColumns(10);
 
 		JLabel lblCedula = new JLabel("C\u00E9dula:");
-		lblCedula.setBounds(261, 124, 46, 14);
+		lblCedula.setBounds(275, 124, 46, 14);
 		panel.add(lblCedula);
 
 		txtCedula = new JTextField();
-		if (pacienteModificar != null)
-		{
-			txtCedula.setText(pacienteModificar.getCedula());
-			txtCedula.setEditable(false);
-		}
-		txtCedula.setBounds(306, 118, 176, 20);
+		txtCedula.setBounds(325, 123, 176, 20);
 		panel.add(txtCedula);
 		txtCedula.setColumns(10);
 
 		JLabel lblSector = new JLabel("Sector:");
-		lblSector.setBounds(10, 156, 46, 14);
+		lblSector.setBounds(15, 156, 58, 14);
 		panel.add(lblSector);
 
 		cbxSector = new JComboBox<String>();
 		cbxSector.setModel(new DefaultComboBoxModel<String>(new String[] {"Hig\u00FCey", "La Romana", "Monte Cristi", "Puerto Plata", "Santo Domingo", "Santiago de los Caballeros", "San Cristobal", "San Pedro de Macoris"}));
-		if (pacienteModificar != null) {
-			boolean encontrado = false; 
-			int aux = 0;
-			while (aux < cbxSector.getModel().getSize() && !encontrado) {
-				if (pacienteModificar.getSector().equalsIgnoreCase(cbxSector.getItemAt(aux).toString())) {
-					encontrado = true;
-					cbxSector.setSelectedIndex(aux);
-				}
-				aux++;
-			}
-		}
-
-		cbxSector.setBounds(68, 151, 310, 20);
+	
+		cbxSector.setBounds(80, 153, 301, 20);
 		panel.add(cbxSector);
 
 		JLabel lblDireccion = new JLabel("Direccion:");
-		lblDireccion.setBounds(10, 187, 90, 14);
+		lblDireccion.setBounds(15, 187, 58, 14);
 		panel.add(lblDireccion);
 
 		txtAddress = new JTextField();
-		txtAddress.setBounds(68, 184, 407, 20);
+		txtAddress.setBounds(80, 184, 393, 20);
 		panel.add(txtAddress);
 		txtAddress.setColumns(10);
-
+		
 		JLabel lblEstatura = new JLabel("Estatura:");
-		lblEstatura.setBounds(10, 215, 70, 14);
+		lblEstatura.setBounds(15, 218, 58, 14);
 		panel.add(lblEstatura);
 
 		spnHeight = new JSpinner();
 		spnHeight.setModel(new SpinnerNumberModel(1, 1, 8, 1));
-		spnHeight.setBounds(68, 212, 46, 20);
+		spnHeight.setBounds(80, 215, 69, 20);
 		panel.add(spnHeight);
 
 		JLabel lblEstadoCivil = new JLabel("Estado Civil:");
-		lblEstadoCivil.setBounds(132, 215, 71, 14);
+		lblEstadoCivil.setBounds(180, 218, 71, 14);
 		panel.add(lblEstadoCivil);
 		
-		civil = "Soltero";
 		rdbtnCasado = new JRadioButton("Casado");
 		rdbtnCasado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnCasado.setSelected(true);
 				rdbtnSoltero.setSelected(false);
-
-				civil = "Casado";
 			}
 		});
-		rdbtnCasado.setBounds(261, 211, 71, 23);
+		rdbtnCasado.setBounds(338, 218, 71, 14);
 		panel.add(rdbtnCasado);
 
 		rdbtnSoltero = new JRadioButton("Soltero");
@@ -327,24 +267,20 @@ public class RegPaciente extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				rdbtnCasado.setSelected(false);
 				rdbtnSoltero.setSelected(true);
-
-				civil = "Soltero";
 			}
 		});
-		rdbtnSoltero.setBounds(198, 211, 109, 23);
+		
+		rdbtnSoltero.setBounds(258, 218, 83, 14);
 		panel.add(rdbtnSoltero);
 
 		JLabel lblEmail = new JLabel("E-mail:");
-		lblEmail.setBounds(10, 250, 46, 14);
+		lblEmail.setBounds(15, 250, 58, 14);
 		panel.add(lblEmail);
 
 		txtEmail = new JTextField();
-		if (pacienteModificar != null)
-			txtEmail.setText(pacienteModificar.getEmail());
-		txtEmail.setBounds(68, 247, 310, 20);
+		txtEmail.setBounds(80, 247, 310, 20);
 		panel.add(txtEmail);
 		txtEmail.setColumns(10);
-		screenPath = "/image/User.png";
 
 
 		{
@@ -372,20 +308,62 @@ public class RegPaciente extends JDialog {
 						if(txtAddress.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Direccion del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
 							return;
-						} else { 
-
-							/*
-							 * public Paciente(String nombre, String cedula, String seguro, int edad, String estadoCivil,
-								String sexo, String tipoSangre, float estatura, String direccion, String sector, String telefono,
-								String celular, String email, ArrayList<String> enfermedades)
-							 * */
+						}					
+						
+						Enfermedad buscar;
+						if (pacienteModificar == null) { 						
 							Paciente aux = new Paciente( txtName.getText(), txtCedula.getText(), txtSave.getText(),Integer.valueOf(spnAge.getValue().toString()),
-									civil, sexo, cbxBlood.getSelectedItem().toString(), Integer.valueOf(spnHeight.getValue().toString()), txtAddress.getText(),
-									cbxSector.getSelectedItem().toString(),txtPhone.getText(), txtCellphone.getText(), txtEmail.getText(), enfermedadesSelec);
-							Clinica.getInstance().addPaciente(aux);		
-							JOptionPane.showMessageDialog(null, "Paciente Agregado","Notificacion", JOptionPane.INFORMATION_MESSAGE);
+									rdbtnMasculino.isSelected() ? "M" : "F", rdbtnSoltero.isSelected() ? "Soltero" : "Casado", cbxBlood.getSelectedItem().toString(), 
+									Float.valueOf(spnHeight.getValue().toString()), txtAddress.getText(), cbxSector.getSelectedItem().toString(),txtPhone.getText(),
+									txtCellphone.getText(), txtEmail.getText(), enfermedadesSelec);
+							Clinica.getInstance().addPaciente(aux);	
+							
+							JOptionPane.showMessageDialog(null, "Paciente agregado.","Notificación.", JOptionPane.INFORMATION_MESSAGE);
+							// Saber a cuales enfermedades se le esta agregando...							
+							for (String enfer : enfermedadesSelec) {
+								buscar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
+								buscar.setCantPacientes(buscar.getCantPacientes() + 1);  	// Sumar a la cantidad de pacientes.
+							}
+							
 							clear();
 							iniciarLista();
+						} else {
+							// Agregar los datos al paciente a modificar.
+							pacienteModificar.setNombre(txtName.getText());
+							pacienteModificar.setCedula(txtCedula.getText());
+							pacienteModificar.setSeguro(txtSave.getText());
+							pacienteModificar.setEdad(Integer.valueOf(spnAge.getValue().toString()));
+							pacienteModificar.setSexo(rdbtnMasculino.isSelected() ? "M" : "F");
+							pacienteModificar.setEstadoCivil(rdbtnSoltero.isSelected() ? "Soltero" : "Casado");
+							pacienteModificar.setTipoSangre(cbxBlood.getSelectedItem().toString());
+							pacienteModificar.setEstatura(Float.valueOf(spnHeight.getValue().toString()));
+							pacienteModificar.setDireccion(txtAddress.getText());
+							pacienteModificar.setSector(cbxSector.getSelectedItem().toString());
+							pacienteModificar.setTelefono(txtPhone.getText());
+							pacienteModificar.setCelular(txtCellphone.getText());
+							pacienteModificar.setEmail(txtEmail.getText());
+							
+							// Saber a cuales enfermedades se les está quitando y sumando.					
+							int index;
+							for (String enfer : enfermedadesSelec) {
+								if (enfermedadesModi.indexOf(enfer) != -1) { // Significa que se queda igual y se puede poner que no se modifico quitandolo
+									index = enfermedadesModi.indexOf(enfer);
+									enfermedadesModi.remove(index);
+								} else {	// Se agrega por primera vez
+									buscar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
+									buscar.setCantPacientes(buscar.getCantPacientes() + 1);
+								}
+							}
+							// Ahora lo que quede en modi, sacarlo.
+							for (String enfer : enfermedadesModi) {
+								buscar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
+								buscar.setCantPacientes(buscar.getCantPacientes() - 1);
+							}
+							pacienteModificar.setEnfermedades(enfermedadesSelec);
+							clear();
+							BuscarPaciente.loadTable(Clinica.getInstance().buscarPacienteByNombre(pacienteModificar.getNombre()), pacienteModificar, false);							
+							dispose();
+							JOptionPane.showMessageDialog(null, "Paciente modificado.","Notificación.", JOptionPane.INFORMATION_MESSAGE);
 						}
 						
 						
@@ -395,8 +373,6 @@ public class RegPaciente extends JDialog {
 				getRootPane().setDefaultButton(btnAceptar);
 
 			}
-
-
 			{
 				cancelButton = new JButton("Cerrar");
 				cancelButton.addActionListener(new ActionListener() {
@@ -411,18 +387,20 @@ public class RegPaciente extends JDialog {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Imagen de Usuario", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(562, 11, 190, 280);
+		panel_1.setBounds(541, 11, 211, 280);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 
 		JLabel ImagenUsuario = new JLabel("Usuario");
-		ImagenUsuario.setBounds(22, 39, 145, 127);
+		ImagenUsuario.setBounds(23, 38, 164, 152);
 		panel_1.add(ImagenUsuario);
-		ImagenUsuario.setIcon(new ImageIcon(((new ImageIcon(Login.class.getResource(screenPath))).getImage()).getScaledInstance(
+		ImagenUsuario.setIcon(new ImageIcon(((new ImageIcon(Login.class.getResource("/image/userA.png"))).getImage()).getScaledInstance(
 				ImagenUsuario.getWidth(), ImagenUsuario.getHeight(), Image.SCALE_SMOOTH)));
 
-		JButton btnSubirImagen = new JButton("Subir Imagen");
-		btnSubirImagen.setBounds(41, 197, 115, 23);
+		JButton btnSubirImagen = new JButton("");
+		btnSubirImagen.setToolTipText("Subir foto");
+		btnSubirImagen.setIcon(new ImageIcon(RegPaciente.class.getResource("/image/up-arrow.png")));
+		btnSubirImagen.setBounds(48, 216, 115, 40);
 		panel_1.add(btnSubirImagen);
 
 		JPanel panel_2 = new JPanel();
@@ -433,7 +411,7 @@ public class RegPaciente extends JDialog {
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del sistema", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_3.setBounds(463, 11, 257, 153);
+		panel_3.setBounds(430, 11, 302, 153);
 		panel_2.add(panel_3);
 		panel_3.setLayout(new BorderLayout(0, 0));
 
@@ -449,7 +427,7 @@ public class RegPaciente extends JDialog {
 
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_4.setBounds(10, 11, 257, 153);
+		panel_4.setBounds(10, 11, 302, 153);
 		panel_2.add(panel_4);
 		panel_4.setLayout(new BorderLayout(0, 0));
 
@@ -467,7 +445,7 @@ public class RegPaciente extends JDialog {
 
 			}
 		});
-		btnAgregar.setBounds(328, 52, 89, 23);
+		btnAgregar.setBounds(328, 40, 89, 35);
 		panel_2.add(btnAgregar);
 
 		btnRemover = new JButton("Remover");
@@ -477,13 +455,107 @@ public class RegPaciente extends JDialog {
 				actualizar(false, lstPaciente.getSelectedIndex());
 			}
 		});
-		btnRemover.setBounds(328, 88, 89, 23);
+		btnRemover.setBounds(328, 88, 89, 35);
 		panel_2.add(btnRemover);
 
-		if (pacienteModificar == null)
+		// Sabemos que se esta modificando:
+		if (pacienteModificar != null) {
+			boolean encontrado; 
+			int aux;
+			// Título
+			setTitle("Modificar paciente.");
+			
+			// Nombre
+			txtName.setText(pacienteModificar.getNombre());
+			txtName.setEditable(false);
+
+			// Genero
+			if (pacienteModificar.getSexo().equals("M")) {
+				rdbtnMasculino.setSelected(true);
+				rdbtnFemenino.setSelected(false);
+			} else if (pacienteModificar.getSexo().equals("F")) {
+				rdbtnMasculino.setSelected(false);
+				rdbtnFemenino.setSelected(true);
+			}
+
+			// Edad
+			spnAge.setValue(Integer.valueOf(pacienteModificar.getEdad()));
+
+			// Teléfono
+			txtPhone.setText(pacienteModificar.getTelefono());
+
+			// Tipo de sangre
+			encontrado = false; 
+			aux = 0;
+			while (aux < cbxBlood.getModel().getSize() && !encontrado) {
+				if (pacienteModificar.getTipoSangre().equalsIgnoreCase(cbxBlood.getItemAt(aux).toString())) {
+					encontrado = true;
+					cbxBlood.setSelectedIndex(aux);
+				}
+				aux++;
+			}
+
+			// Celular
+			txtCellphone.setText(pacienteModificar.getCelular());
+
+			// Seguro
+			txtSave.setText(pacienteModificar.getSeguro());
+
+			// Cédula
+			txtCedula.setText(pacienteModificar.getCedula());
+			txtCedula.setEditable(false);
+
+			// Sector
+			encontrado = false; 
+			aux = 0;
+			while (aux < cbxSector.getModel().getSize() && !encontrado) {
+				if (pacienteModificar.getSector().equalsIgnoreCase(cbxSector.getItemAt(aux).toString())) {
+					encontrado = true;
+					cbxSector.setSelectedIndex(aux);
+				}
+				aux++;
+			}
+
+			// Dirección
+			txtAddress.setText(pacienteModificar.getDireccion());
+
+			// Estatura
+			spnHeight.setValue(Float.valueOf(pacienteModificar.getEstatura()));
+
+			// Estado civil
+			if (pacienteModificar.getEstadoCivil().equalsIgnoreCase("Soltero")) {
+				rdbtnCasado.setSelected(false);
+				rdbtnSoltero.setSelected(true);
+			} else if (pacienteModificar.getEstadoCivil().equalsIgnoreCase("Casado")) {
+				rdbtnCasado.setSelected(true);
+				rdbtnSoltero.setSelected(false);
+			}
+
+			// Email
+			txtEmail.setText(pacienteModificar.getEmail());
+			
+			// Rellenar las enfermedades que tiene el paciente hasta el momento.
+			for (String data : pacienteModificar.getEnfermedades()) {
+				enfermedadesSelec.add(data);
+				enfermedadesModi.add(data);	// Para saber cuales son las que hay que restarle al salir.
+			}
+			
+			// Rellenar las enfermedades que 
+			for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
+				if (enfermedadesSelec.indexOf(enfer.getNombre()) == -1) { // agregar si no se encuentra aquí
+					enfermedadesArr.add(enfer.getNombre());
+				}
+			}
+			
+			// Ordenar alfabéticamente
+			Collections.sort(enfermedadesSelec);
+			Collections.sort(enfermedadesArr);
+			Collections.sort(enfermedadesModi);
+			// Reiniciar listas
+			reiniciarLista();
+			
+		} else if (pacienteModificar == null)
 			iniciarLista();
-
-
 	}
 
 	// Sólo se usa al crear pacientes.
@@ -494,7 +566,9 @@ public class RegPaciente extends JDialog {
 		// Igualar a lista vacía para que se reinicie.
 		lstPaciente.setModel(modelB);
 		lstSistema.setModel(model);
-
+		enfermedadesArr = new ArrayList<String>();
+		enfermedadesSelec = new ArrayList<String>();
+		
 		for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
 			enfermedadesArr.add(enfer.getNombre());
 		}
@@ -556,17 +630,15 @@ public class RegPaciente extends JDialog {
 		txtPhone.setText("");
 		rdbtnMasculino.setSelected(true);
 		rdbtnFemenino.setSelected(false);
-		sexo = "M";
-		spnAge.setValue(Integer.valueOf("1"));
+		spnAge.setValue(Integer.valueOf(1));
 		txtCellphone.setText("");
 		txtSave.setText("");
 		txtCedula.setText("");
 		cbxSector.setSelectedIndex(0);
 		txtAddress.setText("");
-		spnHeight.setValue(Integer.valueOf("1"));
-		rdbtnCasado.setSelected(true);
+		spnHeight.setValue(Integer.valueOf(1));
+		rdbtnCasado.setSelected(false);
 		rdbtnSoltero.setSelected(true);
-		civil = "Casado";
 		txtEmail.setText("");
 		return;
 	}

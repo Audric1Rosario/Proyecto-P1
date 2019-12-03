@@ -120,8 +120,6 @@ public class RegConsulta extends JDialog {
 		btnRemover.setBounds(298, 86, 89, 23);
 		panel_3.add(btnRemover);
 		
-		iniciarLista();
-		
 		JPanel panel_6 = new JPanel();
 		panel_6.setBorder(new TitledBorder(null, "Datos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_6.setBounds(10, 11, 684, 63);
@@ -244,7 +242,7 @@ public class RegConsulta extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-		
+		//iniciarLista();
 	}
 	private void iniciarLista() {
 		// Borrar datos
