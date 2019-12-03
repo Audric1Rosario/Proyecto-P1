@@ -28,6 +28,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.border.TitledBorder;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+
 import javax.swing.JTextPane;
 
 public class BuscarPaciente extends JDialog {
@@ -48,7 +50,7 @@ public class BuscarPaciente extends JDialog {
 	private JTextField textFieldSector;
 	
 	// Variables logicas
-	private Paciente paciente;
+	private Paciente paciente = null;
 	private Empleado empleadoActual;
 	private ArrayList<Paciente> pacientes;
 	private boolean condicion;
@@ -70,7 +72,7 @@ public class BuscarPaciente extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public BuscarPaciente(Empleado empleadoActual) {
+	public BuscarPaciente(Empleado empleadoActual, Boolean buscar) {
 		this.empleadoActual = empleadoActual;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarPaciente.class.getResource("/image/caduceus.png")));
 		setTitle("Buscar Paciente");
@@ -94,6 +96,7 @@ public class BuscarPaciente extends JDialog {
 		model.setColumnIdentifiers(columns);
 		tabla.setModel(model);
 		scrollPane.setViewportView(tabla);
+		
 		
 		
 		JPanel panel = new JPanel();
@@ -153,7 +156,7 @@ public class BuscarPaciente extends JDialog {
 		
 		
 		JLabel lblNombre = new JLabel("Nombre:");
-		lblNombre.setBounds(10, 11, 72, 14);
+		lblNombre.setBounds(10, 11, 123, 14);
 		contentPanel.add(lblNombre);
 		
 		textFieldNombre = new JTextField();
@@ -196,7 +199,7 @@ public class BuscarPaciente extends JDialog {
 		contentPanel.add(btnBuscarCliente);
 		
 		JLabel lblIdentificacin = new JLabel("Identificaci\u00F3n:");
-		lblIdentificacin.setBounds(442, 11, 89, 14);
+		lblIdentificacin.setBounds(442, 11, 113, 14);
 		contentPanel.add(lblIdentificacin);
 		
 		textFieldIdentificacion = new JTextField();
@@ -211,7 +214,7 @@ public class BuscarPaciente extends JDialog {
 					JOptionPane.showMessageDialog(null, "No existe ningun paciente con esa identificación", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 				}else if(textFieldIdentificacion.getText().equalsIgnoreCase("")) {
 					 JOptionPane.showMessageDialog(null, "Campos del paciente vacios", "Notificación", JOptionPane.INFORMATION_MESSAGE);
-				} else {
+				} else if (Clinica.getInstance().buscarPacienteById(textFieldIdentificacion.getText()) != null) {
 					condicion = false;
 					paciente = Clinica.getInstance().buscarPacienteById(textFieldIdentificacion.getText());
 					loadTable(null, paciente, condicion);
@@ -219,6 +222,7 @@ public class BuscarPaciente extends JDialog {
 					textFieldEdad.setText(Integer.toString(paciente.getEdad()));
 					textPaneDireccion.setText(paciente.getDireccion());
 					textFieldSector.setText(paciente.getSector());
+					txtfieldGenero.setText(paciente.getSexo());
 				}
 			}
 		});
@@ -226,39 +230,97 @@ public class BuscarPaciente extends JDialog {
 		btnBuscarIdentificacion.setBounds(605, 26, 89, 23);
 		contentPanel.add(btnBuscarIdentificacion);
 		
-		
-		
+		loadTable(Clinica.getInstance().getPacientes(), null, true);
+		if(!Clinica.getInstance().getPacientes().isEmpty()) {
+			tabla.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					textFieldNombre2.setText(Clinica.getInstance().getPacientes().get(tabla.getSelectedRow()).getNombre());
+					textFieldEdad.setText(Integer.toString(Clinica.getInstance().getPacientes().get(tabla.getSelectedRow()).getEdad()));
+					textPaneDireccion.setText(Clinica.getInstance().getPacientes().get(tabla.getSelectedRow()).getDireccion());
+					textFieldSector.setText(Clinica.getInstance().getPacientes().get(tabla.getSelectedRow()).getSector());
+					txtfieldGenero.setText(Clinica.getInstance().getPacientes().get(tabla.getSelectedRow()).getSexo());
+					paciente = Clinica.getInstance().getPacientes().get(tabla.getSelectedRow());
+				}
+			});
+		}
 		
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Buscar");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						if(paciente == null) {
-							JOptionPane.showMessageDialog(null, "No se ha elejido ningún paciente", "Notificación", JOptionPane.INFORMATION_MESSAGE);
-						}else if(paciente != null){
-							BuscarConsulta cons = new BuscarConsulta(paciente);
-							cons.setModal(true);
-							cons.setVisible(true);
+				if(buscar) {
+					JButton okButton = new JButton("Buscar");
+					okButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(paciente == null) {
+								JOptionPane.showMessageDialog(null, "No se ha elejido ningún paciente", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+							}else if(paciente != null){
+								BuscarConsulta cons = new BuscarConsulta(paciente);
+								cons.setModal(true);
+								cons.setVisible(true);
+							}
 						}
-					}
-				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+					});
+					okButton.setActionCommand("OK");
+					buttonPane.add(okButton);
+					getRootPane().setDefaultButton(okButton);
+				} else if(!buscar) {
+					JButton okButton = new JButton("Modificar");
+					okButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(paciente == null) {
+								JOptionPane.showMessageDialog(null, "No se ha elejido ningún paciente", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+							}else if(paciente != null){
+								RegPaciente cons = null;
+								try {
+									cons = new RegPaciente(paciente);
+								} catch (ParseException e1) {
+									e1.printStackTrace();
+								}
+								cons.setModal(true);
+								cons.setVisible(true);
+							}
+						}
+					});
+					okButton.setActionCommand("OK");
+					buttonPane.add(okButton);
+					getRootPane().setDefaultButton(okButton);
+				}
 			}
 			{
-				JButton cancelButton = new JButton("Cancelar");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				if(buscar) {
+					JButton cancelButton = new JButton("Cancelar");
+					cancelButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							dispose();
+						}
+					});
+					cancelButton.setActionCommand("Cancel");
+					buttonPane.add(cancelButton);
+				} else if(!buscar) {
+					JButton cancelButton = new JButton("Eliminar");
+					cancelButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if(paciente == null) {
+								JOptionPane.showMessageDialog(null, "No se ha elejido ningún paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+							}else if(paciente != null){
+								if(Clinica.getInstance().getPacientes().remove(paciente)) {
+									JOptionPane.showMessageDialog(null, "Se ha removido el paciente exitosamente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+									dispose();
+									BuscarPaciente ventana = new BuscarPaciente(empleadoActual, false);
+									ventana.setModal(true);
+									ventana.setVisible(true);
+								} else {
+									JOptionPane.showMessageDialog(null, "Ha ocurrido un problema removiendo el paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+								}
+							}
+						}
+					});
+					cancelButton.setActionCommand("Cancel");
+					buttonPane.add(cancelButton);
+				}
 			}
 		}
 	}
@@ -278,17 +340,15 @@ public class BuscarPaciente extends JDialog {
 			}
 	
 			tabla.setModel(model);
-		}
-		
-		if(!condicion) {
+		} else if(!condicion) {
 			fila = new Object[model.getColumnCount()];
 			
-					fila[0] = pacienteid.getNombre();
-					fila[1] = pacienteid.getCedula();
-					fila[2] = pacienteid.getSeguro();
-					fila[3] = pacienteid.getSexo();
+			fila[0] = pacienteid.getNombre();
+			fila[1] = pacienteid.getCedula();
+			fila[2] = pacienteid.getSeguro();
+			fila[3] = pacienteid.getSexo();
 	
-					model.addRow(fila);
+			model.addRow(fila);
 	
 			tabla.setModel(model);
 		}

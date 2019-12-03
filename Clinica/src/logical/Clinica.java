@@ -96,11 +96,12 @@ public class Clinica implements Serializable {
 	// Buscar pacientes
 	public Paciente buscarPacienteById(String idPaciente) {
 		Paciente buscado = null;
-		boolean encontrado = false; int aux = 0;
-		while (!encontrado && aux < pacientes.size()) {
+		boolean encontrado = false; 
+		int aux = 0;
+		while (aux < pacientes.size() && !encontrado) {
 			if (pacientes.get(aux).getIdPaciente().equalsIgnoreCase(idPaciente)) {
-				encontrado = true;
 				buscado = pacientes.get(aux);
+				encontrado = true;
 			}
 			aux++;
 		}
@@ -110,7 +111,7 @@ public class Clinica implements Serializable {
 	public ArrayList<Paciente> buscarPacienteByNombre(String nombrePaciente) {
 		ArrayList<Paciente> listaPacientes = new ArrayList<Paciente>();
 		for (Paciente paciente : pacientes) {
-			if (paciente.getNombre().contains(nombrePaciente)) 
+			if (paciente.getNombre().toLowerCase().contains(nombrePaciente.toLowerCase())) 
 				listaPacientes.add(paciente);
 		}
 

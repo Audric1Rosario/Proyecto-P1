@@ -195,6 +195,7 @@ public class Login extends JFrame {
 		passPass.setHorizontalAlignment(SwingConstants.CENTER);
 		passPass.setBounds(255, 348, 233, 27);
 		panel.add(passPass);
+		panel.getRootPane().setDefaultButton(btnEnter);
 	}
 
 	private void setInit() {

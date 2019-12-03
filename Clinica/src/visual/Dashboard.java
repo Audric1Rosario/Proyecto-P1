@@ -114,7 +114,7 @@ public class Dashboard extends JFrame {
 		JMenuItem mntmRegistroDeVivienda = new JMenuItem("Registro de vivienda");
 		mntmRegistroDeVivienda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BuscarPaciente ventana = new BuscarPaciente(actual);
+				BuscarPaciente ventana = new BuscarPaciente(actual, false);
 				ventana.setModal(true);
 				ventana.setVisible(true);
 			}
@@ -164,7 +164,7 @@ public class Dashboard extends JFrame {
 		JMenuItem mntmHistorialClnico = new JMenuItem("Historial Cl\u00EDnico");
 		mntmHistorialClnico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BuscarPaciente ventana = new BuscarPaciente(actual);
+				BuscarPaciente ventana = new BuscarPaciente(actual, true);
 				ventana.setModal(true);
 				ventana.setVisible(true);	
 			}
