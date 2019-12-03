@@ -244,6 +244,7 @@ public class Dashboard extends JFrame {
 				}
 			}
 		});
+		
 		mnConfiguracin.add(mntmOpciones);
 		
 		JMenuItem mntmPerfil = new JMenuItem("Perfil");
@@ -257,6 +258,7 @@ public class Dashboard extends JFrame {
 			mnVacunacin.setVisible(false);
 			mnAdministracin.setVisible(false);
 			mntmConsultas.setVisible(false);
+			mntmOpciones.setVisible(false);
 		}
 
 		if (actual instanceof Doctor) {
@@ -265,6 +267,7 @@ public class Dashboard extends JFrame {
 			//mntmControlEnfermedades.setVisible(false);
 			mntmCrearVacuna.setVisible(false);
 			mnAdministracin.setVisible(false);
+			mntmOpciones.setVisible(false);
 		}
 
 		if (actual instanceof Administrador) {
@@ -277,6 +280,7 @@ public class Dashboard extends JFrame {
 				mnAdministracin.setVisible(false);
 			case 2:
 				mntmAdministradores.setVisible(false);
+				mntmOpciones.setVisible(false);
 			case 1:
 				mnConsultorio.setVisible(false);
 			}

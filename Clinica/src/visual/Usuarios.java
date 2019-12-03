@@ -534,7 +534,10 @@ public class Usuarios extends JDialog {
 		// Botones
 		btnDoctores.setEnabled(true);
 		btnModificar.setEnabled(false);
-		btnCrear.setEnabled(false);
+		if (esAdmin)
+			btnCrear.setEnabled(true);
+		else
+			btnCrear.setEnabled(false);
 		btnEliminar.setEnabled(false);
 
 		// Si no es admin.
@@ -545,7 +548,7 @@ public class Usuarios extends JDialog {
 		
 		if (esAdmin)
 		{
-			spnAutoridad.setValue(Integer.valueOf("1"));
+			spnAutoridad.setValue(Integer.valueOf("2"));
 		} else {
 			// Desactivar
 			panelDoctor.setEnabled(false);
