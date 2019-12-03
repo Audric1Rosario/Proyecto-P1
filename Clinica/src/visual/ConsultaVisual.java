@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
+import javax.swing.JTextArea;
 
 public class ConsultaVisual extends JDialog {
 
@@ -70,7 +71,7 @@ public class ConsultaVisual extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			JLabel lblNewLabel = new JLabel("Identificacion de Consulta: ");
+			JLabel lblNewLabel = new JLabel("Identificaci\u00F3n de Consulta: ");
 			lblNewLabel.setBounds(10, 11, 149, 14);
 			contentPanel.add(lblNewLabel);
 		}
@@ -137,6 +138,7 @@ public class ConsultaVisual extends JDialog {
 			model.setColumnIdentifiers(columns);
 			tabla.setModel(model);
 			scrollPane.setViewportView(tabla);
+			loadTable(consulta);
 		}
 		{
 			JLabel lblTratamiento = new JLabel("Tratamiento:");
@@ -147,6 +149,10 @@ public class ConsultaVisual extends JDialog {
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane.setBounds(356, 155, 315, 191);
 			contentPanel.add(scrollPane);
+			
+			JTextArea textAreaTratamiento = new JTextArea();
+			textAreaTratamiento.setEditable(false);
+			scrollPane.setViewportView(textAreaTratamiento);
 			
 		}
 		{

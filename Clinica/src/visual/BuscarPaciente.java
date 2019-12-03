@@ -308,10 +308,7 @@ public class BuscarPaciente extends JDialog {
 							}else if(paciente != null){
 								if(Clinica.getInstance().getPacientes().remove(paciente)) {
 									JOptionPane.showMessageDialog(null, "Se ha removido el paciente exitosamente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
-									dispose();
-									BuscarPaciente ventana = new BuscarPaciente(empleadoActual, false);
-									ventana.setModal(true);
-									ventana.setVisible(true);
+									loadTable(Clinica.getInstance().getPacientes(), null, true);
 								} else {
 									JOptionPane.showMessageDialog(null, "Ha ocurrido un problema removiendo el paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 								}
