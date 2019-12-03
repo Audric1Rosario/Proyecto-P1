@@ -228,7 +228,8 @@ public class RegPaciente extends JDialog {
 		panel.add(lblCelular);
 
 		txtCellphone = new JTextField();
-		
+		if (pacienteModificar != null)
+			txtCellphone.setText(pacienteModificar.getCelular());
 		txtCellphone.setBounds(294, 87, 176, 20);
 		panel.add(txtCellphone);
 		txtCellphone.setColumns(10);
@@ -238,6 +239,8 @@ public class RegPaciente extends JDialog {
 		panel.add(lblSeguro);
 
 		txtSave = new JTextField();
+		if (pacienteModificar != null)
+			txtSave.setText(pacienteModificar.getSeguro());
 		txtSave.setBounds(60, 121, 163, 20);
 		panel.add(txtSave);
 		txtSave.setColumns(10);
@@ -262,6 +265,18 @@ public class RegPaciente extends JDialog {
 
 		cbxSector = new JComboBox<String>();
 		cbxSector.setModel(new DefaultComboBoxModel<String>(new String[] {"Hig\u00FCey", "La Romana", "Monte Cristi", "Puerto Plata", "Santo Domingo", "Santiago de los Caballeros", "San Cristobal", "San Pedro de Macoris"}));
+		if (pacienteModificar != null) {
+			boolean encontrado = false; 
+			int aux = 0;
+			while (aux < cbxSector.getModel().getSize() && !encontrado) {
+				if (pacienteModificar.getSector().equalsIgnoreCase(cbxSector.getItemAt(aux).toString())) {
+					encontrado = true;
+					cbxSector.setSelectedIndex(aux);
+				}
+				aux++;
+			}
+		}
+
 		cbxSector.setBounds(70, 152, 300, 20);
 		panel.add(cbxSector);
 
@@ -317,6 +332,8 @@ public class RegPaciente extends JDialog {
 		panel.add(lblEmail);
 
 		txtEmail = new JTextField();
+		if (pacienteModificar != null)
+			txtEmail.setText(pacienteModificar.getEmail());
 		txtEmail.setBounds(70, 247, 263, 20);
 		panel.add(txtEmail);
 		txtEmail.setColumns(10);
@@ -332,12 +349,6 @@ public class RegPaciente extends JDialog {
 				btnAceptar = new JButton("Aceptar");
 				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						for (Paciente paciente : Clinica.getInstance().getPacientes()) {
-							if(txtCedula.getText().equalsIgnoreCase(paciente.getCedula())) {
-								JOptionPane.showMessageDialog(null, "Ya existe un paciente con esa ID","Notificacion", JOptionPane.INFORMATION_MESSAGE);
-								return;
-							}
-						}
 						if(txtName.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Nombre del Paciente vacio", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 							return;
