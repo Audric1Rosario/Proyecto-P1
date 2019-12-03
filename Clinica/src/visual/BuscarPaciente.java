@@ -50,6 +50,8 @@ public class BuscarPaciente extends JDialog {
 	// Variables logicas
 	private Paciente paciente;
 	private Empleado empleadoActual;
+	private ArrayList<Paciente> pacientes;
+	private boolean condicion;
 
 	/**
 	 * Launch the application.
@@ -79,6 +81,7 @@ public class BuscarPaciente extends JDialog {
 		setLocationRelativeTo(null);
 		contentPanel.setLayout(null);
 		
+		System.out.println(Clinica.getInstance().getPacientes().size());
 		JScrollPane scrollPane = new JScrollPane();
 		
 		scrollPane.setBounds(10, 60, 500, 337);
@@ -161,22 +164,30 @@ public class BuscarPaciente extends JDialog {
 		JButton btnBuscarCliente = new JButton("");
 		btnBuscarCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(textFieldNombre.getText().equalsIgnoreCase("")) {
+				if(Clinica.getInstance().getPacientes().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "No existe ningun paciente", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+				}else if(Clinica.getInstance().buscarPacienteByNombre(textFieldNombre.getText()).isEmpty()) {
+					JOptionPane.showMessageDialog(null, "No existe ningun paciente con ese nombre", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+				}else if(textFieldNombre.getText().equalsIgnoreCase("")) {
 					 JOptionPane.showMessageDialog(null, "Campos del paciente vacios", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 				} else {
-				ArrayList<Paciente> pacientes = Clinica.getInstance().buscarPacienteByNombre(textFieldNombre.getText());
-				loadTable(pacientes, null);
+				condicion = true;
+				pacientes = Clinica.getInstance().buscarPacienteByNombre(textFieldNombre.getText());
+				loadTable(pacientes, null, condicion);
 				
-				scrollPane.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						textFieldNombre2.setText(pacientes.get(tabla.getSelectedRow()).getNombre());
-						textFieldEdad.setText(Integer.toString(pacientes.get(tabla.getSelectedRow()).getEdad()));
-						textPaneDireccion.setText(pacientes.get(tabla.getSelectedRow()).getDireccion());
-						textFieldSector.setText(pacientes.get(tabla.getSelectedRow()).getSector());
-						paciente = pacientes.get(tabla.getSelectedRow());
+				if(!pacientes.isEmpty()) {
+					tabla.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mousePressed(MouseEvent e) {
+							textFieldNombre2.setText(pacientes.get(tabla.getSelectedRow()).getNombre());
+							textFieldEdad.setText(Integer.toString(pacientes.get(tabla.getSelectedRow()).getEdad()));
+							textPaneDireccion.setText(pacientes.get(tabla.getSelectedRow()).getDireccion());
+							textFieldSector.setText(pacientes.get(tabla.getSelectedRow()).getSector());
+							txtfieldGenero.setText(pacientes.get(tabla.getSelectedRow()).getSexo());
+							paciente = pacientes.get(tabla.getSelectedRow());
+						}
+					});
 					}
-				});
 				}
 			}
 		});
@@ -196,11 +207,14 @@ public class BuscarPaciente extends JDialog {
 		JButton btnBuscarIdentificacion = new JButton("");
 		btnBuscarIdentificacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(textFieldIdentificacion.getText().equalsIgnoreCase("")) {
+				if(Clinica.getInstance().buscarPacienteById(textFieldIdentificacion.getText()) == null) {
+					JOptionPane.showMessageDialog(null, "No existe ningun paciente con esa identificación", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+				}else if(textFieldIdentificacion.getText().equalsIgnoreCase("")) {
 					 JOptionPane.showMessageDialog(null, "Campos del paciente vacios", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 				} else {
+					condicion = false;
 					paciente = Clinica.getInstance().buscarPacienteById(textFieldIdentificacion.getText());
-					loadTable(null, paciente);
+					loadTable(null, paciente, condicion);
 					textFieldNombre2.setText(paciente.getNombre());
 					textFieldEdad.setText(Integer.toString(paciente.getEdad()));
 					textPaneDireccion.setText(paciente.getDireccion());
@@ -249,9 +263,9 @@ public class BuscarPaciente extends JDialog {
 		}
 	}
 	
-	public static void loadTable(ArrayList<Paciente> pacientes, Paciente pacienteid) {
+	public static void loadTable(ArrayList<Paciente> pacientes, Paciente pacienteid, boolean condicion) {
 		model.setRowCount(0);
-		if(pacienteid == null) {
+		if(condicion) {
 			fila = new Object[model.getColumnCount()];
 	
 			for (Paciente paciente : pacientes) {
@@ -266,7 +280,7 @@ public class BuscarPaciente extends JDialog {
 			tabla.setModel(model);
 		}
 		
-		if(pacienteid != null) {
+		if(!condicion) {
 			fila = new Object[model.getColumnCount()];
 			
 					fila[0] = pacienteid.getNombre();

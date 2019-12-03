@@ -332,6 +332,12 @@ public class RegPaciente extends JDialog {
 				btnAceptar = new JButton("Aceptar");
 				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+						for (Paciente paciente : Clinica.getInstance().getPacientes()) {
+							if(txtCedula.getText().equalsIgnoreCase(paciente.getCedula())) {
+								JOptionPane.showMessageDialog(null, "Ya existe un paciente con esa ID","Notificacion", JOptionPane.INFORMATION_MESSAGE);
+								return;
+							}
+						}
 						if(txtName.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Nombre del Paciente vacio", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 							return;

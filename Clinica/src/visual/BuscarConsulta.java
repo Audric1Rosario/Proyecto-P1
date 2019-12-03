@@ -86,9 +86,9 @@ public class BuscarConsulta extends JDialog {
 				panel.add(labelMujer);
 				labelMujer.setVisible(false);
 			
-			if(paciente.getSexo().equalsIgnoreCase("Femenino")) {
+			if(paciente.getSexo().equalsIgnoreCase("F")) {
 				labelMujer.setVisible(true);
-			}else if(paciente.getSexo().equalsIgnoreCase("Masculino")) {
+			}else if(paciente.getSexo().equalsIgnoreCase("M")) {
 				labelhombre.setVisible(true);
 			}
 		}
@@ -195,9 +195,9 @@ public class BuscarConsulta extends JDialog {
 			tabla.setModel(model);
 			scrollPane.setViewportView(tabla);
 			loadTable(paciente.getHistoriaClinica());
-			scrollPane.addMouseListener(new MouseAdapter() {
+			tabla.addMouseListener(new MouseAdapter() {
 				@Override
-				public void mouseClicked(MouseEvent e) {
+				public void mousePressed(MouseEvent e) {
 					consulta = paciente.getHistoriaClinica().get(tabla.getSelectedRow());
 				}
 			});

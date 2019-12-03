@@ -99,7 +99,7 @@ public class Clinica implements Serializable {
 
 	public ArrayList<Paciente> buscarPacienteByNombre(String nombrePaciente) {
 		ArrayList<Paciente> listaPacientes = new ArrayList<Paciente>();
-		for (Paciente paciente : listaPacientes) {
+		for (Paciente paciente : pacientes) {
 			if (paciente.getNombre().contains(nombrePaciente)) 
 				listaPacientes.add(paciente);
 		}
