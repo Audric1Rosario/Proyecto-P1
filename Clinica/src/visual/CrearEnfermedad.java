@@ -161,9 +161,13 @@ public class CrearEnfermedad extends JDialog {
 							modificar.setDiagnostico(txtDiagnostico.getText());
 							ListaEnfermedades.rellenarTabla(txtNombreEnfermedad.getText());
 							ListaEnfermedades.sclear();
+							JOptionPane.showMessageDialog(null, "Enfermedad modificada exitosamente.", 
+									"Modificar enfermedad", JOptionPane.INFORMATION_MESSAGE);
 							dispose();
 						} else {
 							Enfermedad nueva = new Enfermedad(txtNombreEnfermedad.getText(), txtSintomas.getText(), txtDiagnostico.getText());
+							JOptionPane.showMessageDialog(null, "Enfermedad creada exitosamente.", 
+									"Crear enfermedad", JOptionPane.INFORMATION_MESSAGE);
 							Clinica.getInstance().addEnfermedad(nueva);
 							clear();
 						}										

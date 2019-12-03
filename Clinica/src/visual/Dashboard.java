@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import javax.swing.BoxLayout;
 
 public class Dashboard extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -232,7 +233,21 @@ public class Dashboard extends JFrame {
 		menuBar.add(mnConfiguracin);
 		
 		JMenuItem mntmOpciones = new JMenuItem("Opciones");
+		mntmOpciones.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (actual instanceof Administrador) {
+					if (((Administrador)actual).getAutoridad() == 1) {
+						Opciones ventana = new Opciones();
+						ventana.setModal(true);
+						ventana.setVisible(true);
+					}
+				}
+			}
+		});
 		mnConfiguracin.add(mntmOpciones);
+		
+		JMenuItem mntmPerfil = new JMenuItem("Perfil");
+		mnConfiguracin.add(mntmPerfil);
 
 		// Ocultar opciones según los permisos del usuario
 		if (actual instanceof Secretaria) {
@@ -281,25 +296,40 @@ public class Dashboard extends JFrame {
 		panelEnfermedades.setBorder(new TitledBorder(null, "Enfermedades cr\u00EDticas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelEnfermedades.setBounds(10, 38, 518, 300);
 		panel.add(panelEnfermedades);
-		panelEnfermedades.setLayout(null);
+		panelEnfermedades.setLayout(new BoxLayout(panelEnfermedades, BoxLayout.X_AXIS));
+		
+		JLabel lblEnferCrit = new JLabel("");
+		panelEnfermedades.add(lblEnferCrit);
 
 		JPanel panelVacunas = new JPanel();
 		panelVacunas.setBorder(new TitledBorder(null, "Vacunaci\u00F3n general", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelVacunas.setBounds(536, 38, 518, 300);
 		panel.add(panelVacunas);
 		panelVacunas.setLayout(null);
+		
+		JLabel lblVacunacion = new JLabel("");
+		lblVacunacion.setBounds(10, 21, 498, 268);
+		panelVacunas.add(lblVacunacion);
 
 		JPanel panelSangre = new JPanel();
 		panelSangre.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Estad\u00EDsticas del tipo de sangre", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panelSangre.setBounds(10, 349, 518, 300);
 		panel.add(panelSangre);
 		panelSangre.setLayout(null);
+		
+		JLabel lblSangre = new JLabel("");
+		lblSangre.setBounds(10, 21, 498, 268);
+		panelSangre.add(lblSangre);
 
 		JPanel panelEdad = new JPanel();
 		panelEdad.setBorder(new TitledBorder(null, "Edades de los pacientes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelEdad.setBounds(536, 349, 518, 300);
 		panel.add(panelEdad);
 		panelEdad.setLayout(null);
+		
+		JLabel lblEdades = new JLabel("");
+		lblEdades.setBounds(10, 21, 498, 268);
+		panelEdad.add(lblEdades);
 
 		JLabel lblUserImage = new JLabel("");
 		lblUserImage.setBounds(871, 11, 29, 25);

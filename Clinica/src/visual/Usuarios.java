@@ -291,7 +291,7 @@ public class Usuarios extends JDialog {
 			panelDoctor.setLayout(null);
 
 			spnCitas = new JSpinner();
-			spnCitas.setModel(new SpinnerNumberModel(1, 1, 20, 1));
+			spnCitas.setModel(new SpinnerNumberModel(1, 1, Clinica.getInstance().getOpcionesSistema().getMaxCitasSist(), 1));
 			spnCitas.setBounds(10, 22, 178, 20);
 			panelDoctor.add(spnCitas);
 

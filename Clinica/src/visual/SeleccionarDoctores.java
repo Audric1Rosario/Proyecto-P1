@@ -40,7 +40,6 @@ public class SeleccionarDoctores extends JDialog {
 	private ArrayList<String> doctoresArr;  
 	private ArrayList<String> doctoresSelec;
 	private Empleado modificar;
-	private int cantMaxDoc;
 	// Lista.
 	private JList lstDoctores;
 	private JList lstSelec;
@@ -68,7 +67,6 @@ public class SeleccionarDoctores extends JDialog {
 	 */
 	public SeleccionarDoctores(Empleado secretaria, ArrayList<String> refDoctores) {
 		this.refDoctores = refDoctores;			// Referencia a la lista pasada.
-		this.cantMaxDoc = 5;
 		this.doctoresArr = new ArrayList<String>();
 		this.doctoresSelec = new ArrayList<String>();
 		this.modificar = secretaria;
@@ -281,9 +279,9 @@ public class SeleccionarDoctores extends JDialog {
 
 		// Habilitar el agregar y eliminar
 		// Deliminar la cantidad de doctores para los que la secretaria puede trabajar.
-		btnAgregar.setEnabled(doctoresArr.size() > 0 && doctoresSelec.size() < cantMaxDoc);
-		if (doctoresSelec.size() >= cantMaxDoc)
-			btnAgregar.setToolTipText("Una secretaria no puede trabajar para más de " + cantMaxDoc + " doctores.");
+		btnAgregar.setEnabled(doctoresArr.size() > 0 && doctoresSelec.size() < Clinica.getInstance().getOpcionesSistema().getMaxDoctoresSist());
+		if (doctoresSelec.size() >= Clinica.getInstance().getOpcionesSistema().getMaxDoctoresSist())
+			btnAgregar.setToolTipText("Una secretaria no puede trabajar para más de " + Clinica.getInstance().getOpcionesSistema().getMaxDoctoresSist() + " doctores.");
 		else 
 			btnAgregar.setToolTipText("");
 		btnEliminar.setEnabled(doctoresSelec.size() > 0);
@@ -320,9 +318,9 @@ public class SeleccionarDoctores extends JDialog {
 
 		// Habilitar botones según quede preparado.
 		// Deliminar la cantidad de doctores para los que la secretaria puede trabajar.
-		btnAgregar.setEnabled(doctoresArr.size() > 0 && doctoresSelec.size() < cantMaxDoc);
-		if (doctoresSelec.size() >= cantMaxDoc)
-			btnAgregar.setToolTipText("Una secretaria no puede trabajar para más de " + cantMaxDoc +" doctores.");
+		btnAgregar.setEnabled(doctoresArr.size() > 0 && doctoresSelec.size() < Clinica.getInstance().getOpcionesSistema().getMaxDoctoresSist());
+		if (doctoresSelec.size() >= Clinica.getInstance().getOpcionesSistema().getMaxDoctoresSist())
+			btnAgregar.setToolTipText("Una secretaria no puede trabajar para más de " + Clinica.getInstance().getOpcionesSistema().getMaxDoctoresSist() +" doctores.");
 		else 
 			btnAgregar.setToolTipText("");
 		btnEliminar.setEnabled(doctoresSelec.size() > 0);

@@ -180,11 +180,15 @@ public class CrearVacuna extends JDialog {
 							modificar.setEfectos(txtEfectos.getText());
 							modificar.setTipo(cbxTipo.getSelectedItem().toString());
 							ListaVacunas.sclear(cbxTipo.getSelectedIndex());
+							JOptionPane.showMessageDialog(null, "Vacuna modificada exitosamente.", 
+									"Modificar vacuna", JOptionPane.INFORMATION_MESSAGE);
 							ListaVacunas.rellenarTabla(cbxTipo.getSelectedIndex());
 							dispose();
 						} else { // Si no lo esta
 							Vacuna nueva = new Vacuna(txtNombreVacuna.getText(), cbxTipo.getSelectedItem().toString(), cbxEnfermedad.getSelectedItem().toString(),
 									txtEfectos.getText());
+							JOptionPane.showMessageDialog(null, "Vacuna creada exitosamente.",
+									"Crear vacuna", JOptionPane.INFORMATION_MESSAGE);
 							Clinica.getInstance().addVacuna(nueva);
 							clear();
 						}

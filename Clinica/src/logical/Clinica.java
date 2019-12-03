@@ -21,7 +21,8 @@ public class Clinica implements Serializable {
 	private ArrayList<Empleado> empleados;
 	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
-
+	private Configuracion opcionesSistema;
+	
 	private Clinica() {
 		super();
 		// Inicializar 
@@ -31,6 +32,7 @@ public class Clinica implements Serializable {
 		this.empleados = new ArrayList<Empleado>();
 		this.enfermedades = new ArrayList<Enfermedad>();
 		this.vacunas = new ArrayList<Vacuna>();
+		this.opcionesSistema = new Configuracion();
 	}
 
 	// Getters
@@ -60,6 +62,14 @@ public class Clinica implements Serializable {
 
 	public void setEnfermedades(ArrayList<Enfermedad> enfermedades) {
 		this.enfermedades = enfermedades;
+	}
+	
+	public Configuracion getOpcionesSistema() {
+	    return opcionesSistema;
+	}
+
+	public void setOpcionesSistema(Configuracion opcionesSistema) {
+	    this.opcionesSistema = opcionesSistema;
 	}
 
 	// 0. Crear una sola clase controladora
