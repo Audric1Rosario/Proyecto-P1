@@ -42,6 +42,9 @@ public class Dashboard extends JFrame {
 	private JPanel contentPane;
 	private Empleado actual;
 	
+	// Label
+	private static JLabel lblNombreUsuario;
+	
 	/**
 	 * Launch the application.
 	 *//*
@@ -260,6 +263,14 @@ public class Dashboard extends JFrame {
 		mnConfiguracin.add(mntmOpciones);
 		
 		JMenuItem mntmPerfil = new JMenuItem("Perfil");
+		mntmPerfil.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Perfil ventana = new Perfil(actual);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+				
+			}
+		});
 		mnConfiguracin.add(mntmPerfil);
 		
 		JMenuItem mntmSalir = new JMenuItem("Salir");
@@ -378,7 +389,7 @@ public class Dashboard extends JFrame {
 				lblUserImage.getHeight(), Image.SCALE_SMOOTH)));
 		panel.add(lblUserImage);
 
-		JLabel lblNombreUsuario = new JLabel("Nombre del usuario");
+		lblNombreUsuario = new JLabel("Nombre del usuario");
 		lblNombreUsuario.setText(actual.getNombre());
 		lblNombreUsuario.setBounds(910, 15, 144, 16);
 		panel.add(lblNombreUsuario);
@@ -395,4 +406,9 @@ public class Dashboard extends JFrame {
 		panel.add(lblClnicaGeneral);
 
 	}
+
+	public static JLabel getLblNombreUsuario() {
+		return lblNombreUsuario;
+	}
+
 }
