@@ -32,6 +32,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.text.ParseException;
+
 import javax.swing.BoxLayout;
 
 public class Dashboard extends JFrame {
@@ -95,7 +97,13 @@ public class Dashboard extends JFrame {
 		JMenuItem mntmRegPaciente = new JMenuItem("Registrar Paciente");
 		mntmRegPaciente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegPaciente ventana = new RegPaciente(null);
+				RegPaciente ventana = null;
+				try {
+					ventana = new RegPaciente(null);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				ventana.setModal(true);
 				ventana.setVisible(true);
 				

@@ -6,6 +6,7 @@ import java.awt.Image;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
@@ -21,10 +22,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.awt.event.ActionEvent;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.MaskFormatter;
 
 import logical.Clinica;
 import logical.Doctor;
@@ -101,8 +104,9 @@ public class RegPaciente extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * @throws ParseException 
 	 */
-	public RegPaciente(Paciente paciente) {
+	public RegPaciente(Paciente paciente) throws ParseException {
 		this.pacienteModificar = paciente;
 
 		if (pacienteModificar != null) {
@@ -213,7 +217,8 @@ public class RegPaciente extends JDialog {
 		lblTelefono.setBounds(10, 95, 90, 14);
 		panel.add(lblTelefono);
 
-		txtPhone = new JTextField();
+		MaskFormatter mask = new MaskFormatter("(###) ###-####");
+		txtPhone = new JFormattedTextField(mask);
 		txtPhone.setBounds(60, 90, 163, 20);
 		if (pacienteModificar != null)
 		{
@@ -227,7 +232,8 @@ public class RegPaciente extends JDialog {
 		lblCelular.setBounds(245, 90, 46, 14);
 		panel.add(lblCelular);
 
-		txtCellphone = new JTextField();
+		MaskFormatter maskara = new MaskFormatter("(###) ###-####");
+		txtCellphone = new JFormattedTextField(maskara);
 		if (pacienteModificar != null)
 			txtCellphone.setText(pacienteModificar.getCelular());
 		txtCellphone.setBounds(294, 87, 176, 20);
@@ -544,4 +550,20 @@ public class RegPaciente extends JDialog {
 		reiniciarLista();
 	}
 
+	/*
+	private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+	{
+	    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+	        (e.KeyChar != '.'))
+	    {
+	            e.Handled = true;
+	    }
+
+	    // only allow one decimal point
+	    if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+	    {
+	        e.Handled = true;
+	    }
+	}
+	*/
 }
