@@ -22,6 +22,7 @@ public class Clinica implements Serializable {
 	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
 	private Configuracion opcionesSistema;
+	private static int codigoConsulta;
 	
 	private Clinica() {
 		super();
@@ -348,5 +349,15 @@ public class Clinica implements Serializable {
 			aux++;
 		}
 		return !existe;
+	}
+	
+	//Para generar el código de la consulta
+	
+	public static int getCodigoConsulta() {
+		return codigoConsulta;
+	}
+	
+	public static void aumentarCodigoConsulta() {
+		codigoConsulta++;
 	}
 }
