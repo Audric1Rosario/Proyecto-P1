@@ -263,6 +263,7 @@ public class Dashboard extends JFrame {
 			mnRegistro.setVisible(false);
 			mnEnfermedades.setVisible(false);
 			mnHistorial.setVisible(false);
+			mnRegistro.setVisible(false);
 			mnVacunacin.setVisible(false);
 			mnAdministracin.setVisible(false);
 			mntmConsultas.setVisible(false);
@@ -272,7 +273,7 @@ public class Dashboard extends JFrame {
 		if (actual instanceof Doctor) {
 			mntmRegPaciente.setVisible(false);
 			mntmAgregarEnfermedad.setVisible(false);
-			//mntmControlEnfermedades.setVisible(false);
+			mnRegistro.setVisible(false);
 			mntmCrearVacuna.setVisible(false);
 			mnAdministracin.setVisible(false);
 			mntmOpciones.setVisible(false);

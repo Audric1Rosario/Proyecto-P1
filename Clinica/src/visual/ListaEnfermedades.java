@@ -240,17 +240,7 @@ public class ListaEnfermedades extends JDialog {
 				btnModificar.setActionCommand("OK");				
 				buttonPane.add(btnModificar);
 
-				if (usuarioActual instanceof Doctor || usuarioActual instanceof Secretaria) {
-					btnModificar.setVisible(false);
-					btnEliminar.setVisible(false);
-				}
-
-				if (usuarioActual instanceof Administrador) {
-					if (((Administrador)usuarioActual).getAutoridad() > 3) {
-						btnModificar.setVisible(false);
-						btnEliminar.setVisible(false);
-					}
-				}
+				
 
 				getRootPane().setDefaultButton(btnModificar);
 			}
@@ -280,6 +270,19 @@ public class ListaEnfermedades extends JDialog {
 				});
 				btnCerrar.setActionCommand("Cancel");
 				buttonPane.add(btnCerrar);
+			}
+		}
+		
+		// Luego de crear todo, hacer que las cosas sean visibles o no de acuerdo a quien ingresa a la lista.
+		if (usuarioActual instanceof Doctor || usuarioActual instanceof Secretaria) {
+			btnModificar.setVisible(false);
+			btnEliminar.setVisible(false);
+		}
+
+		if (usuarioActual instanceof Administrador) {
+			if (((Administrador)usuarioActual).getAutoridad() > 3) {
+				btnModificar.setVisible(false);
+				btnEliminar.setVisible(false);
 			}
 		}
 		rellenarTabla("");

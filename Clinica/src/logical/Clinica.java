@@ -2,7 +2,7 @@ package logical;
 
 import java.sql.Date;
 import java.util.ArrayList;
-
+import java.util.Collections;
 // Para manejo de ficheros:
 import java.io.Serializable;
 
@@ -237,9 +237,14 @@ public class Clinica implements Serializable {
 	// Buscar las enfermedades:
 	public ArrayList<Enfermedad> buscarEnfermedadByFilter(String nombreEnfermedad) {	// Filtro de nombre
 		ArrayList<Enfermedad> enfermedadesBuscadas = new ArrayList<Enfermedad>();
-		for (Enfermedad enfermedad : enfermedades) {
-			if (enfermedad.getNombre().toLowerCase().contains(nombreEnfermedad.toLowerCase())) {
-				enfermedadesBuscadas.add(enfermedad);
+
+		if (nombreEnfermedad.equals("")) {
+			Collections.copy(enfermedadesBuscadas, enfermedades);
+		} else {
+			for (Enfermedad enfermedad : enfermedades) {
+				if (enfermedad.getNombre().toLowerCase().contains(nombreEnfermedad.toLowerCase())) {
+					enfermedadesBuscadas.add(enfermedad);
+				}
 			}
 		}
 		return enfermedadesBuscadas;

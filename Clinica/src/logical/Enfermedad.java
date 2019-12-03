@@ -9,6 +9,7 @@ public class Enfermedad implements Serializable {
 	private String sintomas;
 	private String diagnostico;
 	private Date fechaRegistro;
+	private boolean isRevision;		// Para saber si está en revisión o no.
 	private long cantPacientes;		// Cantidad de pacientes con esta enfermedad
 	
 	public Enfermedad(String nombre, String sintomas, String diagnostico) {
@@ -18,6 +19,7 @@ public class Enfermedad implements Serializable {
 		this.diagnostico = diagnostico;
 		this.fechaRegistro = new Date();	 // El día que se registro esta enfermedad
 		this.cantPacientes = 0;
+		this.isRevision = false;			// Iniciar con que no está en revisión
 	}
 
 	public String getNombre() {
@@ -59,9 +61,12 @@ public class Enfermedad implements Serializable {
 	public void setCantPacientes(long cantPacientes) {
 		this.cantPacientes = cantPacientes;
 	}
-	
-	
-	
-	
 
+	public boolean isRevision() {
+		return isRevision;
+	}
+
+	public void setRevision(boolean isRevision) {
+		this.isRevision = isRevision;
+	}
 }

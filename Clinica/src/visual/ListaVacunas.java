@@ -85,7 +85,7 @@ public class ListaVacunas extends JDialog {
 	 */
 	public ListaVacunas(Empleado usuarioActual) {
 		this.usuarioActual = usuarioActual;
-		this.vacunaModificar = null;
+		ListaVacunas.vacunaModificar = null;
 		setResizable(false);
 		setTitle("Lista de vacunas.");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ListaVacunas.class.getResource("/image/caduceus.png")));
@@ -247,19 +247,7 @@ public class ListaVacunas extends JDialog {
 				btnModificar.setActionCommand("OK");
 				buttonPane.add(btnModificar);
 				getRootPane().setDefaultButton(btnModificar);
-				if (usuarioActual instanceof Doctor || usuarioActual instanceof Secretaria) {
-					btnModificar.setEnabled(false);
-					btnModificar.setVisible(false);
-					btnEliminar.setEnabled(false);
-					btnEliminar.setVisible(false);
-				}
 				
-				if (usuarioActual instanceof Administrador) {
-					if (((Administrador)usuarioActual).getAutoridad() > 3) {
-						btnModificar.setEnabled(false);
-						btnModificar.setVisible(false);
-					}
-				}
 			}
 			{
 				JButton btnCerrar = new JButton("Cerrar");
@@ -289,7 +277,20 @@ public class ListaVacunas extends JDialog {
 				buttonPane.add(btnCerrar);
 			}
 		}
-
+		// Luego de crear todo, ocultar para algunos usuarios.
+		if (usuarioActual instanceof Doctor || usuarioActual instanceof Secretaria) {
+			btnModificar.setEnabled(false);
+			btnModificar.setVisible(false);
+			btnEliminar.setEnabled(false);
+			btnEliminar.setVisible(false);
+		}
+		
+		if (usuarioActual instanceof Administrador) {
+			if (((Administrador)usuarioActual).getAutoridad() > 3) {
+				btnModificar.setEnabled(false);
+				btnModificar.setVisible(false);
+			}
+		}
 		rellenarTabla(0);
 	}
 
