@@ -310,6 +310,8 @@ public class ControlEnfermedades extends JDialog {
 				});
 				btnAceptar.setEnabled(false);
 				btnAceptar.setActionCommand("OK");
+				if (!(empleadoActual instanceof Administrador))
+					btnAceptar.setVisible(false);
 				buttonPane.add(btnAceptar);
 				getRootPane().setDefaultButton(btnAceptar);
 			}
@@ -424,10 +426,24 @@ public class ControlEnfermedades extends JDialog {
 			txtEstadistica.setText(data);
 
 			// Solo se permite poner 10 enfermedades en revisión
-			if (tableRevision.getModel().getRowCount() <= 10 && !buscada.isRevision())
-				chckbxEstEnRevisin.setEnabled(true);
-			else 
-				chckbxEstEnRevisin.setEnabled(buscada.isRevision());
+			if (empleadoActual instanceof Administrador) {
+				if (tableRevision.getModel().getRowCount() < 10 && !buscada.isRevision()) {
+					chckbxEstEnRevisin.setEnabled(true);
+					chckbxEstEnRevisin.setToolTipText("");
+				}
+				else {
+					chckbxEstEnRevisin.setEnabled(buscada.isRevision());
+					if (razon) {
+						chckbxEstEnRevisin.setToolTipText("No puede agregar más de 10 enfermedades en revisión.");
+					} else {
+						chckbxEstEnRevisin.setToolTipText("");
+					}
+				}
+					
+			} else {
+				chckbxEstEnRevisin.setEnabled(false);
+			}
+			
 
 
 			chckbxEstEnRevisin.setSelected(buscada.isRevision());
@@ -443,7 +459,7 @@ public class ControlEnfermedades extends JDialog {
 				while (aux < paciente.getEnfermedades().size() && !encontrado) {
 					if (paciente.getEnfermedades().get(aux).equalsIgnoreCase(buscada.getNombre())) {
 						encontrado = true;
-						pacientes.add(paciente.getEnfermedades().get(aux));
+						pacientes.add(paciente.getNombre());
 					}
 					aux++;
 				}
@@ -471,5 +487,6 @@ public class ControlEnfermedades extends JDialog {
 		chckbxEstEnRevisin.setEnabled(false);
 		tableEnferSist.clearSelection();
 		tableRevision.clearSelection();
+		listModel.clear(); // Vaciar lista.
 	}
 }

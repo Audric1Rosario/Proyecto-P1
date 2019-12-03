@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.ParseException;
+import java.util.Date;
 
 import javax.swing.BoxLayout;
 
@@ -257,6 +258,30 @@ public class Dashboard extends JFrame {
 		
 		JMenuItem mntmPerfil = new JMenuItem("Perfil");
 		mnConfiguracin.add(mntmPerfil);
+		
+		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Guardar datos.
+				FileOutputStream clinicaGuardar;
+				ObjectOutputStream clinicaWrite;
+				actual.setLastConnection(new Date());
+				try {
+					clinicaGuardar = new FileOutputStream("data/clinica.dat");
+					clinicaWrite = new ObjectOutputStream(clinicaGuardar);
+					clinicaWrite.writeObject(Clinica.getInstance());
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				Login ventana = new Login();
+				ventana.setVisible(true);
+				dispose();
+			}
+		});
+		mnConfiguracin.add(mntmSalir);
 
 		// Ocultar opciones según los permisos del usuario
 		if (actual instanceof Secretaria) {
