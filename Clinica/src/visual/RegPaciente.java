@@ -371,9 +371,7 @@ public class RegPaciente extends JDialog {
 						if(txtAddress.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Direccion del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
 							return;
-						}
-
-						else { 
+						} else { 
 
 							/*
 							 * public Paciente(String nombre, String cedula, String seguro, int edad, String estadoCivil,
@@ -385,7 +383,8 @@ public class RegPaciente extends JDialog {
 									cbxSector.getSelectedItem().toString(),txtPhone.getText(), txtCellphone.getText(), txtEmail.getText(), enfermedadesSelec);
 							Clinica.getInstance().addPaciente(aux);		
 							JOptionPane.showMessageDialog(null, "Paciente Agregado","Notificacion", JOptionPane.INFORMATION_MESSAGE);
-							dispose();
+							clear();
+							iniciarLista();
 						}
 						
 						
@@ -548,6 +547,27 @@ public class RegPaciente extends JDialog {
 			Collections.sort(enfermedadesArr);
 		}
 		reiniciarLista();
+	}
+	
+	private void clear() {
+		// Limpiar todos los campos.
+		txtName.setText(""); 
+		txtPhone.setText("");
+		rdbtnMasculino.setSelected(true);
+		rdbtnFemenino.setSelected(false);
+		sexo = "M";
+		spnAge.setValue(Integer.valueOf("1"));
+		txtCellphone.setText("");
+		txtSave.setText("");
+		txtCedula.setText("");
+		cbxSector.setSelectedIndex(0);
+		txtAddress.setText("");
+		spnHeight.setValue(Integer.valueOf("1"));
+		rdbtnCasado.setSelected(true);
+		rdbtnSoltero.setSelected(true);
+		civil = "Casado";
+		txtEmail.setText("");
+		return;
 	}
 
 	/*

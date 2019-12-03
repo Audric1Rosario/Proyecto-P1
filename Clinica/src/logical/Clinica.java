@@ -239,7 +239,8 @@ public class Clinica implements Serializable {
 		ArrayList<Enfermedad> enfermedadesBuscadas = new ArrayList<Enfermedad>();
 
 		if (nombreEnfermedad.equals("")) {
-			Collections.copy(enfermedadesBuscadas, enfermedades);
+			//Collections.copy(enfermedadesBuscadas, enfermedades);
+			return enfermedades;
 		} else {
 			for (Enfermedad enfermedad : enfermedades) {
 				if (enfermedad.getNombre().toLowerCase().contains(nombreEnfermedad.toLowerCase())) {
