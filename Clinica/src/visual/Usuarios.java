@@ -275,7 +275,7 @@ public class Usuarios extends JDialog {
 					} else {
 						doctorId = new ArrayList<String>();						
 					}
-														
+
 					SeleccionarDoctores ventana = new SeleccionarDoctores(btnModificar.getText().equalsIgnoreCase("Aceptar") ? usuarioModificar : null , doctorId);
 					ventana.setModal(true);
 					ventana.setVisible(true);
@@ -365,19 +365,19 @@ public class Usuarios extends JDialog {
 								JOptionPane.showMessageDialog(null, "Por favor ingrese una contraseña.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 								return;
 							}
-							
+
 							// Username no repetible 
 							if (!Clinica.getInstance().verificarUsuario(txtUsername.getText())) {
 								JOptionPane.showConfirmDialog(null, "Este nombre de usuario no está disponible.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 								return;
 							}
-							
+
 							// Contraseña de entre 8 a 16 caracteres 
 							if (txtPassword.getText().length() < 8 || txtPassword.getText().length() > 16) {
 								JOptionPane.showConfirmDialog(null, "Por favor, digíte una contraseña de entre 8 a 16 caracteres.", "Advertencia", JOptionPane.WARNING_MESSAGE);
 								return;
 							}
-							
+
 							// Verificar que si la clase a crear es una secretaria, tenga al menos 1 doctor seleccionado.
 							if (String.valueOf(cbxTipoUsuario.getSelectedItem()).equalsIgnoreCase("Secretario/a")) {
 								if (doctorId.size() == 0)
@@ -459,7 +459,7 @@ public class Usuarios extends JDialog {
 						if (userTable.getSelectedRow() >= 0) {
 							int ind = Clinica.getInstance().buscarIndexEmpleado(userTable.getValueAt(userTable.getSelectedRow(), 0).toString());
 							Empleado empleado = Clinica.getInstance().getEmpleados().get(ind), comprobar;
-							
+
 							// Si es una secretaria, todos los doctores para los que esta trabajaba ya no tienen secretaria.
 							if (empleado instanceof Secretaria) {
 								for (String doctor : ((Secretaria)empleado).getIdDoctores()) {
@@ -469,7 +469,66 @@ public class Usuarios extends JDialog {
 									}
 								}
 							}
-							
+							// Si es un doctor entonces hay que eliminarlo de la lista de cada secretaria
+							if (empleado instanceof Doctor) {
+								// Si tiene una secretaria, buscarla y eliminarlo de su lista
+								if (((Doctor)empleado).isHasSecretaria()) {
+									Secretaria buscar = null;
+									boolean encontrar = false;
+									int aux = 0;
+									// Esto es para poder encontrar la secretaria del doctor y luego poder quitarle el doctor
+									while (!encontrar && aux < Clinica.getInstance().getEmpleados().size()) {
+										if (Clinica.getInstance().getEmpleados().get(aux) instanceof Secretaria) {
+											for (String doctor : ((Secretaria)Clinica.getInstance().getEmpleados().get(aux)).getIdDoctores()) {
+												if (doctor.equalsIgnoreCase(empleado.getIdEmpleado())) {
+													encontrar = true;
+													buscar = ((Secretaria)Clinica.getInstance().getEmpleados().get(aux));
+												}
+											}
+										}
+										aux++;
+									}
+
+									if (buscar == null) {
+										JOptionPane.showMessageDialog(null, "Error al eliminar.", "Usuarios", JOptionPane.ERROR_MESSAGE);
+										return;
+									} else {
+										if (buscar.getIdDoctores().size() - 1 == 0) {
+
+											int seleccion = JOptionPane.showConfirmDialog(null, "Si se elimina este doctor, la secretaria: (" + (buscar.getIdEmpleado()) + 
+													") no tendrá para quien trabajar,\n y por lo tanto su cuenta será eliminada del sistema.\n\n ¿Está seguro de proceder?",
+													"Usuarios", JOptionPane.YES_NO_OPTION,	JOptionPane.WARNING_MESSAGE);
+											switch (seleccion) {
+											case JOptionPane.YES_OPTION:
+												// Eliminar la secre.
+												Clinica.getInstance().getEmpleados().remove(buscar);
+												
+												break;
+
+											case JOptionPane.NO_OPTION:
+												JOptionPane.showMessageDialog(null, "El doctor (" + empleado.getIdEmpleado() + ") se mantendrá en el sistema.", "Usuarios",
+														JOptionPane.INFORMATION_MESSAGE);
+												return;	// Salir, ya que decidió eso
+
+											default:
+												return;	// Salir para no borrar nada.
+											}										
+										} else {
+											int indexSecre = buscar.getIdDoctores().indexOf(empleado.getIdEmpleado());
+											
+											if (indexSecre == -1) {
+												JOptionPane.showMessageDialog(null, "Error al borrar.", "Usuarios", JOptionPane.ERROR_MESSAGE);
+												return;
+											} else {
+												buscar.getIdDoctores().remove(indexSecre);												
+											}
+										}
+									}
+									
+
+								}
+							}
+
 							if (ind != -1)
 								Clinica.getInstance().getEmpleados().remove(ind);
 						}
@@ -530,7 +589,7 @@ public class Usuarios extends JDialog {
 		txtCantDoctores.setText("");
 		btnModificar.setText("Modificar");
 		btnCrear.setText("Crear");
-		
+
 		// Botones
 		btnDoctores.setEnabled(true);
 		btnModificar.setEnabled(false);
@@ -545,7 +604,7 @@ public class Usuarios extends JDialog {
 			cbxTipoUsuario.setEnabled(true);
 			cbxTipoUsuario.setSelectedIndex(0);
 		}
-		
+
 		if (esAdmin)
 		{
 			spnAutoridad.setValue(Integer.valueOf("2"));
@@ -568,7 +627,7 @@ public class Usuarios extends JDialog {
 		for (Empleado empleado : Clinica.getInstance().getEmpleados()) {
 			row[0] = empleado.getIdEmpleado();
 			row[1] = empleado.getNombre();
-			
+
 			if (esAdmin)
 				row[2] = empleado.getUsername();
 			else {
@@ -579,7 +638,7 @@ public class Usuarios extends JDialog {
 				else
 					row[2] = "Error";
 			}
-			
+
 			if (esAdmin) {
 				if (empleado instanceof Administrador)
 					row[3] = String.valueOf(((Administrador)empleado).getAutoridad());

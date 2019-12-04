@@ -280,7 +280,8 @@ public class CrearVacuna extends JDialog {
 			btnAceptar.setEnabled(true);
 			cbxEnfermedad.addItem("<Seleccione>");
 			for (Enfermedad enfermedad : Clinica.getInstance().getEnfermedades()) {
-				cbxEnfermedad.addItem(enfermedad.getNombre());
+				if (enfermedad.isListar())
+					cbxEnfermedad.addItem(enfermedad.getNombre());
 			}			
 		}
 		return;
