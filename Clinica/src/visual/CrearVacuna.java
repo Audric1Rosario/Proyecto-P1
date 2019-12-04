@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 
 import logical.Clinica;
 import logical.Enfermedad;
+import logical.Paciente;
 import logical.Vacuna;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -28,23 +29,23 @@ import javax.swing.DefaultComboBoxModel;
 public class CrearVacuna extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	
+
 	// Text area
 	private JTextArea txtEfectos;
-	
+
 	// Botones
 	private JButton btnAceptar;
-	
+
 	// Combobox
 	private JComboBox cbxTipo;
 	private JComboBox cbxEnfermedad;
-	
+
 	// Text field
 	private JTextField txtNombreVacuna;
-	
+
 	// Variables lógicas
 	private Vacuna modificar;
-	
+
 	/**
 	 * Launch the application.
 	 */ /*
@@ -57,14 +58,14 @@ public class CrearVacuna extends JDialog {
 			e.printStackTrace();
 		}
 	}
-*/
+	  */
 	/**
 	 * Create the dialog.
 	 */
 	public CrearVacuna(Vacuna modificar) {
 		setResizable(false);
 		this.modificar = modificar;
-		
+
 		if (modificar == null)
 			setTitle("Crear Vacuna.");
 		else 
@@ -120,7 +121,7 @@ public class CrearVacuna extends JDialog {
 				lblTipo.setBounds(21, 43, 120, 14);
 				panel.add(lblTipo);
 			}
-			
+
 			cbxTipo = new JComboBox();
 			cbxTipo.setModel(new DefaultComboBoxModel(new String[] {"<Seleccione>", "Virus activo", "Muerta", "Toxoide", "Biosint\u00E9tica"}));
 			cbxTipo.setBounds(151, 40, 272, 20);
@@ -149,7 +150,7 @@ public class CrearVacuna extends JDialog {
 				btnAceptar.setEnabled(false);
 				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
+
 						// Verificar que haya información
 						if (txtNombreVacuna.getText().equals("")){
 							JOptionPane.showMessageDialog(null, "Por favor, ingrese el nombre de la vacuna.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
@@ -167,7 +168,7 @@ public class CrearVacuna extends JDialog {
 							JOptionPane.showMessageDialog(null, "Por favor, escriba los efectos que produce la vacuna.", "Advertencia", JOptionPane.WARNING_MESSAGE);
 							return;
 						}
-						
+
 						// Verficar que si este disponible el nombre de la vacuna.
 						if (modificar == null) {
 							if (!Clinica.getInstance().verificarVacuna(txtNombreVacuna.getText())) {
@@ -175,7 +176,7 @@ public class CrearVacuna extends JDialog {
 								return;
 							}
 						}
-						
+
 						if (modificar != null) { 	//	si esta modificando
 							modificar.setEfectos(txtEfectos.getText());
 							modificar.setTipo(cbxTipo.getSelectedItem().toString());
@@ -183,13 +184,61 @@ public class CrearVacuna extends JDialog {
 							JOptionPane.showMessageDialog(null, "Vacuna modificada exitosamente.", 
 									"Modificar vacuna", JOptionPane.INFORMATION_MESSAGE);
 							ListaVacunas.rellenarTabla(cbxTipo.getSelectedIndex());
+							// Modificarla en cada paciente
+							int index, aux;
+							boolean encontrado = false;
+							for (Paciente paciente : Clinica.getInstance().getPacientes()) {
+								aux = paciente.getTodasLasVacunas().size() - 1;
+								index = -1;
+								// Encontrar last index
+								while (aux >= 0 && !encontrado) {
+									if (modificar.getNombre().equalsIgnoreCase(paciente.getTodasLasVacunas().get(aux).getNombre())) {
+										encontrado = true;
+										index = aux;
+									}
+									aux--;
+								}
+
+								if (index != -1) {
+									paciente.getTodasLasVacunas().get(index).setEfectos(modificar.getEfectos());
+									paciente.getTodasLasVacunas().get(index).setTipo(modificar.getTipo());
+								}
+							}
+
 							dispose();
 						} else { // Si no lo esta
-							Vacuna nueva = new Vacuna(txtNombreVacuna.getText(), cbxTipo.getSelectedItem().toString(), cbxEnfermedad.getSelectedItem().toString(),
-									txtEfectos.getText());
-							JOptionPane.showMessageDialog(null, "Vacuna creada exitosamente.",
-									"Crear vacuna", JOptionPane.INFORMATION_MESSAGE);
-							Clinica.getInstance().addVacuna(nueva);
+
+							// Primero buscar si hay una vacuna que tenga el mismo nombre guardado
+							Vacuna activar = null;
+							boolean volverActivar = false; 
+							int aux = 0;
+							while (!volverActivar && aux < Clinica.getInstance().getVacunas().size()) {
+								if (!Clinica.getInstance().getVacunas().get(aux).isListar()) { // Enfermedades desactivadas.
+									if (Clinica.getInstance().getVacunas().get(aux).getNombre().equalsIgnoreCase(txtNombreVacuna.getText())) {
+										// Significa que no es una creación, sólo se vuelve a activar y a cambiar los datos de una enfermedad que ya existe.
+										volverActivar = true;
+										activar = Clinica.getInstance().getVacunas().get(aux);
+									}
+								}
+								aux++;
+							}
+
+							if (!volverActivar) { // Si no pasa el caso anterior
+								Vacuna nueva = new Vacuna(txtNombreVacuna.getText(), cbxTipo.getSelectedItem().toString(), cbxEnfermedad.getSelectedItem().toString(),
+										txtEfectos.getText());
+								JOptionPane.showMessageDialog(null, "Vacuna creada exitosamente.",
+										"Crear vacuna", JOptionPane.INFORMATION_MESSAGE);
+								Clinica.getInstance().addVacuna(nueva);
+								// Añadirle esa vacuna a todos los pacientes.
+								for (Paciente paciente : Clinica.getInstance().getPacientes()) {
+									paciente.getTodasLasVacunas().add(nueva);
+								}
+								// Se hacen las cosas de creación normalmente
+							} else { // Pero si ya existía
+								activar.setTipo(cbxTipo.getSelectedItem().toString());
+								activar.setEnfermedadNombre(cbxEnfermedad.getSelectedItem().toString());
+								activar.setListar(true);   // Esta enfermedad vuelve a estar activa.
+							}
 							clear();
 						}
 					}
@@ -214,7 +263,7 @@ public class CrearVacuna extends JDialog {
 			rellenarDatos();
 		}
 	}
-	
+
 	private void initVacuna() {
 		if (Clinica.getInstance().getEnfermedades().size() == 0) {
 			if (modificar != null) {
@@ -222,7 +271,7 @@ public class CrearVacuna extends JDialog {
 			} else {
 				JOptionPane.showMessageDialog(null, "No existen enfermedades para curar. No es posible crear una vacuna.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 			}
-			
+
 			txtNombreVacuna.setEnabled(false);
 			cbxTipo.setEnabled(false);
 			cbxEnfermedad.setEnabled(false);
@@ -236,7 +285,7 @@ public class CrearVacuna extends JDialog {
 		}
 		return;
 	}
-	
+
 	private void rellenarDatos() {
 		int aux = 0; boolean encontrado = false;
 		txtNombreVacuna.setText(modificar.getNombre());
@@ -259,7 +308,7 @@ public class CrearVacuna extends JDialog {
 		txtEfectos.setText(modificar.getEfectos());
 		return;
 	}
-	
+
 	private void clear()  {
 		txtNombreVacuna.setText("");
 		cbxTipo.setSelectedIndex(0);

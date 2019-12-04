@@ -80,6 +80,7 @@ public class RegPaciente extends JDialog {
 
 	// variables logicas
 	private String screenPath;
+	private MaskFormatter mask;
 	private Paciente pacienteModificar;
 	private ArrayList<String> enfermedadesArr;
 	private ArrayList<String> enfermedadesModi;
@@ -158,7 +159,7 @@ public class RegPaciente extends JDialog {
 			}
 		});
 		rdbtnFemenino.setBounds(125, 63, 46, 14);
-		
+
 		panel.add(rdbtnFemenino);
 
 		JLabel lblEdad = new JLabel("Edad:");
@@ -169,7 +170,7 @@ public class RegPaciente extends JDialog {
 		spnAge.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spnAge.setBounds(230, 60, 69, 20);
 		panel.add(spnAge);
-		
+
 		JLabel lblGrupoSanguineo = new JLabel("Grupo sangu\u00EDneo:");
 		lblGrupoSanguineo.setBounds(309, 63, 113, 14);
 		panel.add(lblGrupoSanguineo);
@@ -177,7 +178,7 @@ public class RegPaciente extends JDialog {
 		cbxBlood = new JComboBox<String>();
 		cbxBlood.setToolTipText("Tipo de sangre.");
 		cbxBlood.setModel(new DefaultComboBoxModel<String>(new String[] {"A", "A+", "A-", "B", "B+", "B-", "AB", "O", "O+", "O-"}));
-		
+
 
 		cbxBlood.setBounds(432, 60, 69, 20);
 		panel.add(cbxBlood);
@@ -186,7 +187,7 @@ public class RegPaciente extends JDialog {
 		lblTelefono.setBounds(15, 95, 58, 14);
 		panel.add(lblTelefono);
 
-		MaskFormatter mask = new MaskFormatter("(###) ###-####");
+		mask = new MaskFormatter("(###) ###-####");
 		txtPhone = new JFormattedTextField(mask);
 		txtPhone.setBounds(80, 92, 176, 20);
 		panel.add(txtPhone);
@@ -225,7 +226,7 @@ public class RegPaciente extends JDialog {
 
 		cbxSector = new JComboBox<String>();
 		cbxSector.setModel(new DefaultComboBoxModel<String>(new String[] {"Hig\u00FCey", "La Romana", "Monte Cristi", "Puerto Plata", "Santo Domingo", "Santiago de los Caballeros", "San Cristobal", "San Pedro de Macoris"}));
-	
+
 		cbxSector.setBounds(80, 153, 301, 20);
 		panel.add(cbxSector);
 
@@ -237,7 +238,7 @@ public class RegPaciente extends JDialog {
 		txtAddress.setBounds(80, 184, 393, 20);
 		panel.add(txtAddress);
 		txtAddress.setColumns(10);
-		
+
 		JLabel lblEstatura = new JLabel("Estatura:");
 		lblEstatura.setBounds(15, 218, 58, 14);
 		panel.add(lblEstatura);
@@ -250,7 +251,7 @@ public class RegPaciente extends JDialog {
 		JLabel lblEstadoCivil = new JLabel("Estado Civil:");
 		lblEstadoCivil.setBounds(180, 218, 71, 14);
 		panel.add(lblEstadoCivil);
-		
+
 		rdbtnCasado = new JRadioButton("Casado");
 		rdbtnCasado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -269,7 +270,7 @@ public class RegPaciente extends JDialog {
 				rdbtnSoltero.setSelected(true);
 			}
 		});
-		
+
 		rdbtnSoltero.setBounds(258, 218, 83, 14);
 		panel.add(rdbtnSoltero);
 
@@ -296,7 +297,7 @@ public class RegPaciente extends JDialog {
 							JOptionPane.showMessageDialog(null, "Nombre del Paciente vacio", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 							return;
 						}
-				
+
 						if(txtPhone.getText().equalsIgnoreCase("")) {
 							JOptionPane.showMessageDialog(null, "Telefono del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
 							return;
@@ -309,22 +310,22 @@ public class RegPaciente extends JDialog {
 							JOptionPane.showMessageDialog(null, "Direccion del Paciente vacio","Notificacion", JOptionPane.INFORMATION_MESSAGE);
 							return;
 						}					
-						
+
 						Enfermedad buscar;
 						if (pacienteModificar == null) { 						
 							Paciente aux = new Paciente( txtName.getText(), txtCedula.getText(), txtSave.getText(),Integer.valueOf(spnAge.getValue().toString()),
 									rdbtnMasculino.isSelected() ? "M" : "F", rdbtnSoltero.isSelected() ? "Soltero" : "Casado", cbxBlood.getSelectedItem().toString(), 
-									Float.valueOf(spnHeight.getValue().toString()), txtAddress.getText(), cbxSector.getSelectedItem().toString(),txtPhone.getText(),
-									txtCellphone.getText(), txtEmail.getText(), enfermedadesSelec);
+											Float.valueOf(spnHeight.getValue().toString()), txtAddress.getText(), cbxSector.getSelectedItem().toString(),txtPhone.getText(),
+											txtCellphone.getText(), txtEmail.getText(), enfermedadesSelec);
 							Clinica.getInstance().addPaciente(aux);	
-							
+
 							JOptionPane.showMessageDialog(null, "Paciente agregado.","Notificación.", JOptionPane.INFORMATION_MESSAGE);
 							// Saber a cuales enfermedades se le esta agregando...							
 							for (String enfer : enfermedadesSelec) {
 								buscar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
 								buscar.setCantPacientes(buscar.getCantPacientes() + 1);  	// Sumar a la cantidad de pacientes.
 							}
-							
+
 							clear();
 							iniciarLista();
 						} else {
@@ -342,7 +343,7 @@ public class RegPaciente extends JDialog {
 							pacienteModificar.setTelefono(txtPhone.getText());
 							pacienteModificar.setCelular(txtCellphone.getText());
 							pacienteModificar.setEmail(txtEmail.getText());
-							
+
 							// Saber a cuales enfermedades se les está quitando y sumando.					
 							int index;
 							for (String enfer : enfermedadesSelec) {
@@ -359,14 +360,13 @@ public class RegPaciente extends JDialog {
 								buscar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
 								buscar.setCantPacientes(buscar.getCantPacientes() - 1);
 							}
-							pacienteModificar.setEnfermedades(enfermedadesSelec);
-							clear();
+							pacienteModificar.setEnfermedades(enfermedadesSelec);							
 							BuscarPaciente.loadTable(Clinica.getInstance().buscarPacienteByNombre(pacienteModificar.getNombre()), pacienteModificar, false);							
 							dispose();
 							JOptionPane.showMessageDialog(null, "Paciente modificado.","Notificación.", JOptionPane.INFORMATION_MESSAGE);
 						}
-						
-						
+
+
 					}});
 				btnAceptar.setActionCommand("OK");
 				btnCerrar.add(btnAceptar);
@@ -464,7 +464,7 @@ public class RegPaciente extends JDialog {
 			int aux;
 			// Título
 			setTitle("Modificar paciente.");
-			
+
 			// Nombre
 			txtName.setText(pacienteModificar.getNombre());
 			txtName.setEditable(false);
@@ -533,27 +533,32 @@ public class RegPaciente extends JDialog {
 
 			// Email
 			txtEmail.setText(pacienteModificar.getEmail());
-			
+
 			// Rellenar las enfermedades que tiene el paciente hasta el momento.
 			for (String data : pacienteModificar.getEnfermedades()) {
-				enfermedadesSelec.add(data);
-				enfermedadesModi.add(data);	// Para saber cuales son las que hay que restarle al salir.
-			}
-			
-			// Rellenar las enfermedades que 
-			for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
-				if (enfermedadesSelec.indexOf(enfer.getNombre()) == -1) { // agregar si no se encuentra aquí
-					enfermedadesArr.add(enfer.getNombre());
+				// ya que verificar revisa si se puede listar, y permite saber si se puede crear.
+				if (Clinica.getInstance().verificarEnfermedad(data) == false) {
+					enfermedadesSelec.add(data);
+					enfermedadesModi.add(data);
 				}
 			}
-			
+
+			// Rellenar las enfermedades que 
+			for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
+				if (enfer.isListar()) {
+					if (enfermedadesSelec.indexOf(enfer.getNombre()) == -1) { // agregar si no se encuentra aquí
+						enfermedadesArr.add(enfer.getNombre());
+					}
+				}
+			}
+
 			// Ordenar alfabéticamente
 			Collections.sort(enfermedadesSelec);
 			Collections.sort(enfermedadesArr);
 			Collections.sort(enfermedadesModi);
 			// Reiniciar listas
 			reiniciarLista();
-			
+
 		} else if (pacienteModificar == null)
 			iniciarLista();
 	}
@@ -568,9 +573,10 @@ public class RegPaciente extends JDialog {
 		lstSistema.setModel(model);
 		enfermedadesArr = new ArrayList<String>();
 		enfermedadesSelec = new ArrayList<String>();
-		
+
 		for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
-			enfermedadesArr.add(enfer.getNombre());
+			if (enfer.isListar())
+				enfermedadesArr.add(enfer.getNombre());
 		}
 
 		Collections.sort(enfermedadesArr);
@@ -607,7 +613,7 @@ public class RegPaciente extends JDialog {
 		}
 		btnAgregar.setEnabled(lstSistema.getModel().getSize() > 0);
 		btnRemover.setEnabled(lstPaciente.getModel().getSize() > 0);
-		
+
 	}
 
 	private void actualizar(boolean razon, int index) {
@@ -623,15 +629,16 @@ public class RegPaciente extends JDialog {
 		}
 		reiniciarLista();
 	}
-	
+
 	private void clear() {
 		// Limpiar todos los campos.
 		txtName.setText(""); 
-		txtPhone.setText("");
+		((JFormattedTextField)txtPhone).setValue(null);
+		txtPhone = new JFormattedTextField(mask);
 		rdbtnMasculino.setSelected(true);
 		rdbtnFemenino.setSelected(false);
 		spnAge.setValue(Integer.valueOf(1));
-		txtCellphone.setText("");
+		((JFormattedTextField)txtCellphone).setValue(null);
 		txtSave.setText("");
 		txtCedula.setText("");
 		cbxSector.setSelectedIndex(0);
@@ -642,21 +649,4 @@ public class RegPaciente extends JDialog {
 		txtEmail.setText("");
 		return;
 	}
-
-	/*
-	private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
-	{
-	    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-	        (e.KeyChar != '.'))
-	    {
-	            e.Handled = true;
-	    }
-
-	    // only allow one decimal point
-	    if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
-	    {
-	        e.Handled = true;
-	    }
-	}
-	*/
 }

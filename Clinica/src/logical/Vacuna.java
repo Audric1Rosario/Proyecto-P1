@@ -1,7 +1,6 @@
 package logical;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Vacuna implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -9,6 +8,8 @@ public class Vacuna implements Serializable {
 	private String tipo;
 	private String enfermedadNombre;
 	private String efectos;
+	private boolean listar;		// Listar para el borrado lógico.
+	private boolean hecha;		// Esta variable es para saber si el paciente tiene esta vacuna o no.
 	
 	public Vacuna(String nombre, String tipo, String enfermedadNombre, String efectos) {
 		super();
@@ -16,6 +17,8 @@ public class Vacuna implements Serializable {
 		this.tipo = tipo;
 		this.enfermedadNombre = enfermedadNombre;
 		this.efectos = efectos;
+		this.listar = true;
+		this.hecha = false;
 	}
 
 	public String getNombre() {
@@ -48,6 +51,14 @@ public class Vacuna implements Serializable {
 
 	public void setEfectos(String efectos) {
 		this.efectos = efectos;
+	}
+
+	public boolean isListar() {
+		return listar;
+	}
+
+	public void setListar(boolean listar) {
+		this.listar = listar;
 	}
 	
 }

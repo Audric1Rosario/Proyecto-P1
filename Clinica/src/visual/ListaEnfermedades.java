@@ -19,6 +19,7 @@ import logical.Doctor;
 import logical.Empleado;
 import logical.Enfermedad;
 import logical.Secretaria;
+import logical.Vacuna;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -103,7 +104,10 @@ public class ListaEnfermedades extends JDialog {
 		model = new DefaultTableModel();
 		String[] headers = {"Nombre", "Cantidad de pacientes", "Día Registro"};
 		model.setColumnIdentifiers(headers);
-		tableEnfermedades = new JTable();
+		tableEnfermedades = new JTable() {
+			public boolean isCellEditable(int rowIndex, int vColIndex) {
+				return false;
+			}};
 		tableEnfermedades.setModel(model);
 		tableEnfermedades.getTableHeader().setResizingAllowed(false);
 		tableEnfermedades.getTableHeader().setReorderingAllowed(false);
@@ -206,7 +210,7 @@ public class ListaEnfermedades extends JDialog {
 			txtBuscar.setBounds(95, 24, 213, 20);
 			panel_1.add(txtBuscar);
 			txtBuscar.setColumns(10);
-			
+
 			JButton btnRefresh = new JButton("");
 			btnRefresh.setToolTipText("Recargar");
 			btnRefresh.addActionListener(new ActionListener() {
@@ -240,7 +244,7 @@ public class ListaEnfermedades extends JDialog {
 				btnModificar.setActionCommand("OK");				
 				buttonPane.add(btnModificar);
 
-				
+
 
 				getRootPane().setDefaultButton(btnModificar);
 			}
@@ -250,8 +254,42 @@ public class ListaEnfermedades extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if (enfermedadModificar != null && usuarioActual instanceof Administrador) {
 							clear();
+							// No hacer eso,  
+							/*
 							Clinica.getInstance().getEnfermedades().remove(enfermedadModificar); 
 							enfermedadModificar = null;
+							rellenarTabla(txtBuscar.getText());*/
+							// Borrado lógico, no es posible eliminar esta enfermedad si hay objetos que la tienen
+							
+							
+							int index = Clinica.getInstance().getEnfermedades().indexOf(enfermedadModificar);
+							if (enfermedadModificar.getCantPacientes() == 0 && index != -1) {	// Eliminar si no tiene ningún paciente.
+								boolean esPosible = true;	// Sólo se puede eliminar si no hay vacunas de esta enfermedad
+								
+								for (Vacuna vacuna : Clinica.getInstance().getVacunas()) {
+									if (vacuna.getEnfermedadNombre().equalsIgnoreCase(enfermedadModificar.getNombre())) {
+										esPosible = false;	// Ya se sabe que no se puede eliminar porque hay vacunas.
+										vacuna.setListar(false); // esa vacuna tampoco puede ser listada mas.
+									} 
+								}
+								
+								if (esPosible) { // Si no hay vacunas.
+									Clinica.getInstance().getEnfermedades().remove(index); 
+								} else {
+									Clinica.getInstance().getEnfermedades().get(index).setListar(false);
+								}
+								
+							} else if (index != -1) {
+								Clinica.getInstance().getEnfermedades().get(index).setListar(false);
+								for (Vacuna vacuna : Clinica.getInstance().getVacunas()) {
+									if (vacuna.getEnfermedadNombre().equalsIgnoreCase(enfermedadModificar.getNombre())) {										
+										vacuna.setListar(false); // esa vacuna tampoco puede ser listada mas.
+									} 
+								}
+							} else {
+								JOptionPane.showMessageDialog(null, "Error al eliminar.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
+							}
+							
 							rellenarTabla(txtBuscar.getText());
 						} else {
 							JOptionPane.showMessageDialog(null, "Error al eliminar.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
@@ -272,7 +310,7 @@ public class ListaEnfermedades extends JDialog {
 				buttonPane.add(btnCerrar);
 			}
 		}
-		
+
 		// Luego de crear todo, hacer que las cosas sean visibles o no de acuerdo a quien ingresa a la lista.
 		if (usuarioActual instanceof Doctor || usuarioActual instanceof Secretaria) {
 			btnModificar.setVisible(false);
@@ -315,11 +353,13 @@ public class ListaEnfermedades extends JDialog {
 			}
 		} else {
 			for (int i = 0; i < Clinica.getInstance().getEnfermedades().size(); i++) {
-				row[0] = Clinica.getInstance().getEnfermedades().get(i).getNombre();
-				row[1] = Clinica.getInstance().getEnfermedades().get(i).getCantPacientes();
-				registro = Clinica.getInstance().getEnfermedades().get(i).getFechaRegistro();
-				row[2] = dateFormat.format(registro);
-				model.addRow(row);
+				if (Clinica.getInstance().getEnfermedades().get(i).isListar()) {
+					row[0] = Clinica.getInstance().getEnfermedades().get(i).getNombre();
+					row[1] = Clinica.getInstance().getEnfermedades().get(i).getCantPacientes();
+					registro = Clinica.getInstance().getEnfermedades().get(i).getFechaRegistro();
+					row[2] = dateFormat.format(registro);
+					model.addRow(row);
+				}
 			}
 		}
 	}

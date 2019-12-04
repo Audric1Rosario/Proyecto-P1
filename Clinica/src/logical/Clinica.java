@@ -226,7 +226,7 @@ public class Clinica implements Serializable {
 		Vacuna buscado = null;
 		boolean encontrado = false; int aux = 0;
 		while (!encontrado && aux < vacunas.size()) {
-			if (vacunas.get(aux).getNombre().equalsIgnoreCase(nombreVacuna)) {
+			if (vacunas.get(aux).getNombre().equalsIgnoreCase(nombreVacuna) && vacunas.get(aux).isListar()) {
 				buscado = vacunas.get(aux);
 				encontrado = true;
 			}
@@ -244,7 +244,7 @@ public class Clinica implements Serializable {
 			return enfermedades;
 		} else {
 			for (Enfermedad enfermedad : enfermedades) {
-				if (enfermedad.getNombre().toLowerCase().contains(nombreEnfermedad.toLowerCase())) {
+				if (enfermedad.getNombre().toLowerCase().contains(nombreEnfermedad.toLowerCase()) && enfermedad.isListar()) {
 					enfermedadesBuscadas.add(enfermedad);
 				}
 			}
@@ -256,7 +256,7 @@ public class Clinica implements Serializable {
 		Enfermedad buscado = null;
 		boolean encontrado = false; int aux = 0;
 		while (!encontrado && aux < enfermedades.size()) {
-			if (enfermedades.get(aux).getNombre().equalsIgnoreCase(nombreEnfermedad)) {
+			if (enfermedades.get(aux).getNombre().equalsIgnoreCase(nombreEnfermedad) && enfermedades.get(aux).isListar()) {
 				buscado = enfermedades.get(aux);
 				encontrado = true;
 			}
@@ -289,25 +289,7 @@ public class Clinica implements Serializable {
 	public void addVacuna(Vacuna vacuna) {
 		vacunas.add(vacuna);		
 	}
-	// 3. Eliminar.
-	public boolean delPaciente(String idPaciente) {
-		Paciente buscado = buscarPacienteById(idPaciente);
-		if (buscado != null) {
-			pacientes.remove(buscado);
-			return true;
-		}
 
-		return false;
-	}
-
-	public boolean delVacuna(String nombreVacuna) {
-		Vacuna buscada = buscarVacunaByNombre(nombreVacuna);
-		if (buscada != null) {
-			vacunas.remove(buscada);
-			return true;
-		}
-		return false;
-	}
 	
 	// Esto solo usar cuando se busque la cita especifica en el programa.
 	public void delCita(Cita cita) {
@@ -331,7 +313,7 @@ public class Clinica implements Serializable {
 		int aux = 0;
 		boolean existe = false;
 		while (!existe && aux < enfermedades.size()) {
-			if (enfermedades.get(aux).getNombre().equalsIgnoreCase(nombreEnfermedad)) {
+			if (enfermedades.get(aux).getNombre().equalsIgnoreCase(nombreEnfermedad) && enfermedades.get(aux).isListar()) {
 				existe = true;
 			}
 			aux++;
@@ -343,7 +325,7 @@ public class Clinica implements Serializable {
 		int aux = 0;
 		boolean existe = false;
 		while (!existe && aux < vacunas.size()) {
-			if (vacunas.get(aux).getNombre().equalsIgnoreCase(nombreVacuna)) {
+			if (vacunas.get(aux).getNombre().equalsIgnoreCase(nombreVacuna) && vacunas.get(aux).isListar()) {
 				existe = true;
 			}
 			aux++;

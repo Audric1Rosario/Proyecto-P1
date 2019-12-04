@@ -22,6 +22,7 @@ import logical.Clinica;
 import logical.Empleado;
 import logical.Enfermedad;
 import logical.Paciente;
+import logical.TableRenderer;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -62,18 +63,20 @@ public class ControlEnfermedades extends JDialog {
 	// Lista
 	private JList lstPacientes;
 	private DefaultListModel listModel;
-	
+
 	// Variables lógicas
 	private Empleado empleadoActual;
 	private int orden;
 	private boolean lastStatus;
+	private TableRenderer sistRender;
+	private TableRenderer revRender;
 
 	// Botones
 	private JButton btnAceptar;
-	
+
 	// Checkbox
 	private JCheckBox chckbxEstEnRevisin;
-	
+
 	// Panel
 	private JPanel panelPacientes;
 	/**
@@ -119,10 +122,15 @@ public class ControlEnfermedades extends JDialog {
 		String headers[] = {"Nombre", "Registro", "Cantidad", "Estado"};
 		modelS = new DefaultTableModel();
 		modelS.setColumnIdentifiers(headers);
-		tableEnferSist = new JTable();
+		tableEnferSist = new JTable() {
+			public boolean isCellEditable(int rowIndex, int vColIndex) {
+				return false;
+			}};
 		tableEnferSist.setModel(modelS);
 		tableEnferSist.getTableHeader().setResizingAllowed(false);
 		tableEnferSist.getTableHeader().setReorderingAllowed(false);
+		sistRender = new TableRenderer(3);		// la columna 3 indica el color.
+		tableEnferSist.setDefaultRenderer(Object.class, sistRender);
 		scrollPane_1.setViewportView(tableEnferSist);
 
 		tableEnferSist.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
@@ -146,10 +154,14 @@ public class ControlEnfermedades extends JDialog {
 
 		modelR = new DefaultTableModel();
 		modelR.setColumnIdentifiers(headers);
-		tableRevision = new JTable();
+		tableRevision = new JTable() {
+			public boolean isCellEditable(int rowIndex, int vColIndex) {
+				return false;
+			}};
 		tableRevision.setModel(modelR);
 		tableRevision.getTableHeader().setResizingAllowed(false);
 		tableRevision.getTableHeader().setReorderingAllowed(false);
+		tableRevision.setDefaultRenderer(Object.class, sistRender);
 		scrollPane_2.setViewportView(tableRevision);
 		tableRevision.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
 			public void valueChanged(ListSelectionEvent event) {
@@ -362,30 +374,28 @@ public class ControlEnfermedades extends JDialog {
 		}
 
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		float stadistic;
 		for (Enfermedad enfermedad : datos) {
-			row[0] = enfermedad.getNombre();
-			row[1] = format.format(enfermedad.getFechaRegistro());
-			row[2] = Long.valueOf(enfermedad.getCantPacientes()).toString();
+			if (enfermedad.isListar()) {
+				row[0] = enfermedad.getNombre();
+				row[1] = format.format(enfermedad.getFechaRegistro());
+				row[2] = Long.valueOf(enfermedad.getCantPacientes()).toString();
+				stadistic = ((float)enfermedad.getCantPacientes() / (float)Clinica.getInstance().getPacientes().size()) * 100;
+				// Revisar como esta la enfermedad
+				if (stadistic <= 10) {
+					row[3] = "Bajo control";
+				}  else if (stadistic <= 20) {
+					row[3] = "Nociva";
+				} else {
+					row[3] = "Epidemia";
+				}
 
-			// Revisar como esta la enfermedad
-			if (Clinica.getInstance().getOpcionesSistema().getControlada() > enfermedad.getCantPacientes()) {
-				row[3] = "Bajo control";
-			} else if (Clinica.getInstance().getOpcionesSistema().getRegular() > enfermedad.getCantPacientes()) {
-				row[3] = "Frecuente";
-			} else if (Clinica.getInstance().getOpcionesSistema().getGrave() > enfermedad.getCantPacientes()) {
-				row[3] = "Alta incidencia";
-			} else if (Clinica.getInstance().getOpcionesSistema().getCritico() > enfermedad.getCantPacientes()) {
-				row[3] = "Epidemia";
-			} else {
-				row[3] = "Sin precedentes";
+				// Separar las que están en revisión de las que no.
+				if (enfermedad.isRevision())
+					modelR.addRow(row);
+				else 
+					modelS.addRow(row);
 			}
-
-			// Separar las que están en revisión de las que no.
-			if (enfermedad.isRevision())
-				modelR.addRow(row);
-			else 
-				modelS.addRow(row);
-
 		}
 		return;
 	}
@@ -407,22 +417,19 @@ public class ControlEnfermedades extends JDialog {
 		Enfermedad buscada = Clinica.getInstance().buscarEnfermedadByNombre(data);
 
 		if (buscada != null) {
+			float stadistic = (((float)buscada.getCantPacientes() / (float)Clinica.getInstance().getPacientes().size()) * 100);
 			chckbxEstEnRevisin.setSelected(buscada.isRevision());
 			txtNombre.setText(buscada.getNombre());
 			// Revisar como esta la enfermedad
-			if (Clinica.getInstance().getOpcionesSistema().getControlada() > buscada.getCantPacientes()) {
+			if (stadistic <= 10) {
 				data = "Bajo control";
-			} else if (Clinica.getInstance().getOpcionesSistema().getRegular() > buscada.getCantPacientes()) {
-				data = "Frecuente";
-			} else if (Clinica.getInstance().getOpcionesSistema().getGrave() > buscada.getCantPacientes()) {
-				data = "Alta incidencia";
-			} else if (Clinica.getInstance().getOpcionesSistema().getCritico() > buscada.getCantPacientes()) {
-				data = "Epidemia";
+			}  else if (stadistic <= 20) {
+				data = "Nociva";
 			} else {
-				data = "Sin precedentes";
+				data = "Epidemia";
 			}
 			txtEstado.setText(data);
-			data = String.format("%.2f", (((float)buscada.getCantPacientes() / (float)Clinica.getInstance().getPacientes().size()) * 100)) + "%";
+			data = String.format("%.2f", stadistic) + "%";
 			txtEstadistica.setText(data);
 
 			// Solo se permite poner 10 enfermedades en revisión
@@ -439,16 +446,14 @@ public class ControlEnfermedades extends JDialog {
 						chckbxEstEnRevisin.setToolTipText("");
 					}
 				}
-					
+
 			} else {
 				chckbxEstEnRevisin.setEnabled(false);
 			}
-			
-
 
 			chckbxEstEnRevisin.setSelected(buscada.isRevision());
 			lastStatus = buscada.isRevision();
-			
+			btnAceptar.setEnabled(false);
 			// Llenar jlist con los pacientes que sufren de esta enfermedad.
 			ArrayList<String> pacientes = new ArrayList<String>();
 			int aux = 0;
@@ -464,7 +469,7 @@ public class ControlEnfermedades extends JDialog {
 					aux++;
 				}
 			}
-			
+
 			// Luego cargar en el JList
 			listModel.clear();
 			for (String afectado : pacientes) {
@@ -478,7 +483,7 @@ public class ControlEnfermedades extends JDialog {
 		}
 		return;
 	}
-	
+
 	private void clear() {
 		txtNombre.setText("");
 		txtEstado.setText("");

@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 
 import logical.Clinica;
 import logical.Empleado;
+import logical.Enfermedad;
 import logical.Paciente;
 
 import javax.swing.JLabel;
@@ -99,7 +100,7 @@ public class BuscarPaciente extends JDialog {
 		tabla = new JTable(){
 			public boolean isCellEditable(int rowIndex, int vColIndex) {
 				return false;
-			}};;
+			}};
 
 			String columns [] = {"Nombre", "Identificación", "Seguro", "Sexo"};
 			model = new DefaultTableModel();
@@ -307,13 +308,20 @@ public class BuscarPaciente extends JDialog {
 							dispose();
 						}
 					});
-					
+
 					btnEliminar = new JButton("Eliminar");
 					btnEliminar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if(paciente == null) {
 								JOptionPane.showMessageDialog(null, "No se ha elejido ningún paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 							}else if(paciente != null){
+								// Primero removerle pacientes a sus enfermedades.
+								Enfermedad encontrar;
+								for (String enfer : paciente.getEnfermedades()) {
+									encontrar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
+									encontrar.setCantPacientes(encontrar.getCantPacientes() - 1);
+								}
+
 								if(Clinica.getInstance().getPacientes().remove(paciente)) {
 									JOptionPane.showMessageDialog(null, "Se ha removido el paciente exitosamente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 									loadTable(Clinica.getInstance().getPacientes(), null, true);

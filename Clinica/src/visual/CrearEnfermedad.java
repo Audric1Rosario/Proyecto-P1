@@ -151,7 +151,7 @@ public class CrearEnfermedad extends JDialog {
 						// Revisar que no se repita
 						if (modificar == null) {
 							if (Clinica.getInstance().verificarEnfermedad(txtNombreEnfermedad.getText()) == false) {
-								JOptionPane.showMessageDialog(null, "El nombre de la enfermedad ya existe, favor coloque uno nuevo", "Advertencia.", JOptionPane.WARNING_MESSAGE);
+								JOptionPane.showMessageDialog(null, "El nombre de la enfermedad ya existe, favor coloque uno nuevo.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 								return;
 							} 
 						}
@@ -165,10 +165,32 @@ public class CrearEnfermedad extends JDialog {
 									"Modificar enfermedad", JOptionPane.INFORMATION_MESSAGE);
 							dispose();
 						} else {
-							Enfermedad nueva = new Enfermedad(txtNombreEnfermedad.getText(), txtSintomas.getText(), txtDiagnostico.getText());
-							JOptionPane.showMessageDialog(null, "Enfermedad creada exitosamente.", 
-									"Crear enfermedad", JOptionPane.INFORMATION_MESSAGE);
-							Clinica.getInstance().addEnfermedad(nueva);
+							// Primero buscar si hay una enfermedad que tenga el mismo nombre guardada
+							// Esto significa que solo hay que volver a activar una enfermedad
+							Enfermedad activar = null;
+							boolean volverActivar = false; 
+							int aux = 0;
+							while (!volverActivar && aux < Clinica.getInstance().getEnfermedades().size()) {
+								if (!Clinica.getInstance().getEnfermedades().get(aux).isListar()) { // Enfermedades desactivadas.
+									if (Clinica.getInstance().getEnfermedades().get(aux).getNombre().equalsIgnoreCase(txtNombreEnfermedad.getText())) {
+										// Significa que no es una creación, sólo se vuelve a activar y a cambiar los datos de una enfermedad que ya existe.
+										volverActivar = true;
+										activar = Clinica.getInstance().getEnfermedades().get(aux);
+									}
+								}
+								aux++;
+							}
+
+							if (!volverActivar) {	// Si no estaba desactivada, crear enfermedad
+								Enfermedad nueva = new Enfermedad(txtNombreEnfermedad.getText(), txtSintomas.getText(), txtDiagnostico.getText());
+								JOptionPane.showMessageDialog(null, "Enfermedad creada exitosamente.", 
+										"Crear enfermedad", JOptionPane.INFORMATION_MESSAGE);
+								Clinica.getInstance().addEnfermedad(nueva); 
+							} else { // De lo contrario
+								activar.setSintomas(txtSintomas.getText());
+								activar.setDiagnostico(txtDiagnostico.getText());
+								activar.setListar(true);   // Esta enfermedad vuelve a estar activa.
+							}
 							clear();
 						}										
 					}

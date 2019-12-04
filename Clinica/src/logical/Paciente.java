@@ -21,6 +21,7 @@ public class Paciente implements Serializable {
 	private String email;
 	private ArrayList<String> enfermedades;
 	private ArrayList<Consulta> historiaClinica;
+	private ArrayList<Vacuna> todasLasVacunas;
 	
 	public Paciente(String nombre, String cedula, String seguro, int edad, String estadoCivil,
 			String sexo, String tipoSangre, float estatura, String direccion, String sector, String telefono,
@@ -47,7 +48,8 @@ public class Paciente implements Serializable {
 		this.celular = celular;
 		this.email = email;
 		this.enfermedades = enfermedades;
-		historiaClinica = new ArrayList<>();
+		this.historiaClinica = new ArrayList<>();
+		this.todasLasVacunas = (ArrayList<Vacuna>) Clinica.getInstance().getVacunas().clone();	 // Pasarle todas las vacunas de clínica
 	}
 
 	public String getIdPaciente() {
@@ -178,6 +180,9 @@ public class Paciente implements Serializable {
 		this.historiaClinica = historiaClinica;
 	}
 
-	
+	public ArrayList<Vacuna> getTodasLasVacunas() {
+		return todasLasVacunas;
+	}
+
 
 }

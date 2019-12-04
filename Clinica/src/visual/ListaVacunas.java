@@ -55,14 +55,14 @@ public class ListaVacunas extends JDialog {
 
 	// Text Area
 	private static JTextArea txtEfectos;
-	
+
 	// Combo box
 	private static JComboBox cbxTipo;
 
 	// Botones
 	private static JButton btnModificar;
 	private static JButton btnEliminar;
-	
+
 	// Variables lógicas
 	private Empleado usuarioActual;
 	private static Vacuna vacunaModificar;
@@ -109,27 +109,30 @@ public class ListaVacunas extends JDialog {
 					model = new DefaultTableModel();
 					String[] headers = { "Nombre", "Tipo", "Enfermedad"};
 					model.setColumnIdentifiers(headers);   
-					vacunasTable = new JTable();
-					vacunasTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					vacunasTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-						public void valueChanged(ListSelectionEvent event) {
-							if (vacunasTable.getSelectedRow() != -1) {
-								vacunaModificar = Clinica.getInstance().buscarVacunaByNombre(vacunasTable.getValueAt(vacunasTable.getSelectedRow(), 0).toString());
-								rellenarDatos();
-								
-								if (usuarioActual instanceof Administrador) {
-									if (((Administrador)usuarioActual).getAutoridad() <= 3) {
-										btnModificar.setEnabled(true);
-										btnEliminar.setEnabled(true);
+					vacunasTable = new JTable() {
+						public boolean isCellEditable(int rowIndex, int vColIndex) {
+							return false;
+						}};
+						vacunasTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						vacunasTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+							public void valueChanged(ListSelectionEvent event) {
+								if (vacunasTable.getSelectedRow() != -1) {
+									vacunaModificar = Clinica.getInstance().buscarVacunaByNombre(vacunasTable.getValueAt(vacunasTable.getSelectedRow(), 0).toString());
+									rellenarDatos();
+
+									if (usuarioActual instanceof Administrador) {
+										if (((Administrador)usuarioActual).getAutoridad() <= 3) {
+											btnModificar.setEnabled(true);
+											btnEliminar.setEnabled(true);
+										}
 									}
 								}
 							}
-						}
-					});
-					vacunasTable.setModel(model);
-					vacunasTable.getTableHeader().setResizingAllowed(false); 
-					vacunasTable.getTableHeader().setReorderingAllowed(false);
-					scrollPane.setViewportView(vacunasTable);
+						});
+						vacunasTable.setModel(model);
+						vacunasTable.getTableHeader().setResizingAllowed(false); 
+						vacunasTable.getTableHeader().setReorderingAllowed(false);
+						scrollPane.setViewportView(vacunasTable);
 				}
 			}
 		}
@@ -247,7 +250,7 @@ public class ListaVacunas extends JDialog {
 				btnModificar.setActionCommand("OK");
 				buttonPane.add(btnModificar);
 				getRootPane().setDefaultButton(btnModificar);
-				
+
 			}
 			{
 				JButton btnCerrar = new JButton("Cerrar");
@@ -261,10 +264,14 @@ public class ListaVacunas extends JDialog {
 					btnEliminar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (vacunaModificar != null && usuarioActual instanceof Administrador) {
-								Clinica.getInstance().getVacunas().remove(vacunaModificar);
-								vacunaModificar = null;
-								clear();
-								rellenarTabla(cbxTipo.getSelectedIndex());
+								// Borrado lógico, no es posible eliminar esta vacuna si hay objetos que la tienen
+								int index = Clinica.getInstance().getVacunas().indexOf(vacunaModificar);								
+								if (index != -1) {									
+									Clinica.getInstance().getVacunas().get(index).setListar(false); // Seguirá ahí pero no es posible listarla.
+									vacunaModificar = null;
+									clear();
+									rellenarTabla(cbxTipo.getSelectedIndex());
+								}																
 							} else {
 								JOptionPane.showMessageDialog(null, "Error al eliminar.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 							}
@@ -284,7 +291,7 @@ public class ListaVacunas extends JDialog {
 			btnEliminar.setEnabled(false);
 			btnEliminar.setVisible(false);
 		}
-		
+
 		if (usuarioActual instanceof Administrador) {
 			if (((Administrador)usuarioActual).getAutoridad() > 3) {
 				btnModificar.setEnabled(false);
@@ -304,7 +311,7 @@ public class ListaVacunas extends JDialog {
 			JOptionPane.showMessageDialog(null, "Error al cargar datos.", "Advertencia.", JOptionPane.WARNING_MESSAGE);
 		}
 	}
-	
+
 	// String[] headers = { "Nombre", "Tipo", "Enfermedad"};
 	// cbxTipo.setModel(new DefaultComboBoxModel(new String[] {"<Todos los tipos>", "Virus activo", "Muerta", "Toxoide", "Biosint\u00E9tica"}));
 	public static void rellenarTabla(int tipoRelleno) {
@@ -312,30 +319,32 @@ public class ListaVacunas extends JDialog {
 		model.setRowCount(0);
 		row = new Object[model.getColumnCount()];
 		for (int i = 0; i < Clinica.getInstance().getVacunas().size(); i++) {
-			row[0] = Clinica.getInstance().getVacunas().get(i).getNombre();
-			row[1] = Clinica.getInstance().getVacunas().get(i).getTipo();
-			row[2] = Clinica.getInstance().getVacunas().get(i).getEnfermedadNombre();
-			
-			switch (row[1].toString()) {
-			case "Virus activo":
-				tipo = 1;
-				break;
-			case "Muerta":
-				tipo = 2;
-				break;
-			case "Toxoide":
-				tipo = 3;
-				break;
-			case "Biosint\u00E9tica":
-				tipo = 4;
-				break;
-			default:	// Cualquier tipo
-				tipo = 0;
-				break;
+			if (Clinica.getInstance().getVacunas().get(i).isListar()) {	// Saber si se puede listar o no.
+				row[0] = Clinica.getInstance().getVacunas().get(i).getNombre();
+				row[1] = Clinica.getInstance().getVacunas().get(i).getTipo();
+				row[2] = Clinica.getInstance().getVacunas().get(i).getEnfermedadNombre();
+
+				switch (row[1].toString()) {
+				case "Virus activo":
+					tipo = 1;
+					break;
+				case "Muerta":
+					tipo = 2;
+					break;
+				case "Toxoide":
+					tipo = 3;
+					break;
+				case "Biosint\u00E9tica":
+					tipo = 4;
+					break;
+				default:	// Cualquier tipo
+					tipo = 0;
+					break;
+				}
+
+				if (tipoRelleno == tipo || tipoRelleno <= 0)
+					model.addRow(row);
 			}
-			
-			if (tipoRelleno == tipo || tipoRelleno <= 0)
-				model.addRow(row);
 		}
 
 	}
@@ -347,7 +356,7 @@ public class ListaVacunas extends JDialog {
 		txtEfectos.setText("");
 		btnModificar.setEnabled(false);
 		btnEliminar.setEnabled(false);
-		
+
 	}
 
 	public static void sclear(int data) {

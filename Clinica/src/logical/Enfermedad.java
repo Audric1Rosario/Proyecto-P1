@@ -11,6 +11,7 @@ public class Enfermedad implements Serializable {
 	private Date fechaRegistro;
 	private boolean isRevision;		// Para saber si está en revisión o no.
 	private long cantPacientes;		// Cantidad de pacientes con esta enfermedad
+	private boolean listar;			// Variable del borrado lógico
 	
 	public Enfermedad(String nombre, String sintomas, String diagnostico) {
 		super();
@@ -20,6 +21,7 @@ public class Enfermedad implements Serializable {
 		this.fechaRegistro = new Date();	 // El día que se registro esta enfermedad
 		this.cantPacientes = 0;
 		this.isRevision = false;			// Iniciar con que no está en revisión
+		this.listar = true;					// Para el borrado lógico
 	}
 
 	public String getNombre() {
@@ -68,5 +70,13 @@ public class Enfermedad implements Serializable {
 
 	public void setRevision(boolean isRevision) {
 		this.isRevision = isRevision;
+	}
+
+	public boolean isListar() {
+		return listar;
+	}
+
+	public void setListar(boolean listar) {
+		this.listar = listar;
 	}
 }
