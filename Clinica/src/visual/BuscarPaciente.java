@@ -83,7 +83,10 @@ public class BuscarPaciente extends JDialog {
 	public BuscarPaciente(Empleado empleadoActual, Boolean buscar) {
 		this.empleadoActual = empleadoActual;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarPaciente.class.getResource("/image/caduceus.png")));
-		setTitle("Buscar Paciente");
+		if (buscar) // Historial medico
+			setTitle("Historial médico");
+		else 
+			setTitle("Buscar Paciente");
 		setBounds(100, 100, 720, 480);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

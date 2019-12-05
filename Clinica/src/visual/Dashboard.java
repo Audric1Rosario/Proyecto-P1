@@ -195,9 +195,6 @@ public class Dashboard extends JFrame {
 		});
 		mnHistorial.add(mntmHistorialClnico);
 
-		JMenuItem mntmReportes = new JMenuItem("Reportes");
-		mnHistorial.add(mntmReportes);
-
 		// Menú de las vacunas.
 		JMenu mnVacunacin = new JMenu("Vacunaci\u00F3n");
 		menuBar.add(mnVacunacin);

@@ -22,7 +22,6 @@ public class Clinica implements Serializable {
 	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
 	private Configuracion opcionesSistema;
-	private static int codigoConsulta;
 	
 	private Clinica() {
 		super();
@@ -100,7 +99,7 @@ public class Clinica implements Serializable {
 		boolean encontrado = false; 
 		int aux = 0;
 		while (aux < pacientes.size() && !encontrado) {
-			if (pacientes.get(aux).getCedula().equalsIgnoreCase(idPaciente)) {
+			if (pacientes.get(aux).getIdPaciente().equalsIgnoreCase(idPaciente)) {
 				buscado = pacientes.get(aux);
 				encontrado = true;
 			}
@@ -115,7 +114,6 @@ public class Clinica implements Serializable {
 			if (paciente.getNombre().toLowerCase().contains(nombrePaciente.toLowerCase())) 
 				listaPacientes.add(paciente);
 		}
-
 		return listaPacientes;
 	}
 
@@ -143,7 +141,14 @@ public class Clinica implements Serializable {
 	// Buscar las consultas
 	public Consulta buscarConsultaById(String idConsulta) {
 		Consulta buscada = null;
-
+		boolean encontrado = false; int aux = 0;
+		while (!encontrado && aux < consultas.size()) {
+			if (consultas.get(aux).getIdConsulta().equalsIgnoreCase(idConsulta)) {
+				buscada = consultas.get(aux);
+				encontrado = true;
+			}
+			aux++;
+		}
 		return buscada;
 	}
 
@@ -252,6 +257,19 @@ public class Clinica implements Serializable {
 		return enfermedadesBuscadas;
 	}
 	
+	public Enfermedad buscarEnfermedadByNombreSinRestriccion(String nombreEnfermedad) {			// Nombre exacto
+		Enfermedad buscado = null;
+		boolean encontrado = false; int aux = 0;
+		while (!encontrado && aux < enfermedades.size()) {
+			if (enfermedades.get(aux).getNombre().equalsIgnoreCase(nombreEnfermedad)) {
+				buscado = enfermedades.get(aux);
+				encontrado = true;
+			}
+			aux++;
+		}
+		return buscado;
+	}
+	
 	public Enfermedad buscarEnfermedadByNombre(String nombreEnfermedad) {			// Nombre exacto
 		Enfermedad buscado = null;
 		boolean encontrado = false; int aux = 0;
@@ -331,15 +349,5 @@ public class Clinica implements Serializable {
 			aux++;
 		}
 		return !existe;
-	}
-	
-	//Para generar el código de la consulta
-	
-	public static int getCodigoConsulta() {
-		return codigoConsulta;
-	}
-	
-	public static void aumentarCodigoConsulta() {
-		codigoConsulta++;
 	}
 }

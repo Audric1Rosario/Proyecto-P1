@@ -38,8 +38,6 @@ public class Opciones extends JDialog {
 	private JSpinner spnDoctores;
 	private JSpinner spnControl;
 	private JSpinner spnRegular;
-	private JSpinner spnGrave;
-	private JSpinner spnCrit;
 
 	// Botones
 	private JButton btnGuardar;
@@ -70,7 +68,7 @@ public class Opciones extends JDialog {
 		setResizable(false);
 		setTitle("Opciones del sistema");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Opciones.class.getResource("/image/caduceus.png")));
-		setBounds(100, 100, 480, 360);
+		setBounds(100, 100, 480, 312);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLocationRelativeTo(null);
@@ -150,11 +148,12 @@ public class Opciones extends JDialog {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades (par\u00E1metros de evaluaci\u00F3n).", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(10, 153, 454, 131);
+		panel_1.setBounds(10, 153, 454, 84);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 
 		spnControl = new JSpinner();
+		spnControl.setToolTipText("%");
 		spnControl.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent  evt) {
@@ -175,6 +174,7 @@ public class Opciones extends JDialog {
 		panel_1.add(spnControl);
 
 		spnRegular = new JSpinner();
+		spnRegular.setToolTipText("%");
 		spnRegular.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent  evt) {
@@ -191,68 +191,18 @@ public class Opciones extends JDialog {
 			}
 		});
 		spnRegular.setModel(new SpinnerNumberModel(new Integer(2), new Integer(2), null, new Integer(1)));
-		spnRegular.setBounds(38, 100, 158, 20);
+		spnRegular.setBounds(233, 46, 158, 20);
 		panel_1.add(spnRegular);
 
-		spnGrave = new JSpinner();
-		spnGrave.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent  evt) {
-				if (btnGuardar != null) {
-					if (Integer.valueOf(spnGrave.getValue().toString()) != 
-							Clinica.getInstance().getOpcionesSistema().getGrave()) {
-						changes[4] = true;
-					} else {
-						changes[4] = false;
-					}
-
-					btnGuardar.setEnabled(verificarCambio());
-				}
-			}
-		});
-		spnGrave.setModel(new SpinnerNumberModel(new Integer(3), new Integer(3), null, new Integer(1)));
-		spnGrave.setBounds(252, 46, 158, 20);
-		panel_1.add(spnGrave);
-
-		spnCrit = new JSpinner();
-		spnCrit.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent  evt) {
-				if (btnGuardar != null) {
-					if (Integer.valueOf(spnCrit.getValue().toString()) != 
-							Clinica.getInstance().getOpcionesSistema().getCritico()) {
-						changes[5] = true;
-					} else {
-						changes[5] = false;
-					}
-
-					btnGuardar.setEnabled(verificarCambio());					
-				}
-			}
-		});
-		spnCrit.setModel(new SpinnerNumberModel(new Integer(4), new Integer(4), null, new Integer(1)));
-		spnCrit.setBounds(252, 100, 158, 20);
-		panel_1.add(spnCrit);
-
-		JLabel lblControlada = new JLabel("Controlada");
+		JLabel lblControlada = new JLabel("Bajo Control");
 		lblControlada.setHorizontalAlignment(SwingConstants.CENTER);
 		lblControlada.setBounds(38, 22, 158, 14);
 		panel_1.add(lblControlada);
 
-		JLabel lblGrave = new JLabel("Grave");
-		lblGrave.setHorizontalAlignment(SwingConstants.CENTER);
-		lblGrave.setBounds(252, 22, 158, 14);
-		panel_1.add(lblGrave);
-
-		JLabel lblRegular = new JLabel("Regular");
+		JLabel lblRegular = new JLabel("Nociva");
 		lblRegular.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRegular.setBounds(38, 75, 158, 14);
+		lblRegular.setBounds(233, 22, 158, 14);
 		panel_1.add(lblRegular);
-
-		JLabel lblCrtica = new JLabel("Cr\u00EDtica");
-		lblCrtica.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCrtica.setBounds(252, 75, 158, 14);
-		panel_1.add(lblCrtica);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -262,12 +212,10 @@ public class Opciones extends JDialog {
 				btnGuardar = new JButton("Guardar");
 				btnGuardar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if (!(Integer.valueOf(spnCrit.getValue().toString()) > Integer.valueOf(spnGrave.getValue().toString()) &&
-								Integer.valueOf(spnGrave.getValue().toString()) > Integer.valueOf(spnRegular.getValue().toString()) &&
-								Integer.valueOf(spnRegular.getValue().toString()) > Integer.valueOf(spnControl.getValue().toString()))) {
+						if (!(Integer.valueOf(spnRegular.getValue().toString()) > Integer.valueOf(spnControl.getValue().toString()))) {
 							String message = "Parámetros de control de enfermedades desconfigurados.\n\n";
 							message += "Asegúrese de que estos sean según el orden de que:\n";
-							message += "Enfermedad: Controlada < Regular < Grave < Crítica.";
+							message += "Enfermedad: Bajo Control < Nociva.";
 							JOptionPane.showMessageDialog(null, message, "Opciones del sistema", JOptionPane.ERROR_MESSAGE);
 							return;	// No continuar.
 						} else {
@@ -276,8 +224,6 @@ public class Opciones extends JDialog {
 							sistema.setMaxDoctoresSist(Integer.valueOf(spnDoctores.getValue().toString()));
 							sistema.setControlada(Integer.valueOf(spnControl.getValue().toString()));
 							sistema.setRegular(Integer.valueOf(spnRegular.getValue().toString()));
-							sistema.setGrave(Integer.valueOf(spnGrave.getValue().toString()));
-							sistema.setCritico(Integer.valueOf(spnCrit.getValue().toString()));
 							Clinica.getInstance().setOpcionesSistema(sistema);
 							btnGuardar.setEnabled(false);
 						}
@@ -309,8 +255,6 @@ public class Opciones extends JDialog {
 		spnDoctores.setValue(Integer.valueOf(Clinica.getInstance().getOpcionesSistema().getMaxDoctoresSist()));
 		spnControl.setValue(Integer.valueOf(Clinica.getInstance().getOpcionesSistema().getControlada()));
 		spnRegular.setValue(Integer.valueOf(Clinica.getInstance().getOpcionesSistema().getRegular()));
-		spnGrave.setValue(Integer.valueOf(Clinica.getInstance().getOpcionesSistema().getGrave()));
-		spnCrit.setValue(Integer.valueOf(Clinica.getInstance().getOpcionesSistema().getCritico()));
 	}
 
 	private boolean verificarCambio() {

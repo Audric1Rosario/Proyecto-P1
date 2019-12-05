@@ -184,5 +184,9 @@ public class Paciente implements Serializable {
 		return todasLasVacunas;
 	}
 
+	public void setTodasLasVacunas(ArrayList<Vacuna> todasLasVacunas) {
+		this.todasLasVacunas = todasLasVacunas;
+	}
+
 
 }

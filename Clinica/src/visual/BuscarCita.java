@@ -491,16 +491,11 @@ public class BuscarCita extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						// Si el doctor ya le puede ir a la consulta
 						// Activar cuando miguel termine.
-						/*
-						RegConsulta ventana = new RegConsulta(seleccionada);
+						dispose();
+						RegConsulta ventana = new RegConsulta(usuarioActual, seleccionada);
 						ventana.setModal(true);
 						ventana.setVisible(true);
-						dispose(); */
-						// Mientras tanto.
-						btnConsultar.setEnabled(false);
-						btnModificar.setEnabled(false);
-						btnSuspender.setEnabled(false);
-						tableCitas.clearSelection();
+						
 					}
 				});
 				btnConsultar.setEnabled(false);

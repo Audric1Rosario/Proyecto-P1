@@ -9,20 +9,20 @@ public class Consulta implements Serializable {
 	private String idConsulta;
 	private String idDoctor;
 	private String idPaciente;
-	private float costo;
 	private Date fecha;
 	private String diagnostico;
 	private String tratamiento;
 	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
 	
-	public Consulta(String idConsulta, String idDoctor, String idPaciente, float costo, Date fecha, String diagnostico, String tratamiento) {
+	public Consulta(String idConsulta, String idDoctor, String idPaciente, Date fecha, String diagnostico, String tratamiento) {
 		super();
 		this.idConsulta = idConsulta;
 		this.idDoctor = idDoctor;
 		this.idPaciente = idPaciente;
-		this.costo = costo;
 		this.fecha = fecha;
+		this.diagnostico = diagnostico;
+		this.tratamiento = tratamiento;
 		enfermedades = new ArrayList<>();;
 		vacunas = new ArrayList<>();
 	}
@@ -41,14 +41,6 @@ public class Consulta implements Serializable {
 
 	public void setIdDoctor(String idDoctor) {
 		this.idDoctor = idDoctor;
-	}
-
-	public float getCosto() {
-		return costo;
-	}
-
-	public void setCosto(float costo) {
-		this.costo = costo;
 	}
 
 	public Date getFecha() {

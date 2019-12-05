@@ -112,7 +112,7 @@ public class CrearVacuna extends JDialog {
 			{
 				JLabel lblNombreDeLa = new JLabel("Nombre de la vacuna:");
 				lblNombreDeLa.setHorizontalAlignment(SwingConstants.TRAILING);
-				lblNombreDeLa.setBounds(21, 14, 120, 14);
+				lblNombreDeLa.setBounds(10, 14, 131, 14);
 				panel.add(lblNombreDeLa);
 			}
 			{

@@ -8,6 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import logical.Cita;
 import logical.Clinica;
@@ -15,6 +17,7 @@ import logical.Consulta;
 import logical.Empleado;
 import logical.Enfermedad;
 import logical.Paciente;
+import logical.Vacuna;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -34,23 +37,41 @@ import java.util.Collections;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.border.EtchedBorder;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextArea;
 
 public class RegConsulta extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textFieldIdentificacion;
-	private JTextField textFieldIdDoctor;
-	private JTextField textFieldPaciente;
+	private JTextField txtIdConsulta;
+	private JTextField txtIdDoctor;
+	private JTextField txtIdPaciente;
 	private JTextField txtFieldFecha;
-	private JList<String> lstPaciente;
-	private JList<String> lstSistema;
+
+	// Panel
+	private JPanel panelEnfermedad;
+
+	// Text Area
+	private JTextArea txtDiagnostico;
+	private JTextArea txtTratamiento;
+	private JTextArea txtSintomas;
+
+	// Botones
 	private JButton btnAgregar;
 	private JButton btnRemover;
-	
-	private Paciente paciente;
+	private JButton btnVacunas;
+	private JButton btnBuscarPaciente;
+
+	private JList<String> lstPaciente;
+	private JList<String> lstSistema;
+
+	// Variables lógicas
+	private static Paciente paciente;
+	private Enfermedad dataEnfer;
 	private ArrayList<String> enfermedadesArr;  
 	private ArrayList<String> enfermedadesSelec;
-
+	private ArrayList<String> enfermedadesModi;
+	private ArrayList<Vacuna> copyVacuna;
 	/**
 	 * Launch the application.
 	 *//*
@@ -65,47 +86,76 @@ public class RegConsulta extends JDialog {
 	}
 
 	/**
-	 * Create the dialog.
-	 */
+	  * Create the dialog.
+	  */
 	public RegConsulta(Empleado actual, Cita cita) {
+		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegConsulta.class.getResource("/image/caduceusBlue.png")));
 		setTitle("Agregar Consulta");
-		setBounds(100, 100, 720, 488);
+		setBounds(100, 100, 712, 488);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		setLocationRelativeTo(null);
 		contentPanel.setLayout(null);
-		
+
 		JPanel panel_3 = new JPanel();
 		panel_3.setLayout(null);
 		panel_3.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_3.setBounds(10, 200, 684, 177);
+		panel_3.setBounds(10, 238, 684, 177);
 		contentPanel.add(panel_3);
-		
+
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del sistema", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_4.setBounds(417, 11, 257, 153);
+		panel_4.setBounds(304, 13, 185, 153);
 		panel_3.add(panel_4);
 		panel_4.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		panel_4.add(scrollPane_1, BorderLayout.CENTER);
-		
+
 		lstSistema = new JList<String>();
 		scrollPane_1.setViewportView(lstSistema);
-		
+		lstSistema.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (lstSistema.getSelectedIndex() != -1) {
+					dataEnfer = Clinica.getInstance().buscarEnfermedadByNombre(lstPaciente.getSelectedValue());
+					if (dataEnfer != null) {
+						panelEnfermedad.setBorder(new TitledBorder(null, dataEnfer.getNombre() + (dataEnfer.isListar() == false ? "(Eliminada)" : ""),
+								TitledBorder.LEADING, TitledBorder.TOP, null, null));
+						txtSintomas.setText(dataEnfer.getSintomas());
+						lstPaciente.clearSelection();
+					}
+				}
+			}
+		});
 		JPanel panel_5 = new JPanel();
 		panel_5.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_5.setBounds(10, 11, 257, 153);
+		panel_5.setBounds(10, 11, 185, 153);
 		panel_3.add(panel_5);
 		panel_5.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		panel_5.add(scrollPane, BorderLayout.CENTER);
-		
+
 		lstPaciente = new JList<String>();
 		scrollPane.setViewportView(lstPaciente);
-		
+		lstPaciente.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (lstPaciente.getSelectedIndex() != -1) {
+					dataEnfer = Clinica.getInstance().buscarEnfermedadByNombreSinRestriccion(lstPaciente.getSelectedValue());
+					if (dataEnfer != null) {
+						panelEnfermedad.setBorder(new TitledBorder(null, dataEnfer.getNombre() + (dataEnfer.isListar() == false ? "(Eliminada)" : ""),
+								TitledBorder.LEADING, TitledBorder.TOP, null, null));
+						txtSintomas.setText(dataEnfer.getSintomas());
+						lstSistema.clearSelection();
+					}
+				}
+			}
+		});
+
 		/*for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
 			if (enfer.isListar()) {
 				if (enfermedadesSelec.indexOf(enfer.getNombre()) == -1) { // agregar si no se encuentra aquí
@@ -113,208 +163,288 @@ public class RegConsulta extends JDialog {
 				}
 			}
 		}*/
-		
-		JButton btnAgregar = new JButton("Agregar");
+
+		btnAgregar = new JButton("Agregar");
+		btnAgregar.setEnabled(false);
 		btnAgregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actualizar(true, lstSistema.getSelectedIndex());
 			}
 		});
-		btnAgregar.setBounds(298, 52, 89, 23);
+		btnAgregar.setBounds(205, 42, 89, 38);
 		panel_3.add(btnAgregar);
-		
-		JButton btnRemover = new JButton("Remover");
+
+		btnRemover = new JButton("Remover");
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actualizar(false, lstPaciente.getSelectedIndex());
 			}
 		});
 		btnRemover.setEnabled(false);
-		btnRemover.setBounds(298, 86, 89, 23);
+		btnRemover.setBounds(205, 91, 89, 38);
 		panel_3.add(btnRemover);
-		
+
+		panelEnfermedad = new JPanel();
+		panelEnfermedad.setBorder(new TitledBorder(null, "<Enfermedad>", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelEnfermedad.setBounds(499, 13, 175, 153);
+		panel_3.add(panelEnfermedad);
+		panelEnfermedad.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane_2 = new JScrollPane();
+		panelEnfermedad.add(scrollPane_2, BorderLayout.CENTER);
+
+		txtSintomas = new JTextArea();
+		txtSintomas.setEditable(false);
+		txtSintomas.setLineWrap(true);
+		txtSintomas.setWrapStyleWord(true);
+		scrollPane_2.setViewportView(txtSintomas);
+
 		//iniciarLista();
-		
+
 		JPanel panel_6 = new JPanel();
 		panel_6.setBorder(new TitledBorder(null, "Datos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_6.setBounds(10, 11, 684, 63);
 		contentPanel.add(panel_6);
 		panel_6.setLayout(null);
-		
+
 		JLabel lblIdDeConsulta = new JLabel("ID de consulta:");
-		lblIdDeConsulta.setBounds(49, 11, 100, 14);
+		lblIdDeConsulta.setBounds(49, 13, 96, 14);
 		panel_6.add(lblIdDeConsulta);
-		
-		textFieldIdentificacion = new JTextField();
-		textFieldIdentificacion.setEditable(false);
-		textFieldIdentificacion.setBounds(49, 32, 96, 20);
-		panel_6.add(textFieldIdentificacion);
-		textFieldIdentificacion.setColumns(10);
-		textFieldIdentificacion.setText("C-" + Clinica.getCodigoConsulta());
-		Clinica.aumentarCodigoConsulta();
-		
+
+		txtIdConsulta = new JTextField();
+		txtIdConsulta.setEditable(false);
+		txtIdConsulta.setBounds(49, 32, 96, 20);
+		panel_6.add(txtIdConsulta);
+		txtIdConsulta.setColumns(10);
+
+		// Buscar la consulta en:
+		int codigoConsulta = 0;
+		if (Clinica.getInstance().getConsultas().size() != 0) {
+			int lastIndex = Clinica.getInstance().getConsultas().size() - 1;
+			codigoConsulta = Integer.valueOf(Clinica.getInstance().getConsultas().get(lastIndex).getIdConsulta().substring(2));			
+		}		
+		txtIdConsulta.setText("C-" + codigoConsulta);
+
 		JLabel lblIdDeDoctor = new JLabel("ID de doctor:");
-		lblIdDeDoctor.setBounds(184, 11, 83, 14);
+		lblIdDeDoctor.setBounds(184, 13, 96, 14);
 		panel_6.add(lblIdDeDoctor);
-		
-		textFieldIdDoctor = new JTextField();
-		textFieldIdDoctor.setEditable(false);
-		textFieldIdDoctor.setBounds(184, 32, 96, 20);
-		panel_6.add(textFieldIdDoctor);
-		textFieldIdDoctor.setColumns(10);
-		textFieldIdDoctor.setText(actual.getIdEmpleado());
-		
+
+		txtIdDoctor = new JTextField();
+		txtIdDoctor.setEditable(false);
+		txtIdDoctor.setBounds(184, 32, 96, 20);
+		panel_6.add(txtIdDoctor);
+		txtIdDoctor.setColumns(10);
+		txtIdDoctor.setText(actual.getIdEmpleado());
+
 		JLabel lblBuscarPaciente = new JLabel("Buscar paciente por ID:");
-		lblBuscarPaciente.setBounds(317, 11, 154, 14);
+		lblBuscarPaciente.setBounds(317, 13, 197, 14);
 		panel_6.add(lblBuscarPaciente);
-		
-		textFieldPaciente = new JTextField();
-		textFieldPaciente.setBounds(317, 32, 96, 20);
-		panel_6.add(textFieldPaciente);
-		textFieldPaciente.setColumns(10);
-		
-		JButton btnBuscarPaciente = new JButton("");
+
+		txtIdPaciente = new JTextField();
+		txtIdPaciente.setBounds(317, 32, 96, 20);
+		panel_6.add(txtIdPaciente);
+		txtIdPaciente.setColumns(10);
+
+		btnBuscarPaciente = new JButton("");
+		btnBuscarPaciente.setToolTipText("Buscar");
 		btnBuscarPaciente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				paciente = Clinica.getInstance().buscarPacienteById(textFieldPaciente.getText());
+				paciente = Clinica.getInstance().buscarPacienteById(txtIdPaciente.getText());
 				if(paciente != null) {
 					JOptionPane.showMessageDialog(null, "Se ha encontrado el paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+					rellenarDatos();
 				} else {
-					JOptionPane.showMessageDialog(null, "Lo lamentamos, no existe un paciente con esa ID.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "No existe un paciente con este ID.", "Notificación", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
+
 		btnBuscarPaciente.setIcon(new ImageIcon(RegConsulta.class.getResource("/image/magnifying-glass.png")));
-		btnBuscarPaciente.setBounds(425, 29, 89, 23);
+		btnBuscarPaciente.setBounds(425, 31, 89, 23);
 		panel_6.add(btnBuscarPaciente);
-		
+
 		JLabel lblFecha = new JLabel("Fecha:");
-		lblFecha.setBounds(543, 11, 48, 14);
+		lblFecha.setBounds(543, 13, 96, 14);
 		panel_6.add(lblFecha);
-		
-		Date date = new Date();
-		SimpleDateFormat DF = new SimpleDateFormat( "dd-MMM-yyyy");
-		
+
+		SimpleDateFormat DF = new SimpleDateFormat( "dd-MM-yyyy");
+
 		txtFieldFecha = new JTextField();
 		txtFieldFecha.setEditable(false);
 		txtFieldFecha.setBounds(543, 32, 96, 20);
 		panel_6.add(txtFieldFecha);
 		txtFieldFecha.setColumns(10);
-		txtFieldFecha.setText(DF.format(date));
-		
-		JPanel panel_7 = new JPanel();
-		panel_7.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Consulta", TitledBorder.RIGHT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_7.setBounds(10, 77, 684, 116);
-		contentPanel.add(panel_7);
-		panel_7.setLayout(null);
-		
-		JLabel lblAgregarVacunas = new JLabel("Agregar vacunas:");
-		lblAgregarVacunas.setBounds(558, 39, 116, 14);
-		panel_7.add(lblAgregarVacunas);
-		
-		JButton btnVacunas = new JButton("Vacunas");
-		btnVacunas.setBounds(558, 64, 89, 23);
-		panel_7.add(btnVacunas);
-		
-		JLabel lblDiagnstico = new JLabel("Diagn\u00F3stico:");
-		lblDiagnstico.setBounds(10, 11, 89, 14);
-		panel_7.add(lblDiagnstico);
-		
-		JLabel lblTratamiento = new JLabel("Tratamiento:");
-		lblTratamiento.setBounds(275, 11, 99, 14);
-		panel_7.add(lblTratamiento);
-		
+		txtFieldFecha.setText(DF.format(new Date()));
+
+		JPanel panelConsulta = new JPanel();
+		panelConsulta.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Consulta", TitledBorder.RIGHT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panelConsulta.setBounds(10, 77, 684, 150);
+		contentPanel.add(panelConsulta);
+		panelConsulta.setLayout(null);
+
+		btnVacunas = new JButton("Vacunas");
+		btnVacunas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AgregarVacunas ventana = new AgregarVacunas(copyVacuna);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+			}
+		});
+		btnVacunas.setEnabled(false);
+		btnVacunas.setToolTipText("Agregar vacunas.");
+		btnVacunas.setBounds(557, 53, 89, 45);
+		if (Clinica.getInstance().getVacunas().size() == 0) {
+			btnVacunas.setToolTipText("No hay vacunas en el sistema.");
+		}
+		panelConsulta.add(btnVacunas);
+
 		JPanel panelDiagnostico = new JPanel();
-		panelDiagnostico.setBounds(10, 33, 255, 72);
-		panel_7.add(panelDiagnostico);
+		panelDiagnostico.setBorder(new TitledBorder(null, "Diagn\u00F3stico", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelDiagnostico.setBounds(10, 11, 255, 128);
+		panelConsulta.add(panelDiagnostico);
 		panelDiagnostico.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPaneDiagnostico = new JScrollPane();
+		scrollPaneDiagnostico.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		panelDiagnostico.add(scrollPaneDiagnostico, BorderLayout.CENTER);
-		
-		JTextPane textPaneTratamiento = new JTextPane();
-		scrollPaneDiagnostico.setViewportView(textPaneTratamiento);
-		
+
+		txtDiagnostico = new JTextArea();
+		txtDiagnostico.setEditable(false);
+		txtDiagnostico.setLineWrap(true);
+		txtDiagnostico.setWrapStyleWord(true);
+		scrollPaneDiagnostico.setViewportView(txtDiagnostico);
+
 		JPanel panelTratamiento = new JPanel();
-		panelTratamiento.setBounds(275, 33, 255, 72);
-		panel_7.add(panelTratamiento);
+		panelTratamiento.setBorder(new TitledBorder(null, "Tratamiento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelTratamiento.setBounds(275, 11, 255, 128);
+		panelConsulta.add(panelTratamiento);
 		panelTratamiento.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPaneTratamiento = new JScrollPane();
+		scrollPaneTratamiento.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		panelTratamiento.add(scrollPaneTratamiento, BorderLayout.CENTER);
-		
-		JTextPane textPaneDiagnostico = new JTextPane();
-		scrollPaneTratamiento.setViewportView(textPaneDiagnostico);
+
+		txtTratamiento = new JTextArea();
+		txtTratamiento.setEditable(false);
+		txtTratamiento.setWrapStyleWord(true);
+		txtTratamiento.setLineWrap(true);
+		scrollPaneTratamiento.setViewportView(txtTratamiento);
 		{
 			JPanel buttonPane = new JPanel();
+			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Agregar");
-				okButton.addActionListener(new ActionListener() {
+				JButton btnAceptar = new JButton("A\u00F1adir al Historial");
+				btnAceptar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+
 						if(paciente == null) {
-							JOptionPane.showMessageDialog(null, "No se ha elejido el paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, "No se ha elegido el paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 							return;
-						} else{
-							if(cita != null) {
-							Clinica.getInstance().getCitas().remove(cita);
+						}
+						
+						Consulta nueva = new Consulta(txtIdConsulta.getText(), txtIdDoctor.getText(), paciente.getIdPaciente(),
+								new Date(), txtDiagnostico.getText(), txtTratamiento.getText());
+						// Agregado y eliminado de las enfermedades puestas.
+						// Saber a cuales enfermedades se les está quitando y sumando.					
+						int index;
+						Enfermedad buscar = null;
+						for (String enfer : enfermedadesSelec) {
+							if (enfermedadesModi.indexOf(enfer) != -1) { // Significa que se queda igual y se puede poner que no se modifico quitandolo
+								index = enfermedadesModi.indexOf(enfer);
+								enfermedadesModi.remove(index);
+							} else {	// Se agrega por primera vez
+								buscar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
+								buscar.setCantPacientes(buscar.getCantPacientes() + 1);
 							}
-							//public Consulta(String idConsulta, String idDoctor, String idPaciente, float costo, Date fecha, String diagnostico, String tratamiento)
-							Consulta nueva = new Consulta(textFieldIdentificacion.getText(), textFieldIdDoctor.getText(), paciente.getCedula(), 0, date, textPaneDiagnostico.getText(), textPaneTratamiento.getText());
-							//Faltan las enfermedades
-							//Faltan las vacunas
-							Clinica.getInstance().buscarPacienteById(textFieldPaciente.getText()).getHistoriaClinica().add(nueva);
-							Clinica.aumentarCodigoConsulta();
-							JOptionPane.showMessageDialog(null, "Se ha creado una consulta exitosamente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
-						} 
+						}
+						// Ahora lo que quede en modi, sacarlo.
+						for (String enfer : enfermedadesModi) {
+							buscar = Clinica.getInstance().buscarEnfermedadByNombre(enfer);
+							buscar.setCantPacientes(buscar.getCantPacientes() - 1);
+						}
+
+						paciente.setEnfermedades(enfermedadesSelec);
+						// Agregar cambios en las vacunas.
+						if (copyVacuna.size() > 0)
+							paciente.setTodasLasVacunas(copyVacuna);
+						
+						// Volver a cargar dashboard de enfermedades y vacunas.
+						Dashboard.cargarEnferCrit();
+						Dashboard.cargarVacunacion();
+
+						// Añadir al historial del paciente
+						paciente.getHistoriaClinica().add(nueva);	// Tanto paciente como clínica lo tienen
+						Clinica.getInstance().addConsulta(nueva);
+						if (cita != null) { // Consulta con cita.
+							Clinica.getInstance().getCitas().remove(cita);	// Se elimina la cita
+							dispose();										// Se cierra
+							BuscarCita ventana = new BuscarCita(actual);	// Se vuelve a la ventana principal
+							ventana.setModal(true);
+							ventana.setVisible(true);
+							return;
+						} else {
+							clear();			// Se limpia todo para volver a crear una nueva consulta.
+						}
 					}
 				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+				btnAceptar.setActionCommand("OK");
+				buttonPane.add(btnAceptar);
+				getRootPane().setDefaultButton(btnAceptar);
 			}
-			
+
 			JPanel panel = new JPanel();
 			panel.setLayout(null);
 			panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			buttonPane.add(panel);
-			
+
 			JPanel panel_1 = new JPanel();
 			panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del sistema", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			panel_1.setBounds(374, 11, 257, 153);
 			panel.add(panel_1);
 			panel_1.setLayout(new BorderLayout(0, 0));
-			
+
 			JPanel panel_2 = new JPanel();
 			panel_2.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Enfermedades del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			panel_2.setBounds(10, 11, 257, 153);
 			panel.add(panel_2);
 			panel_2.setLayout(new BorderLayout(0, 0));
-			
+
 			JButton button = new JButton("Agregar");
 			button.setBounds(277, 52, 89, 23);
 			panel.add(button);
-			
+
 			JButton button_1 = new JButton("Remover");
 			button_1.setEnabled(false);
 			button_1.setBounds(277, 86, 89, 23);
 			panel.add(button_1);
 			{
-				JButton cancelButton = new JButton("Cancelar");
-				cancelButton.addActionListener(new ActionListener() {
+				JButton btnCancelar = new JButton("Cancelar");
+				btnCancelar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				btnCancelar.setActionCommand("Cancel");
+				buttonPane.add(btnCancelar);
 			}
 		}
-		
-		
-		
+
+		// Si la cita esta, entonces no se puede buscar
+		if (cita != null) {
+			txtIdPaciente.setText(cita.getIdPaciente());
+			btnBuscarPaciente.setEnabled(false);
+			txtIdPaciente.setEnabled(false);
+			txtDiagnostico.setEditable(true);
+			txtTratamiento.setEditable(true);
+			paciente = Clinica.getInstance().buscarPacienteById(cita.getIdPaciente());
+			rellenarDatos();
+
+		}
+
 	}
+	/*
 	private void iniciarLista() {
 		// Borrar datos
 		DefaultListModel<String> model = new DefaultListModel<String>();
@@ -341,7 +471,7 @@ public class RegConsulta extends JDialog {
 		btnAgregar.setEnabled(lstSistema.getModel().getSize() > 0);
 		btnRemover.setEnabled(lstPaciente.getModel().getSize() > 0);
 
-	}
+	}*/
 
 	private void reiniciarLista() {
 		// Borrar datos
@@ -361,7 +491,7 @@ public class RegConsulta extends JDialog {
 		}
 		btnAgregar.setEnabled(lstSistema.getModel().getSize() > 0);
 		btnRemover.setEnabled(lstPaciente.getModel().getSize() > 0);
-		
+
 	}
 
 	private void actualizar(boolean razon, int index) {
@@ -377,6 +507,89 @@ public class RegConsulta extends JDialog {
 		}
 		reiniciarLista();
 	}
-	
+
+	private void rellenarDatos() {
+		txtDiagnostico.setEditable(true);
+		txtTratamiento.setEditable(true);
+
+		enfermedadesArr = new ArrayList<String>();
+		enfermedadesSelec = new ArrayList<String>();
+		enfermedadesModi = new ArrayList<String>();
+		copyVacuna = new ArrayList<Vacuna>();
+		
+		// Rellenar las enfermedades que tiene el paciente hasta el momento.
+		for (String data : paciente.getEnfermedades()) {
+			// ya que verificar revisa si se puede listar, y permite saber si se puede crear.
+			if (Clinica.getInstance().verificarEnfermedad(data) == false) {
+				enfermedadesSelec.add(data);
+				enfermedadesModi.add(data);
+			}
+		}
+
+		// Rellenar las enfermedades que 
+		for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
+			if (enfer.isListar()) {
+				if (enfermedadesSelec.indexOf(enfer.getNombre()) == -1) { // agregar si no se encuentra aquí
+					enfermedadesArr.add(enfer.getNombre());
+				}
+			}
+		}
+		
+		// Ordenar alfabéticamente
+		Collections.sort(enfermedadesSelec);
+		Collections.sort(enfermedadesArr);
+		Collections.sort(enfermedadesModi);
+		
+		// Ya que se tiene el paciente si hay vacunas activar el btn respectivo y copiar a la lista de vacunas.
+		if (Clinica.getInstance().getVacunas().size() > 0) {
+			// Clonar todas las vacunas...
+			for (Vacuna vacuna : paciente.getTodasLasVacunas())
+				copyVacuna.add(vacuna);
+			btnVacunas.setEnabled(true);
+		}
+		
+		// Reiniciar listas
+		reiniciarLista();
+
+		return;
+	}
+
+	private void clear() {
+		// Al reiniciar.
+		// Buscar la consulta en:
+		int codigoConsulta = 0;
+		if (Clinica.getInstance().getConsultas().size() != 0) {
+			int lastIndex = Clinica.getInstance().getConsultas().size() - 1;
+			codigoConsulta = Integer.valueOf(Clinica.getInstance().getConsultas().get(lastIndex).getIdConsulta().substring(2));			
+		}		
+		txtIdConsulta.setText("C-" + codigoConsulta);
+		
+		txtIdPaciente.setEditable(true);
+		txtIdPaciente.setText("");
+		btnBuscarPaciente.setEnabled(true);
+		txtDiagnostico.setEditable(false);
+		txtDiagnostico.setText("");
+		txtTratamiento.setEditable(false); 
+		txtTratamiento.setText("");
+		
+		// Reiniciar listas
+		lstPaciente.setModel(new DefaultListModel<String>());
+		lstSistema.setModel(new DefaultListModel<String>());
+		
+		// Listas virtuales
+		enfermedadesArr = new ArrayList<String>();
+		enfermedadesSelec = new ArrayList<String>();
+		enfermedadesModi = new ArrayList<String>();
+		
+		// Panel para presentar los datos de la enfermedad.
+		txtSintomas.setText("");
+		panelEnfermedad.setBorder(new TitledBorder(null, "<Enfermedad>", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		btnVacunas.setEnabled(false);
+		// Variables lógicas
+		paciente = null;
+		dataEnfer = null;
+		return;
+	}
+
 }
 

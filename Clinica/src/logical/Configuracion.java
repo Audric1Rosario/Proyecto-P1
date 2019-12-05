@@ -8,9 +8,7 @@ public class Configuracion implements Serializable {
 	private int maxDoctoresSist;
 	private int controlada;
 	private int regular;
-	private int grave;
-	private int critico;
-	
+
 	/* Clase lógica para los parámetros del sistema
 	 * Esto es para guardar los parametros que define el usuario administrador principal
 	 * cuando va a denotar los parámetros que sigue la clinica, como por ejemplo: 
@@ -28,10 +26,8 @@ public class Configuracion implements Serializable {
 		this.maxDoctoresSist = 5;
 		
 		// Enfermedades cant de pacientes.
-		this.controlada = 1;
-		this.regular = 10;
-		this.grave = 25;
-		this.critico = 50;
+		this.controlada = 10;
+		this.regular = 20;
 	}
 
 	public int getMaxCitasSist() {
@@ -50,14 +46,6 @@ public class Configuracion implements Serializable {
 		return regular;
 	}
 
-	public int getGrave() {
-		return grave;
-	}
-
-	public int getCritico() {
-		return critico;
-	}
-
 	public void setMaxCitasSist(int maxCitasSist) {
 		this.maxCitasSist = maxCitasSist;
 	}
@@ -73,15 +61,4 @@ public class Configuracion implements Serializable {
 	public void setRegular(int regular) {
 		this.regular = regular;
 	}
-
-	public void setGrave(int grave) {
-		this.grave = grave;
-	}
-
-	public void setCritico(int critico) {
-		this.critico = critico;
-	}
-	
-	
-
 }

@@ -381,9 +381,9 @@ public class ControlEnfermedades extends JDialog {
 				row[2] = Long.valueOf(enfermedad.getCantPacientes()).toString();
 				stadistic = ((float)enfermedad.getCantPacientes() / (float)Clinica.getInstance().getPacientes().size()) * 100;
 				// Revisar como esta la enfermedad
-				if (stadistic <= 10) {
+				if (stadistic <= Clinica.getInstance().getOpcionesSistema().getControlada()) {
 					row[3] = "Bajo control";
-				}  else if (stadistic <= 20) {
+				}  else if (stadistic <= Clinica.getInstance().getOpcionesSistema().getRegular()) {
 					row[3] = "Nociva";
 				} else {
 					row[3] = "Epidemia";

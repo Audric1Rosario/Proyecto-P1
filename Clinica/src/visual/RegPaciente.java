@@ -392,7 +392,7 @@ public class RegPaciente extends JDialog {
 		}
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Imagen de Usuario", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_1.setBounds(541, 11, 211, 280);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
@@ -404,7 +404,8 @@ public class RegPaciente extends JDialog {
 				ImagenUsuario.getWidth(), ImagenUsuario.getHeight(), Image.SCALE_SMOOTH)));
 
 		JButton btnSubirImagen = new JButton("");
-		btnSubirImagen.setToolTipText("Subir foto");
+		btnSubirImagen.setEnabled(false);
+		btnSubirImagen.setToolTipText("");
 		btnSubirImagen.setIcon(new ImageIcon(RegPaciente.class.getResource("/image/up-arrow.png")));
 		btnSubirImagen.setBounds(48, 216, 115, 40);
 		panel_1.add(btnSubirImagen);

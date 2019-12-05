@@ -7,11 +7,15 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import logical.Paciente;
+import logical.Vacuna;
 import logical.Clinica;
 import logical.Consulta;
+import logical.Enfermedad;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,25 +25,43 @@ import javax.swing.JTable;
 
 import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextArea;
+import javax.swing.border.TitledBorder;
+import javax.swing.JList;
 
 public class BuscarConsulta extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldNombre;
 	private JTextField textFieldIdentificacion;
+	
+	// Tabla
 	private static JTable tabla;
 	private static DefaultTableModel model;
 	private static Object[] fila;
-	private Consulta consulta = null;
-
+	
+	// Text area y lista.
+	private JTextArea txtDiagnostico;
+	private JTextArea txtSintomas;
+	private JList<String> lstVacunas;
+	
+	// Variables lógicas
+	private Consulta consulta;
+	private Paciente paciente;
+	
+	
 	/**
 	 * Launch the application.
-	 */
+	 *//*
 	public static void main(String[] args) {
 		try {
 			BuscarConsulta dialog = new BuscarConsulta(null);
@@ -48,18 +70,21 @@ public class BuscarConsulta extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Create the dialog.
 	 */
 	public BuscarConsulta(Paciente paciente) {
+		this.consulta = null;
+		this.paciente = paciente;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BuscarConsulta.class.getResource("/image/caduceus.png")));
-		setTitle("Buscar Consulta");
+		setTitle("Reporte cl\u00EDnico");
 		setBounds(100, 100, 720, 480);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		setLocationRelativeTo(null);
 		contentPanel.setLayout(null);
 		{
 			JLabel lblNombre = new JLabel("Nombre:");
@@ -89,46 +114,85 @@ public class BuscarConsulta extends JDialog {
 		}
 		{
 			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(10, 73, 684, 324);
+			scrollPane.setBounds(10, 73, 422, 324);
 			contentPanel.add(scrollPane);
 			
-			tabla = new JTable();
-			String columns [] = {"ID de Consulta", "Paciente", "Doctor", "Fecha", "Diagnostico", "Tratamiento"};
+			tabla = new JTable() {
+				public boolean isCellEditable(int rowIndex, int vColIndex) {
+					return false;
+				}};
+			String columns [] = {"ID de Consulta", "Paciente", "Doctor", "Fecha"};
 			model = new DefaultTableModel();
 			model.setColumnIdentifiers(columns);
 			tabla.setModel(model);
+			tabla.getTableHeader().setResizingAllowed(false); // Para quitar el resizing
+			tabla.getTableHeader().setReorderingAllowed(false);
+			
+			tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+				public void valueChanged(ListSelectionEvent event) {
+					if (tabla.getSelectedRow() != -1) {
+						String idconsulta = tabla.getValueAt(tabla.getSelectedRow(), 0).toString();
+						consulta = Clinica.getInstance().buscarConsultaById(idconsulta);						
+						llenarData();					
+					}
+				}			
+			});		
 			scrollPane.setViewportView(tabla);
-			loadTable(paciente.getHistoriaClinica());
-			tabla.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(MouseEvent e) {
-					consulta = paciente.getHistoriaClinica().get(tabla.getSelectedRow());
-				}
-			});
+			{
+				JPanel panel = new JPanel();
+				panel.setBorder(new TitledBorder(null, "Diagn\u00F3stico", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				panel.setBounds(443, 67, 251, 100);
+				contentPanel.add(panel);
+				panel.setLayout(new BorderLayout(0, 0));
+				
+				JScrollPane scrollPane_1 = new JScrollPane();
+				scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				panel.add(scrollPane_1, BorderLayout.CENTER);
+				
+				txtDiagnostico = new JTextArea();
+				txtDiagnostico.setWrapStyleWord(true);
+				txtDiagnostico.setLineWrap(true);
+				scrollPane_1.setViewportView(txtDiagnostico);
+			}
+			{
+				JPanel panel = new JPanel();
+				panel.setBorder(new TitledBorder(null, "S\u00EDntomas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				panel.setBounds(442, 178, 252, 100);
+				contentPanel.add(panel);
+				panel.setLayout(new BorderLayout(0, 0));
+				
+				JScrollPane scrollPane_1 = new JScrollPane();
+				scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				panel.add(scrollPane_1, BorderLayout.CENTER);
+				
+				txtSintomas = new JTextArea();
+				txtSintomas.setLineWrap(true);
+				txtSintomas.setWrapStyleWord(true);
+				scrollPane_1.setViewportView(txtSintomas);
+			}
+			{
+				JPanel panel = new JPanel();
+				panel.setBorder(new TitledBorder(null, "Vacunas del paciente", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				panel.setBounds(442, 289, 252, 100);
+				contentPanel.add(panel);
+				panel.setLayout(new BorderLayout(0, 0));
+				
+				JScrollPane scrollPane_1 = new JScrollPane();
+				scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				panel.add(scrollPane_1, BorderLayout.CENTER);
+				
+				lstVacunas = new JList<String>();
+				scrollPane_1.setViewportView(lstVacunas);
+			}
+			loadTable(paciente.getHistoriaClinica());			
 		}
 		{
 			JPanel buttonPane = new JPanel();
+			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Buscar");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						if(consulta == null) {
-							JOptionPane.showMessageDialog(null, "Seleccione una consulta", "Notificación", JOptionPane.INFORMATION_MESSAGE);
-						} else if(consulta != null) {
-							ConsultaVisual cons = new ConsultaVisual(consulta);
-							cons.setModal(true);
-							cons.setVisible(true);
-						}
-					}
-				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancelar");
+				JButton cancelButton = new JButton("Cerrar");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
@@ -137,6 +201,30 @@ public class BuscarConsulta extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+		iniciarLista();
+	}
+	
+	// Sólo se usa al crear pacientes.
+		private void iniciarLista() {
+			// Borrar datos
+			DefaultListModel<String> model = new DefaultListModel<String>();
+
+			// Igualar a lista vacía para que se reinicie.
+			lstVacunas.setModel(model);
+			model.clear();
+
+			for (Vacuna vacuna : paciente.getTodasLasVacunas()) {
+				if (vacuna.isHecha())
+					model.addElement(vacuna.getNombre());
+			}
+
+		}
+	
+	private void llenarData() {
+		if (consulta != null) {
+			txtDiagnostico.setText(consulta.getTratamiento());
+			txtSintomas.setText(consulta.getDiagnostico());
 		}
 	}
 	
@@ -148,12 +236,9 @@ public class BuscarConsulta extends JDialog {
 					fila[0] = consulta.getIdConsulta();
 					fila[1] = Clinica.getInstance().buscarPacienteById(consulta.getIdPaciente()).getNombre();
 					fila[2] = Clinica.getInstance().buscarEmpleadoById((consulta.getIdDoctor())).getNombre();
-					fila[3] = consulta.getFecha();
-					fila[4] = consulta.getDiagnostico();
-					fila[5] = consulta.getTratamiento();
-	
+					fila[3] = consulta.getFecha();	
 					model.addRow(fila);
-	
+					
 			tabla.setModel(model);
 		}
 	}
