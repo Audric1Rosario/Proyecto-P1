@@ -35,6 +35,11 @@ import java.io.ObjectOutputStream;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+
 import javax.swing.BoxLayout;
 
 public class Dashboard extends JFrame {
@@ -232,6 +237,15 @@ public class Dashboard extends JFrame {
 		menuBar.add(mnConsultorio);
 
 		JMenuItem mntmCitas = new JMenuItem("Citas");
+		mntmCitas.addActionListener(new ActionListener() {
+			// Borrar cuando hagan push
+			public void actionPerformed(ActionEvent e) {
+				BuscarCita ventana = new BuscarCita(actual);
+				ventana.setModal(true);
+				ventana.setVisible(true);
+				
+			}
+		});
 		mnConsultorio.add(mntmCitas);
 
 		JMenuItem mntmConsultas = new JMenuItem("Consultas");
@@ -350,8 +364,8 @@ public class Dashboard extends JFrame {
 		panel.add(panelEnfermedades);
 		panelEnfermedades.setLayout(new BoxLayout(panelEnfermedades, BoxLayout.X_AXIS));
 		
-		JLabel lblEnferCrit = new JLabel("");
-		panelEnfermedades.add(lblEnferCrit);
+		ChartPanel chartEnfer = new ChartPanel((JFreeChart) null);
+		panelEnfermedades.add(chartEnfer);
 
 		JPanel panelVacunas = new JPanel();
 		panelVacunas.setBorder(new TitledBorder(null, "Vacunaci\u00F3n general", TitledBorder.LEADING, TitledBorder.TOP, null, null));
