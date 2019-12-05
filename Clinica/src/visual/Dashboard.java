@@ -486,7 +486,8 @@ public class Dashboard extends JFrame {
 		return;
 	}
 	
-	public static void cargarVacunacion() {		
+	public static void cargarVacunacion() {
+		
 		return;
 	}
 	
@@ -536,7 +537,6 @@ public class Dashboard extends JFrame {
 			dataset.setValue("O-", tipoSangre[7]);
 			
 			// Graficar edades por rango.
-			
 			JFreeChart grafica = ChartFactory.createPieChart("", dataset, true, true, false);
 			grafica.setBackgroundPaint(new Color(181, 250, 239));
 			BufferedImage bufimg = grafica.createBufferedImage(460, 250);

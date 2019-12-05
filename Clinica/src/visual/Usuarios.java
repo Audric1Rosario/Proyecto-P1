@@ -427,7 +427,13 @@ public class Usuarios extends JDialog {
 							btnCrear.setEnabled(true);
 						} else { // cambiar a crear nuevos datos
 
-							if (usuarioModificar != null) {
+							if (usuarioModificar != null) {								
+								// Contraseña de entre 8 a 16 caracteres 
+								if (txtPassword.getText().length() < 8 || txtPassword.getText().length() > 16) {
+									JOptionPane.showConfirmDialog(null, "Por favor, digíte una contraseña de entre 8 a 16 caracteres.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+									return;
+								}
+								
 								usuarioModificar.setNombre(txtName.getText());
 								usuarioModificar.setUsername(txtUsername.getText());
 								usuarioModificar.setPassword(txtPassword.getText());
