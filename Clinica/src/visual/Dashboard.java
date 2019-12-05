@@ -266,7 +266,7 @@ public class Dashboard extends JFrame {
 		JMenuItem mntmConsultas = new JMenuItem("Consultas");
 		mntmConsultas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegConsulta ventana = new RegConsulta(actual);
+				RegConsulta ventana = new RegConsulta(actual, null);
 				ventana.setModal(true);
 				ventana.setVisible(true);
 			}

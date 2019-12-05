@@ -11,10 +11,12 @@ public class Consulta implements Serializable {
 	private String idPaciente;
 	private float costo;
 	private Date fecha;
+	private String diagnostico;
+	private String tratamiento;
 	private ArrayList<Enfermedad> enfermedades;
 	private ArrayList<Vacuna> vacunas;
 	
-	public Consulta(String idConsulta, String idDoctor, String idPaciente, float costo, Date fecha) {
+	public Consulta(String idConsulta, String idDoctor, String idPaciente, float costo, Date fecha, String diagnostico, String tratamiento) {
 		super();
 		this.idConsulta = idConsulta;
 		this.idDoctor = idDoctor;
@@ -79,6 +81,22 @@ public class Consulta implements Serializable {
 
 	public void setIdPaciente(String idPaciente) {
 		this.idPaciente = idPaciente;
+	}
+
+	public String getDiagnostico() {
+		return diagnostico;
+	}
+
+	public void setDiagnostico(String diagnostico) {
+		this.diagnostico = diagnostico;
+	}
+
+	public String getTratamiento() {
+		return tratamiento;
+	}
+
+	public void setTratamiento(String tratamiento) {
+		this.tratamiento = tratamiento;
 	}
 	
 	

@@ -9,7 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import logical.Cita;
 import logical.Clinica;
+import logical.Consulta;
 import logical.Empleado;
 import logical.Enfermedad;
 import logical.Paciente;
@@ -26,9 +28,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.awt.event.ActionEvent;
+import javax.swing.border.EtchedBorder;
 
 public class RegConsulta extends JDialog {
 
@@ -62,10 +67,10 @@ public class RegConsulta extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public RegConsulta(Empleado actual) {
+	public RegConsulta(Empleado actual, Cita cita) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegConsulta.class.getResource("/image/caduceusBlue.png")));
 		setTitle("Agregar Consulta");
-		setBounds(100, 100, 720, 460);
+		setBounds(100, 100, 720, 488);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -101,6 +106,14 @@ public class RegConsulta extends JDialog {
 		lstPaciente = new JList<String>();
 		scrollPane.setViewportView(lstPaciente);
 		
+		/*for (Enfermedad enfer: Clinica.getInstance().getEnfermedades()) {
+			if (enfer.isListar()) {
+				if (enfermedadesSelec.indexOf(enfer.getNombre()) == -1) { // agregar si no se encuentra aquí
+					enfermedadesArr.add(enfer.getNombre());
+				}
+			}
+		}*/
+		
 		JButton btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -119,6 +132,8 @@ public class RegConsulta extends JDialog {
 		btnRemover.setEnabled(false);
 		btnRemover.setBounds(298, 86, 89, 23);
 		panel_3.add(btnRemover);
+		
+		//iniciarLista();
 		
 		JPanel panel_6 = new JPanel();
 		panel_6.setBorder(new TitledBorder(null, "Datos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -177,35 +192,84 @@ public class RegConsulta extends JDialog {
 		lblFecha.setBounds(543, 11, 48, 14);
 		panel_6.add(lblFecha);
 		
+		Date date = new Date();
+		SimpleDateFormat DF = new SimpleDateFormat( "dd-MMM-yyyy");
+		
 		txtFieldFecha = new JTextField();
 		txtFieldFecha.setEditable(false);
 		txtFieldFecha.setBounds(543, 32, 96, 20);
 		panel_6.add(txtFieldFecha);
 		txtFieldFecha.setColumns(10);
+		txtFieldFecha.setText(DF.format(date));
 		
 		JPanel panel_7 = new JPanel();
-		panel_7.setBorder(new TitledBorder(null, "Tratamiento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_7.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Consulta", TitledBorder.RIGHT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_7.setBounds(10, 77, 684, 116);
 		contentPanel.add(panel_7);
 		panel_7.setLayout(null);
 		
-		JTextPane textPane = new JTextPane();
-		textPane.setBounds(10, 21, 524, 84);
-		panel_7.add(textPane);
-		
 		JLabel lblAgregarVacunas = new JLabel("Agregar vacunas:");
-		lblAgregarVacunas.setBounds(558, 39, 99, 14);
+		lblAgregarVacunas.setBounds(558, 39, 116, 14);
 		panel_7.add(lblAgregarVacunas);
 		
 		JButton btnVacunas = new JButton("Vacunas");
 		btnVacunas.setBounds(558, 64, 89, 23);
 		panel_7.add(btnVacunas);
+		
+		JLabel lblDiagnstico = new JLabel("Diagn\u00F3stico:");
+		lblDiagnstico.setBounds(10, 11, 89, 14);
+		panel_7.add(lblDiagnstico);
+		
+		JLabel lblTratamiento = new JLabel("Tratamiento:");
+		lblTratamiento.setBounds(275, 11, 99, 14);
+		panel_7.add(lblTratamiento);
+		
+		JPanel panelDiagnostico = new JPanel();
+		panelDiagnostico.setBounds(10, 33, 255, 72);
+		panel_7.add(panelDiagnostico);
+		panelDiagnostico.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPaneDiagnostico = new JScrollPane();
+		panelDiagnostico.add(scrollPaneDiagnostico, BorderLayout.CENTER);
+		
+		JTextPane textPaneTratamiento = new JTextPane();
+		scrollPaneDiagnostico.setViewportView(textPaneTratamiento);
+		
+		JPanel panelTratamiento = new JPanel();
+		panelTratamiento.setBounds(275, 33, 255, 72);
+		panel_7.add(panelTratamiento);
+		panelTratamiento.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPaneTratamiento = new JScrollPane();
+		panelTratamiento.add(scrollPaneTratamiento, BorderLayout.CENTER);
+		
+		JTextPane textPaneDiagnostico = new JTextPane();
+		scrollPaneTratamiento.setViewportView(textPaneDiagnostico);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("Agregar");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(paciente == null) {
+							JOptionPane.showMessageDialog(null, "No se ha elejido el paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+							return;
+						} else{
+							if(cita != null) {
+							Clinica.getInstance().getCitas().remove(cita);
+							}
+							//public Consulta(String idConsulta, String idDoctor, String idPaciente, float costo, Date fecha, String diagnostico, String tratamiento)
+							Consulta nueva = new Consulta(textFieldIdentificacion.getText(), textFieldIdDoctor.getText(), paciente.getCedula(), 0, date, textPaneDiagnostico.getText(), textPaneTratamiento.getText());
+							//Faltan las enfermedades
+							//Faltan las vacunas
+							Clinica.getInstance().buscarPacienteById(textFieldPaciente.getText()).getHistoriaClinica().add(nueva);
+							Clinica.aumentarCodigoConsulta();
+							JOptionPane.showMessageDialog(null, "Se ha creado una consulta exitosamente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+						} 
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
@@ -238,11 +302,18 @@ public class RegConsulta extends JDialog {
 			panel.add(button_1);
 			{
 				JButton cancelButton = new JButton("Cancelar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
-		//iniciarLista();
+		
+		
+		
 	}
 	private void iniciarLista() {
 		// Borrar datos
@@ -308,3 +379,4 @@ public class RegConsulta extends JDialog {
 	}
 	
 }
+

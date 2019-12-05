@@ -32,11 +32,6 @@ public class BuscarConsulta extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldNombre;
 	private JTextField textFieldIdentificacion;
-	private JTextField textFieldDireccion;
-	private JTextField textFieldSexo;
-	private JTextField textFieldTelefono;
-	private JTextField textFieldSangre;
-	private JTextField textFieldSeguro;
 	private static JTable tabla;
 	private static DefaultTableModel model;
 	private static Object[] fila;
@@ -67,129 +62,38 @@ public class BuscarConsulta extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			JPanel panel = new JPanel();
-			panel.setBounds(10, 11, 175, 157);
-			contentPanel.add(panel);
-			panel.setLayout(null);
-
-				JLabel labelhombre = new JLabel("");
-				labelhombre.setEnabled(false);
-				labelhombre.setIcon(new ImageIcon(BuscarConsulta.class.getResource("/image/employee .png")));
-				labelhombre.setBounds(39, 11, 80, 119);
-				panel.add(labelhombre);
-				labelhombre.setVisible(false);
-
-				JLabel labelMujer = new JLabel("");
-				labelMujer.setEnabled(false);
-				labelMujer.setIcon(new ImageIcon(BuscarConsulta.class.getResource("/image/girl2.png")));
-				labelMujer.setBounds(39, 11, 80, 119);
-				panel.add(labelMujer);
-				labelMujer.setVisible(false);
-			
-			if(paciente.getSexo().equalsIgnoreCase("F")) {
-				labelMujer.setVisible(true);
-			}else if(paciente.getSexo().equalsIgnoreCase("M")) {
-				labelhombre.setVisible(true);
-			}
-		}
-		{
 			JLabel lblNombre = new JLabel("Nombre:");
-			lblNombre.setBounds(213, 11, 48, 14);
+			lblNombre.setBounds(10, 11, 96, 14);
 			contentPanel.add(lblNombre);
 		}
 		{
 			textFieldNombre = new JTextField();
 			textFieldNombre.setEditable(false);
-			textFieldNombre.setBounds(213, 36, 267, 20);
+			textFieldNombre.setBounds(10, 36, 409, 20);
 			contentPanel.add(textFieldNombre);
 			textFieldNombre.setColumns(10);
 			textFieldNombre.setText(paciente.getNombre());
 		}
 		{
 			JLabel lblIdentificacin = new JLabel("Identificaci\u00F3n:");
-			lblIdentificacin.setBounds(500, 11, 91, 14);
+			lblIdentificacin.setBounds(435, 11, 91, 14);
 			contentPanel.add(lblIdentificacin);
 		}
 		{
 			textFieldIdentificacion = new JTextField();
 			textFieldIdentificacion.setEditable(false);
-			textFieldIdentificacion.setBounds(500, 36, 194, 20);
+			textFieldIdentificacion.setBounds(433, 36, 261, 20);
 			contentPanel.add(textFieldIdentificacion);
 			textFieldIdentificacion.setColumns(10);
 			textFieldIdentificacion.setText(paciente.getCedula());
 		}
 		{
-			JLabel lblDireccin = new JLabel("Direcci\u00F3n:");
-			lblDireccin.setBounds(213, 67, 70, 14);
-			contentPanel.add(lblDireccin);
-		}
-		{
-			textFieldDireccion = new JTextField();
-			textFieldDireccion.setEditable(false);
-			textFieldDireccion.setBounds(213, 92, 481, 20);
-			contentPanel.add(textFieldDireccion);
-			textFieldDireccion.setColumns(10);
-			textFieldDireccion.setText(paciente.getDireccion() + " " + paciente.getSector());
-		}
-		{
-			JLabel lblSexo = new JLabel("Sexo:");
-			lblSexo.setBounds(213, 123, 48, 14);
-			contentPanel.add(lblSexo);
-		}
-		{
-			textFieldSexo = new JTextField();
-			textFieldSexo.setEditable(false);
-			textFieldSexo.setBounds(213, 148, 96, 20);
-			contentPanel.add(textFieldSexo);
-			textFieldSexo.setColumns(10);
-			textFieldSexo.setText(paciente.getSexo());
-		}
-		{
-			JLabel lblTelfono = new JLabel("Tel\u00E9fono:");
-			lblTelfono.setBounds(340, 123, 59, 14);
-			contentPanel.add(lblTelfono);
-		}
-		{
-			textFieldTelefono = new JTextField();
-			textFieldTelefono.setEditable(false);
-			textFieldTelefono.setBounds(340, 148, 96, 20);
-			contentPanel.add(textFieldTelefono);
-			textFieldTelefono.setColumns(10);
-			textFieldTelefono.setText(paciente.getTelefono());
-		}
-		{
-			textFieldSangre = new JTextField();
-			textFieldSangre.setEditable(false);
-			textFieldSangre.setBounds(477, 148, 96, 20);
-			contentPanel.add(textFieldSangre);
-			textFieldSangre.setColumns(10);
-			textFieldSangre.setText(paciente.getTipoSangre());
-		}
-		{
-			JLabel lblTipoDeSangre = new JLabel("Tipo de Sangre:");
-			lblTipoDeSangre.setBounds(477, 123, 96, 14);
-			contentPanel.add(lblTipoDeSangre);
-		}
-		{
-			textFieldSeguro = new JTextField();
-			textFieldSeguro.setEditable(false);
-			textFieldSeguro.setBounds(598, 148, 96, 20);
-			contentPanel.add(textFieldSeguro);
-			textFieldSeguro.setColumns(10);
-			textFieldSeguro.setText(paciente.getSeguro());
-		}
-		{
-			JLabel lblSeguro = new JLabel("Seguro:");
-			lblSeguro.setBounds(622, 123, 48, 14);
-			contentPanel.add(lblSeguro);
-		}
-		{
 			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(10, 179, 684, 218);
+			scrollPane.setBounds(10, 73, 684, 324);
 			contentPanel.add(scrollPane);
 			
 			tabla = new JTable();
-			String columns [] = {"ID de Consulta", "Paciente", "Doctor", "Fecha"};
+			String columns [] = {"ID de Consulta", "Paciente", "Doctor", "Fecha", "Diagnostico", "Tratamiento"};
 			model = new DefaultTableModel();
 			model.setColumnIdentifiers(columns);
 			tabla.setModel(model);
@@ -245,6 +149,8 @@ public class BuscarConsulta extends JDialog {
 					fila[1] = Clinica.getInstance().buscarPacienteById(consulta.getIdPaciente()).getNombre();
 					fila[2] = Clinica.getInstance().buscarEmpleadoById((consulta.getIdDoctor())).getNombre();
 					fila[3] = consulta.getFecha();
+					fila[4] = consulta.getDiagnostico();
+					fila[5] = consulta.getTratamiento();
 	
 					model.addRow(fila);
 	

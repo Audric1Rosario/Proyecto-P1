@@ -17,6 +17,7 @@ import logical.Consulta;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -48,7 +49,7 @@ public class ConsultaVisual extends JDialog {
 
 	/**
 	 * Launch the application.
-	 */
+	 *//*
 	public static void main(String[] args) {
 		try {
 			ConsultaVisual dialog = new ConsultaVisual(null);
@@ -129,11 +130,11 @@ public class ConsultaVisual extends JDialog {
 		}
 		{
 			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(10, 155, 315, 191);
+			scrollPane.setBounds(10, 147, 315, 199);
 			contentPanel.add(scrollPane);
 			tabla = new JTable();
 			
-			String columns [] = {"Nombre", "Identificación", "Seguro", "Sexo"};
+			String columns [] = {"Enfermedad", "Síntomas"};
 			model = new DefaultTableModel();
 			model.setColumnIdentifiers(columns);
 			tabla.setModel(model);
@@ -142,17 +143,18 @@ public class ConsultaVisual extends JDialog {
 		}
 		{
 			JLabel lblTratamiento = new JLabel("Tratamiento:");
-			lblTratamiento.setBounds(356, 130, 82, 14);
+			lblTratamiento.setBounds(356, 259, 89, 14);
 			contentPanel.add(lblTratamiento);
 		}
 		{
 			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(356, 155, 315, 191);
+			scrollPane.setBounds(356, 274, 315, 108);
 			contentPanel.add(scrollPane);
+			scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			
 			JTextArea textAreaTratamiento = new JTextArea();
-			textAreaTratamiento.setEditable(false);
 			scrollPane.setViewportView(textAreaTratamiento);
+			textAreaTratamiento.setEditable(false);
 			
 		}
 		{
@@ -163,6 +165,27 @@ public class ConsultaVisual extends JDialog {
 			});
 			btnNewButton.setBounds(68, 359, 199, 23);
 			contentPanel.add(btnNewButton);
+		}
+		{
+			JPanel panel = new JPanel();
+			panel.setBounds(356, 147, 315, 108);
+			contentPanel.add(panel);
+			panel.setLayout(new BorderLayout(0, 0));
+			{
+				JScrollPane scrollPane = new JScrollPane();
+				panel.add(scrollPane, BorderLayout.CENTER);
+				scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				{
+					JTextArea textAreaDiagnostico = new JTextArea();
+					textAreaDiagnostico.setEditable(false);
+					scrollPane.setViewportView(textAreaDiagnostico);
+				}
+			}
+		}
+		{
+			JLabel lblDiagnostico = new JLabel("Diagnostico:");
+			lblDiagnostico.setBounds(356, 130, 82, 14);
+			contentPanel.add(lblDiagnostico);
 		}
 		{
 			JPanel buttonPane = new JPanel();
