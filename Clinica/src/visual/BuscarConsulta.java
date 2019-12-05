@@ -37,6 +37,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 import javax.swing.JList;
+import javax.swing.border.EtchedBorder;
+import java.awt.Color;
 
 public class BuscarConsulta extends JDialog {
 
@@ -127,20 +129,18 @@ public class BuscarConsulta extends JDialog {
 			tabla.setModel(model);
 			tabla.getTableHeader().setResizingAllowed(false); // Para quitar el resizing
 			tabla.getTableHeader().setReorderingAllowed(false);
-			
-			tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-				public void valueChanged(ListSelectionEvent event) {
-					if (tabla.getSelectedRow() != -1) {
-						String idconsulta = tabla.getValueAt(tabla.getSelectedRow(), 0).toString();
-						consulta = Clinica.getInstance().buscarConsultaById(idconsulta);						
-						llenarData();					
-					}
-				}			
-			});		
+			tabla.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					consulta = paciente.getHistoriaClinica().get(tabla.getSelectedRow());						
+					llenarData();
+				}
+			});
+					
 			scrollPane.setViewportView(tabla);
 			{
 				JPanel panel = new JPanel();
-				panel.setBorder(new TitledBorder(null, "Diagn\u00F3stico", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Tratamiento", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 				panel.setBounds(443, 67, 251, 100);
 				contentPanel.add(panel);
 				panel.setLayout(new BorderLayout(0, 0));
@@ -150,13 +150,14 @@ public class BuscarConsulta extends JDialog {
 				panel.add(scrollPane_1, BorderLayout.CENTER);
 				
 				txtDiagnostico = new JTextArea();
+				txtDiagnostico.setEditable(false);
 				txtDiagnostico.setWrapStyleWord(true);
 				txtDiagnostico.setLineWrap(true);
 				scrollPane_1.setViewportView(txtDiagnostico);
 			}
 			{
 				JPanel panel = new JPanel();
-				panel.setBorder(new TitledBorder(null, "S\u00EDntomas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Diagn\u00F3stico", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 				panel.setBounds(442, 178, 252, 100);
 				contentPanel.add(panel);
 				panel.setLayout(new BorderLayout(0, 0));
@@ -166,9 +167,11 @@ public class BuscarConsulta extends JDialog {
 				panel.add(scrollPane_1, BorderLayout.CENTER);
 				
 				txtSintomas = new JTextArea();
+				txtSintomas.setEditable(false);
 				txtSintomas.setLineWrap(true);
 				txtSintomas.setWrapStyleWord(true);
 				scrollPane_1.setViewportView(txtSintomas);
+				
 			}
 			{
 				JPanel panel = new JPanel();

@@ -224,7 +224,7 @@ public class BuscarPaciente extends JDialog {
 			JButton btnBuscarIdentificacion = new JButton("");
 			btnBuscarIdentificacion.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if(Clinica.getInstance().buscarPacienteById(textFieldIdentificacion.getText()) == null) {
+					if(Clinica.getInstance().buscarPacienteByCedula(textFieldIdentificacion.getText()) == null) {
 						JOptionPane.showMessageDialog(null, "No existe ningun paciente con esa identificación", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 					}else if(textFieldIdentificacion.getText().equalsIgnoreCase("")) {
 						JOptionPane.showMessageDialog(null, "Campos del paciente vacios", "Notificación", JOptionPane.INFORMATION_MESSAGE);

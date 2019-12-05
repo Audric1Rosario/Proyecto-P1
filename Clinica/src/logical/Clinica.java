@@ -94,6 +94,20 @@ public class Clinica implements Serializable {
 	// 1. Buscar.
 
 	// Buscar pacientes
+	public Paciente buscarPacienteByCedula(String idPaciente) {
+		Paciente buscado = null;
+		boolean encontrado = false; 
+		int aux = 0;
+		while (aux < pacientes.size() && !encontrado) {
+			if (pacientes.get(aux).getCedula().equalsIgnoreCase(idPaciente)) {
+				buscado = pacientes.get(aux);
+				encontrado = true;
+			}
+			aux++;
+		}
+		return buscado;
+	}
+	
 	public Paciente buscarPacienteById(String idPaciente) {
 		Paciente buscado = null;
 		boolean encontrado = false; 

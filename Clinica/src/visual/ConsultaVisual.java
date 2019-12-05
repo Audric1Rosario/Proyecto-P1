@@ -155,6 +155,7 @@ public class ConsultaVisual extends JDialog {
 			JTextArea textAreaTratamiento = new JTextArea();
 			scrollPane.setViewportView(textAreaTratamiento);
 			textAreaTratamiento.setEditable(false);
+			textAreaTratamiento.setText(consulta.getTratamiento());
 			
 		}
 		{
@@ -179,6 +180,7 @@ public class ConsultaVisual extends JDialog {
 					JTextArea textAreaDiagnostico = new JTextArea();
 					textAreaDiagnostico.setEditable(false);
 					scrollPane.setViewportView(textAreaDiagnostico);
+					textAreaDiagnostico.setText(consulta.getDiagnostico());
 				}
 			}
 		}

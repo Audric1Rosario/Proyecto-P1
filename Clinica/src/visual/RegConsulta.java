@@ -220,7 +220,7 @@ public class RegConsulta extends JDialog {
 		// Buscar la consulta en:
 		int codigoConsulta = 0;
 		if (Clinica.getInstance().getConsultas().size() != 0) {
-			int lastIndex = Clinica.getInstance().getConsultas().size() - 1;
+			int lastIndex = Clinica.getInstance().getConsultas().size();
 			codigoConsulta = Integer.valueOf(Clinica.getInstance().getConsultas().get(lastIndex).getIdConsulta().substring(2));			
 		}		
 		txtIdConsulta.setText("C-" + codigoConsulta);
@@ -249,7 +249,7 @@ public class RegConsulta extends JDialog {
 		btnBuscarPaciente.setToolTipText("Buscar");
 		btnBuscarPaciente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				paciente = Clinica.getInstance().buscarPacienteById(txtIdPaciente.getText());
+				paciente = Clinica.getInstance().buscarPacienteByCedula(txtIdPaciente.getText());
 				if(paciente != null) {
 					JOptionPane.showMessageDialog(null, "Se ha encontrado el paciente.", "Notificación", JOptionPane.INFORMATION_MESSAGE);
 					rellenarDatos();
