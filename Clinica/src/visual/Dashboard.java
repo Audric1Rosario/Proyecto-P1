@@ -11,12 +11,14 @@ import java.awt.Toolkit;
 import javax.swing.border.TitledBorder;
 
 import logical.Administrador;
+import logical.CantidadVacuna;
 import logical.Clinica;
 import logical.Doctor;
 import logical.Empleado;
 import logical.Enfermedad;
 import logical.Paciente;
 import logical.Secretaria;
+import logical.Vacuna;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import org.jfree.chart.ChartFactory;
@@ -472,7 +475,7 @@ public class Dashboard extends JFrame {
 					
 				dataset.setValue(enfermedad.getCantPacientes(), enfermedad.getNombre(), categoria);
 			}
-			JFreeChart grafica = ChartFactory.createBarChart3D("", "Enfermedad", "Categoría", dataset,
+			JFreeChart grafica = ChartFactory.createBarChart3D("", "Enfermedad", "Cantidad de pacientes.", dataset,
 					PlotOrientation.VERTICAL, true, true, false);
 			grafica.setBackgroundPaint(new Color(181, 250, 239));
 			BufferedImage bufimg = grafica.createBufferedImage(460, 250);
@@ -487,6 +490,58 @@ public class Dashboard extends JFrame {
 	}
 	
 	public static void cargarVacunacion() {
+		ArrayList<CantidadVacuna> listaVacunas = new ArrayList<CantidadVacuna>();
+		for (Vacuna vacuna : Clinica.getInstance().getVacunas()) {
+			CantidadVacuna nuevoObjeto = new CantidadVacuna(vacuna);
+			// Hacer la referencia con la lista.
+			listaVacunas.add(nuevoObjeto);
+		}
+		
+		// Luego recopilar los datos
+		for (CantidadVacuna cantidadVacuna : listaVacunas) {
+			for (Paciente paciente : Clinica.getInstance().getPacientes()) {
+				boolean encontrar = false; 
+				int aux = 0;
+				while (aux < paciente.getTodasLasVacunas().size() && !encontrar) {
+					if (paciente.getTodasLasVacunas().get(aux).getNombre().equalsIgnoreCase(cantidadVacuna.getVacuna().getNombre())) {
+						encontrar = true;
+						// Preguntar si la tiene puesta para poder agregar que un paciente de esta tiene la vacuna puesta.
+						if (paciente.getTodasLasVacunas().get(aux).isHecha()) {
+							cantidadVacuna.setCantPacientes(cantidadVacuna.getCantPacientes() + 1);
+						}
+					}
+					aux++;
+				}
+			}
+		}
+		
+		// Luego de recopilar los datos, crear el gráfico.
+		if (listaVacunas.size() > 0) {
+			lblVacunacion.setText("");
+			
+			Collections.sort(listaVacunas, (o1, o2) -> Long.valueOf(o1.getCantPacientes()).compareTo(Long.valueOf(o2.getCantPacientes())));  // Ordenar según la cant de pacientes
+			Collections.reverse(listaVacunas);  // Ordenar según el orden descendiente.
+			
+			// Crear gráfico solo con los 5 primeros valores top.
+			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+			String categoria = "";
+			int aux = 0;
+			while (aux < listaVacunas.size() && aux < 5) {
+				dataset.setValue(listaVacunas.get(aux).getCantPacientes(), listaVacunas.get(aux).getVacuna().getNombre(), categoria);
+				aux++;
+			}
+			
+			JFreeChart grafica = ChartFactory.createBarChart3D("", "Vacunas", "Cantidad de pacientes.", dataset,
+					PlotOrientation.VERTICAL, true, true, false);
+			grafica.setBackgroundPaint(new Color(181, 250, 239));
+			BufferedImage bufimg = grafica.createBufferedImage(460, 250);
+			ImageIcon img = new ImageIcon(bufimg);
+			lblVacunacion.setIcon(img);
+			
+		} else {
+			lblVacunacion.setIcon(null);
+			lblVacunacion.setText("No existen vacunas en el sistema.");
+		}
 		
 		return;
 	}

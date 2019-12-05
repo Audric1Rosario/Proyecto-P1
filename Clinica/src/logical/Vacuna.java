@@ -60,5 +60,13 @@ public class Vacuna implements Serializable {
 	public void setListar(boolean listar) {
 		this.listar = listar;
 	}
+
+	public boolean isHecha() {
+		return hecha;
+	}
+
+	public void setHecha(boolean hecha) {
+		this.hecha = hecha;
+	}
 	
 }
