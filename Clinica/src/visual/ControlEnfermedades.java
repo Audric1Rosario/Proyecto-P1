@@ -69,8 +69,6 @@ public class ControlEnfermedades extends JDialog {
 	private int orden;
 	private boolean lastStatus;
 	private TableRenderer sistRender;
-	private TableRenderer revRender;
-
 	// Botones
 	private JButton btnAceptar;
 
@@ -315,6 +313,7 @@ public class ControlEnfermedades extends JDialog {
 						Enfermedad buscada = Clinica.getInstance().buscarEnfermedadByNombre(txtNombre.getText());
 						if (buscada != null) {
 							buscada.setRevision(chckbxEstEnRevisin.isSelected());
+							Dashboard.cargarEnferCrit();
 							clear();
 						}
 						rellenarTablas(orden, "");

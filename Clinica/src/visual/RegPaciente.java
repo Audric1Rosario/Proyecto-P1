@@ -177,7 +177,7 @@ public class RegPaciente extends JDialog {
 
 		cbxBlood = new JComboBox<String>();
 		cbxBlood.setToolTipText("Tipo de sangre.");
-		cbxBlood.setModel(new DefaultComboBoxModel<String>(new String[] {"A", "A+", "A-", "B", "B+", "B-", "AB", "O", "O+", "O-"}));
+		cbxBlood.setModel(new DefaultComboBoxModel(new String[] {"A+", "A-", "AB+", "AB-", "B+", "B-", "O+", "O-"}));
 
 
 		cbxBlood.setBounds(432, 60, 69, 20);
@@ -328,6 +328,9 @@ public class RegPaciente extends JDialog {
 
 							clear();
 							iniciarLista();
+							Dashboard.cargarEnferCrit();
+							Dashboard.cargarEdades();
+							Dashboard.cargarSangre();
 						} else {
 							// Agregar los datos al paciente a modificar.
 							pacienteModificar.setNombre(txtName.getText());
@@ -365,7 +368,10 @@ public class RegPaciente extends JDialog {
 							dispose();
 							JOptionPane.showMessageDialog(null, "Paciente modificado.","Notificación.", JOptionPane.INFORMATION_MESSAGE);
 						}
-
+						Dashboard.cargarEnferCrit();
+						Dashboard.cargarEdades();
+						Dashboard.cargarSangre();
+						Dashboard.cargarVacunacion();
 
 					}});
 				btnAceptar.setActionCommand("OK");
@@ -634,11 +640,13 @@ public class RegPaciente extends JDialog {
 		// Limpiar todos los campos.
 		txtName.setText(""); 
 		((JFormattedTextField)txtPhone).setValue(null);
-		txtPhone = new JFormattedTextField(mask);
+		//txtPhone = new JFormattedTextField(mask);
 		rdbtnMasculino.setSelected(true);
 		rdbtnFemenino.setSelected(false);
 		spnAge.setValue(Integer.valueOf(1));
+		
 		((JFormattedTextField)txtCellphone).setValue(null);
+		
 		txtSave.setText("");
 		txtCedula.setText("");
 		cbxSector.setSelectedIndex(0);

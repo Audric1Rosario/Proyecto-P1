@@ -14,6 +14,8 @@ import logical.Administrador;
 import logical.Clinica;
 import logical.Doctor;
 import logical.Empleado;
+import logical.Enfermedad;
+import logical.Paciente;
 import logical.Secretaria;
 
 import javax.swing.UIManager;
@@ -28,19 +30,26 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
 
 public class Dashboard extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -49,7 +58,10 @@ public class Dashboard extends JFrame {
 	
 	// Label
 	private static JLabel lblNombreUsuario;
-	
+	private static JLabel lblEnferCrit;
+	private static JLabel lblVacunacion;
+	private static JLabel lblSangre;
+	private static JLabel lblEdades;
 	/**
 	 * Launch the application.
 	 *//*
@@ -362,10 +374,12 @@ public class Dashboard extends JFrame {
 		panelEnfermedades.setBorder(new TitledBorder(null, "Enfermedades cr\u00EDticas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelEnfermedades.setBounds(10, 38, 518, 300);
 		panel.add(panelEnfermedades);
-		panelEnfermedades.setLayout(new BoxLayout(panelEnfermedades, BoxLayout.X_AXIS));
+		panelEnfermedades.setLayout(null);
 		
-		ChartPanel chartEnfer = new ChartPanel((JFreeChart) null);
-		panelEnfermedades.add(chartEnfer);
+		lblEnferCrit = new JLabel("");
+		lblEnferCrit.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEnferCrit.setBounds(10, 21, 498, 268);
+		panelEnfermedades.add(lblEnferCrit);
 
 		JPanel panelVacunas = new JPanel();
 		panelVacunas.setBorder(new TitledBorder(null, "Vacunaci\u00F3n general", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -373,7 +387,8 @@ public class Dashboard extends JFrame {
 		panel.add(panelVacunas);
 		panelVacunas.setLayout(null);
 		
-		JLabel lblVacunacion = new JLabel("");
+		lblVacunacion = new JLabel("");
+		lblVacunacion.setHorizontalAlignment(SwingConstants.CENTER);
 		lblVacunacion.setBounds(10, 21, 498, 268);
 		panelVacunas.add(lblVacunacion);
 
@@ -383,7 +398,8 @@ public class Dashboard extends JFrame {
 		panel.add(panelSangre);
 		panelSangre.setLayout(null);
 		
-		JLabel lblSangre = new JLabel("");
+		lblSangre = new JLabel("");
+		lblSangre.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSangre.setBounds(10, 21, 498, 268);
 		panelSangre.add(lblSangre);
 
@@ -393,7 +409,8 @@ public class Dashboard extends JFrame {
 		panel.add(panelEdad);
 		panelEdad.setLayout(null);
 		
-		JLabel lblEdades = new JLabel("");
+		lblEdades = new JLabel("");
+		lblEdades.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEdades.setBounds(10, 21, 498, 268);
 		panelEdad.add(lblEdades);
 
@@ -418,9 +435,165 @@ public class Dashboard extends JFrame {
 		lblClnicaGeneral.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 		lblClnicaGeneral.setBounds(69, 11, 144, 25);
 		panel.add(lblClnicaGeneral);
+		
+		// Llamar a los gráficos.
+		Dashboard.cargarEnferCrit();
+		Dashboard.cargarEdades();
+		Dashboard.cargarSangre();
+		Dashboard.cargarVacunacion();
 
 	}
-
+ 
+	public static void cargarEnferCrit() {
+		// Primero obtener las enfermedades que son críticas.
+		ArrayList<Enfermedad> enferCritica = new ArrayList<Enfermedad>();
+		for (Enfermedad enfermedad : Clinica.getInstance().getEnfermedades()) {
+			if (enfermedad.isRevision() && enfermedad.isListar()) {
+				enferCritica.add(enfermedad);
+			}
+		}
+		
+		// Luego de encontrar las enfermedades críticas graficar si hay datos.
+		if (enferCritica.size() > 0) {
+			lblEnferCrit.setText("");
+			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+			float relacion;
+			float divisor = Clinica.getInstance().getPacientes().size()  > 0 ? Clinica.getInstance().getPacientes().size() : 1;
+			String categoria = "";
+			for (Enfermedad enfermedad : enferCritica) {				 
+				relacion = ( (float)enfermedad.getCantPacientes() / divisor ) * 100;
+				if (relacion <= 10) {
+					categoria = "Bajo control";
+				} else if (relacion <= 20) {
+					categoria = "Nociva";					
+				} else if (relacion > 20) {
+					categoria = "Epidemia";
+				}
+					
+				dataset.setValue(enfermedad.getCantPacientes(), enfermedad.getNombre(), categoria);
+			}
+			JFreeChart grafica = ChartFactory.createBarChart3D("", "Enfermedad", "Categoría", dataset,
+					PlotOrientation.VERTICAL, true, true, false);
+			grafica.setBackgroundPaint(new Color(181, 250, 239));
+			BufferedImage bufimg = grafica.createBufferedImage(460, 250);
+			ImageIcon img = new ImageIcon(bufimg);
+			lblEnferCrit.setIcon(img);
+		} else {
+			lblEnferCrit.setIcon(null);
+			lblEnferCrit.setText("No hay datos en revisión.");
+		}
+		
+		return;
+	}
+	
+	public static void cargarVacunacion() {		
+		return;
+	}
+	
+	public static void cargarSangre() {	
+		/* Por los tipos de sangre : A+, A-, AB+, AB, B+, B-, O+, O-*/
+		if (Clinica.getInstance().getPacientes().size() > 0) {
+			lblSangre.setText("");
+			int tipoSangre[] = new int[8];
+			for (Paciente paciente : Clinica.getInstance().getPacientes()) {
+				switch (paciente.getTipoSangre()) {
+				case "A+":
+					tipoSangre[0]++;
+					break;
+				case "A-":
+					tipoSangre[1]++;
+					break;	
+				case "AB+":
+					tipoSangre[2]++;
+					break;
+				case "AB-":
+					tipoSangre[3]++;
+					break;
+				case "B+":
+					tipoSangre[4]++;
+					break;
+				case "B-":
+					tipoSangre[5]++;
+					break;
+				case "O+":
+					tipoSangre[6]++;
+					break;
+				case "O-":
+					tipoSangre[7]++;
+					break;
+					
+				}
+			}
+		
+			DefaultPieDataset dataset = new DefaultPieDataset();
+			dataset.setValue("A+", tipoSangre[0]);
+			dataset.setValue("A-", tipoSangre[1]);
+			dataset.setValue("AB+", tipoSangre[2]);
+			dataset.setValue("AB-", tipoSangre[3]);
+			dataset.setValue("B+", tipoSangre[4]);
+			dataset.setValue("B-", tipoSangre[5]);
+			dataset.setValue("O+", tipoSangre[6]);
+			dataset.setValue("O-", tipoSangre[7]);
+			
+			// Graficar edades por rango.
+			
+			JFreeChart grafica = ChartFactory.createPieChart("", dataset, true, true, false);
+			grafica.setBackgroundPaint(new Color(181, 250, 239));
+			BufferedImage bufimg = grafica.createBufferedImage(460, 250);
+			ImageIcon img = new ImageIcon(bufimg);
+			lblSangre.setIcon(img);
+		} else {
+			lblSangre.setIcon(null);
+			lblSangre.setText("No existen pacientes en el sistema.");
+		}
+		return;
+	}
+	
+	public static void cargarEdades() {
+		/* primera infancia (0-5 años) 0, infancia (6 - 11 años) 1,
+		 * adolescencia (12-18 años) 2, juventud (14 - 26 años) 3,
+		 * adultez (27 - 59 años) 4 y vejez (60 años y más) 5. */
+		if (Clinica.getInstance().getPacientes().size() > 0) {
+			lblEdades.setText("");
+			int edades[] = new int[6];
+			for (Paciente paciente : Clinica.getInstance().getPacientes()) {
+				if (paciente.getEdad() <= 5) {
+					edades[0]++;
+				} else if (paciente.getEdad() <= 11) {
+					edades[1]++;
+				} else if (paciente.getEdad() <= 18) {
+					edades[2]++;
+				} else if (paciente.getEdad() <= 26) {
+					edades[3]++;
+				} else if (paciente.getEdad() <= 59) {
+					edades[4]++;
+				} else {
+					edades[5]++;
+				}
+			}
+			
+			DefaultPieDataset dataset = new DefaultPieDataset();
+			dataset.setValue("Bebés", edades[0]);
+			dataset.setValue("Infantes", edades[1]);
+			dataset.setValue("Adolescentes", edades[2]);
+			dataset.setValue("Jóvenes", edades[3]);
+			dataset.setValue("Adultos", edades[4]);
+			dataset.setValue("Ancianos", edades[5]);
+			
+			// Graficar edades por rango.
+			
+			JFreeChart grafica = ChartFactory.createRingChart("", dataset, true, true, false);
+			grafica.setBackgroundPaint(new Color(181, 250, 239));
+			BufferedImage bufimg = grafica.createBufferedImage(460, 250);
+			ImageIcon img = new ImageIcon(bufimg);
+			lblEdades.setIcon(img);
+		} else {
+			lblEdades.setIcon(null);
+			lblEdades.setText("No existen pacientes en el sistema.");
+		}
+		return;
+	}
+	
 	public static JLabel getLblNombreUsuario() {
 		return lblNombreUsuario;
 	}
